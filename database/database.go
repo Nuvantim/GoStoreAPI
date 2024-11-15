@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 	"fmt"
-	"github.com/Kalveir/go-fiber-api/models"
+	"e-commerce-api/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -37,8 +37,13 @@ func MysqlConnect() {
 	}
 
 	log.Println("connected")
-	db.AutoMigrate(&models.Book{})
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Category{})
+	// db.AutoMigrate(&models.Order{})
+	// db.AutoMigrate(&models.Chart{})
+	// db.AutoMigrate(&models.Paytment{})
+	// db.AutoMigrate(&models.Review{})
 	DBConn = db
 
 }

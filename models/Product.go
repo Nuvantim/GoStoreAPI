@@ -1,8 +1,5 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
 
 type Product struct {
 	ID          uint    `gorm:"PrimaryKey"`
