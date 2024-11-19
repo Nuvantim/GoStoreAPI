@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"e-commerce-api/models"
@@ -6,34 +6,34 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func GetCategory(c Fiber.Ctx) error {
+func GetCategory(c fiber.Ctx) error {
 	category := service.GetAllCategory()
-	return c.JSON(category)
+	return c.Status(200).JSON(category)
 }
 
-func FindCategory(c Fiber.Ctx) error {
+func FindCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	category := service.GetCategoryById(id)
-	return c.JSON(category)
+	return c.Status(200).JSON(category)
 }
 
-func CreateCategory(c Fiber.Ctx) error {
+func CreateCategory(c fiber.Ctx) error {
 	var category models.Category
-	if err := c.BodyParser(&category); err != nil{
-		return c.Status(400).SendString(err.Error())
+	if err := c.Bind().Body(&category); err != nil {
+		return c.Status(400).JSON(err.Error())
 	}
-	new_category:= service.CreateCategory(category)
-	return c.JSON(new_category)
+	categories := service.CreateCategory(category)
+	return c.Status(200).JSON(categories)
 }
 
 func UpdateCategory (c fiber.Ctx) error {
 	id := c.Params("id")
-	var category_data models.Category
-	if err := c.BodyParser(&category_data); err != nil {
-		return c.Status(400).SendString(err.Error())
+	var category models.Category
+	if err := c.Bind().Body(category); err != nil {
+		return c.Status(400).JSON(err.Error())
 	}
-	update_category := service.UpdateCategory(id, category_data)
-	return update_category
+	service.UpdateCategory(id, category)
+	return c.Status(200).JSON(category)
 }
 
 func DeleteCategory (c fiber.Ctx) error {

@@ -13,13 +13,14 @@ func GetAllProduct()models.Product {
 }
 
 //get Product from id
-func GetProductById(id uint)models.Product {
+func GetProductById(id string)models.Product {
         var product models.Product
         database.DBConn.Find(&product, id)
         return product
 }
 
 //create Product
-func CreateProduct(Product models.Product) models.Product {
+func CreateProduct(product models.Product) models.Product {
       database.DBConn.Create(&product)  
+      return product
 }
