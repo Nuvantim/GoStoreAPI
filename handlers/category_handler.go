@@ -26,22 +26,20 @@ func CreateCategory(c fiber.Ctx) error {
 	return c.Status(200).JSON(categories)
 }
 
-func UpdateCategory (c fiber.Ctx) error {
+func UpdateCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	var category models.Category
-	if err := c.Bind().Body(category); err != nil {
+	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	service.UpdateCategory(id, category)
 	return c.Status(200).JSON(category)
 }
 
-func DeleteCategory (c fiber.Ctx) error {
+func DeleteCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	if err := service.DeleteCategory(id); err != nil {
 		return c.Status(500).SendString("Failed Delete Category")
 	}
 	return c.SendStatus(204)
 }
-
-

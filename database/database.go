@@ -1,13 +1,13 @@
 package database
 
 import (
-	"log"
-	"os"
-	"fmt"
 	"e-commerce-api/models"
+	"fmt"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 var (
