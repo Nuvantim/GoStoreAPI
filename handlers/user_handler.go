@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"e-commerce-api/service"
 	"github.com/gofiber/fiber/v3"
+	"toy-store-api/service"
 )
 
 // validate data
@@ -14,23 +14,24 @@ var user struct {
 	Phone    uint   `json:"phone" validate:"required"`
 }
 
+
 func GetUser(c fiber.Ctx) error {
 	user := service.GetUser()
-	return c.Status(200).JSON(user)
-}
-
-func FindUser(c fiber.Ctx) error {
-	id := c.Params("id")
-	user := service.FindUser(id)
-	return c.Status(200).JSON(user)
+	return c.Status(400).JSON(user)
 }
 
 func RegisterUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	users := service.RegisterUser(user.Name, user.Email, user.Password, user.Address, user.Phone)
+	users := service.RegisterUser(user.Name,user.Email,user.Password,user.Address,user.Phone)
 	return c.Status(200).JSON(users)
+}
+
+func FindUser(c fiber.Ctx) error {
+	id := c.Params("id")
+	user := service.FindUser(id)
+	return c.Status(200).JSON(user)
 }
 
 func UpdateUser(c fiber.Ctx) error {

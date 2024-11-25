@@ -1,22 +1,10 @@
 package service
 
 import (
-	"e-commerce-api/database"
-	"e-commerce-api/models"
 	"golang.org/x/crypto/bcrypt"
+	"toy-store-api/database"
+	"toy-store-api/models"
 )
-
-func GetUser() []models.User {
-	var user []models.User
-	database.DBConn.Find(&user)
-	return user
-}
-
-func FindUser(id string) models.User {
-	var user models.User
-	database.DBConn.Find(&user, id)
-	return user
-}
 
 func RegisterUser(name, email, password, address string, phone uint) models.User {
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -29,6 +17,18 @@ func RegisterUser(name, email, password, address string, phone uint) models.User
 		Phone:    phone,
 	}
 	database.DBConn.Create(&user)
+	return user
+}
+
+func GetUser() []models.User {
+	var user []models.User
+	database.DBConn.Find(&user)
+	return user
+}
+
+func FindUser(id string) models.User {
+	var user models.User
+	database.DBConn.Find(&user, id)
 	return user
 }
 

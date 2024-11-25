@@ -1,12 +1,12 @@
 package main
 
 import (
-	"log"
-
-	"e-commerce-api/config"
-	"e-commerce-api/database"
-	"e-commerce-api/routes"
 	"github.com/gofiber/fiber/v3"
+	"log"
+	"os"
+	"toy-store-api/config"
+	"toy-store-api/database"
+	"toy-store-api/routes"
 )
 
 func main() {
@@ -22,6 +22,6 @@ func main() {
 		return c.SendStatus(404) // => 404 "Not Found"
 	})
 
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(os.Getenv("PORT")))
 
 }

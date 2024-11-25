@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"e-commerce-api/models"
-	"e-commerce-api/service"
 	"github.com/gofiber/fiber/v3"
+	"toy-store-api/models"
+	"toy-store-api/service"
 )
 
 func GetCategory(c fiber.Ctx) error {

@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"e-commerce-api/database"
-	"e-commerce-api/models"
-	"e-commerce-api/service"
 	"github.com/gofiber/fiber/v3"
+	"toy-store-api/database"
+	"toy-store-api/models"
+	"toy-store-api/service"
 )
 
 func GetProduct(c fiber.Ctx) error {

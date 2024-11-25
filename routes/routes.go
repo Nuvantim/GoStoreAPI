@@ -1,16 +1,21 @@
 package routes
 
 import (
-	"e-commerce-api/handlers"
 	"github.com/gofiber/fiber/v3"
+	"toy-store-api/handlers"
 )
 
 func Setup(app *fiber.App) {
+
+	//auth Route
+	app.Post("/login", handler.Login)
+	app.Post("/logout", handler.Logout)
+
 	// User Route
 	app.Get("/user", handler.GetUser)
+	app.Post("/register", handler.RegisterUser)
 	app.Get("/user/:id", handler.FindUser)
 	app.Put("/user/update/:id", handler.UpdateUser)
-	app.Post("/register", handler.RegisterUser)
 	app.Delete("/user/delete/:id", handler.DeleteUser)
 
 	// Category Route

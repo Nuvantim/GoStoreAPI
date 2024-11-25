@@ -1,8 +1,8 @@
 package service
 
 import (
-	"e-commerce-api/database"
-	"e-commerce-api/models"
+	"toy-store-api/database"
+	"toy-store-api/models"
 )
 
 // get category
