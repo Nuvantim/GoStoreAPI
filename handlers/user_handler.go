@@ -14,7 +14,6 @@ var user struct {
 	Phone    uint   `json:"phone" validate:"required"`
 }
 
-
 func GetUser(c fiber.Ctx) error {
 	user := service.GetUser()
 	return c.Status(400).JSON(user)
@@ -24,7 +23,7 @@ func RegisterUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	users := service.RegisterUser(user.Name,user.Email,user.Password,user.Address,user.Phone)
+	users := service.RegisterUser(user.Name, user.Email, user.Password, user.Address, user.Phone)
 	return c.Status(200).JSON(users)
 }
 

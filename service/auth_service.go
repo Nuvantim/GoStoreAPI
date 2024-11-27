@@ -4,18 +4,14 @@ import (
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"os"
 	"time"
+	"toy-store-api/database"
+	"toy-store-api/models"
 )
 
-// Secret key used for JWT signing
-
 var jwtSecret = []byte(os.Getenv("API_KEY"))
-
-// User credentials - Replace with database calls
-var users = map[string]string{
-	"krisnayoga319@gmail.com": "$2a$10$yqwSo7kcWqoEr7Xff4806urpVhTSSzjExdwKple.e7OaDtYZ2DMe", // bcrypt password hash for 'password'
-}
 
 // Claims for JWT
 type Claims struct {
@@ -25,20 +21,23 @@ type Claims struct {
 
 // Login authenticates the user and returns a JWT token
 func Login(email, password string) (string, error) {
-	// Check if email exists
-	hashedPassword, exists := users[email]
-	if !exists {
+	// Find user in the database
+	var user models.User
+	err := database.DB.Where("email = ?", email).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errors.New("invalid email or password")
+	} else if err != nil {
+		return "", err
 	}
 
 	// Compare the password
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return "", errors.New("invalid email or password")
 	}
 
 	// Create JWT token
-	token, err := CreateToken(email)
+	token, err := CreateToken(user.Email)
 	if err != nil {
 		return "", err
 	}
@@ -57,21 +56,4 @@ func CreateToken(email string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtSecret)
-}
-
-// ParseToken parses and validates the JWT token
-func ParseToken(tokenString string) (*Claims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Check if token is valid
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
-		return claims, nil
-	} else {
-		return nil, errors.New("invalid token")
-	}
 }

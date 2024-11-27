@@ -14,7 +14,7 @@ func main() {
 
 	app := fiber.New(config.FiberConfig())
 
-	config.MiddlewareSetup(app)
+	config.MiddlewareConfig(app)
 
 	routes.Setup(app)
 

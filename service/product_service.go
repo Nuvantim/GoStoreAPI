@@ -8,39 +8,39 @@ import (
 // get category
 func GetAllProduct() []models.Product {
 	var product []models.Product
-	database.DBConn.Preload("Category").Find(&product)
+	database.DB.Preload("Category").Find(&product)
 	return product
 }
 
 // get Product from id
 func GetProductById(id string) models.Product {
 	var product models.Product
-	database.DBConn.Find(&product, id)
+	database.DB.Find(&product, id)
 	return product
 }
 
 // create Product
 func CreateProduct(product models.Product) models.Product {
-	database.DBConn.Create(&product)
-	database.DBConn.Preload("Category").First(&product, product.ID)
+	database.DB.Create(&product)
+	database.DB.Preload("Category").First(&product, product.ID)
 	return product
 }
 
 // update category
 func UpdateProduct(id string, product_request models.Product) models.Product {
 	var product models.Product
-	database.DBConn.First(&product, id)
+	database.DB.First(&product, id)
 	product.Name = product_request.Name
-	database.DBConn.Save(&product)
+	database.DB.Save(&product)
 	return product
 }
 
 // delete product
 func DeleteProduct(id string) error {
 	var product models.Product
-	if err := database.DBConn.First(&product, id).Error; err != nil {
+	if err := database.DB.First(&product, id).Error; err != nil {
 		return err
 	}
-	database.DBConn.Delete(&product)
+	database.DB.Delete(&product)
 	return nil
 }

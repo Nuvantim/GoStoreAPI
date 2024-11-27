@@ -22,7 +22,7 @@ func FiberConfig() fiber.Config {
 }
 
 // MiddlewareSetup menyiapkan semua middleware keamanan
-func MiddlewareSetup(app *fiber.App) {
+func MiddlewareConfig(app *fiber.App) {
 	// Recover dari panic
 	app.Use(recover.New())
 

@@ -24,7 +24,7 @@ func CreateProduct(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 	var category models.Category
-	if err := database.DBConn.First(&category, product.CategoryID).Error; err != nil {
+	if err := database.DB.First(&category, product.CategoryID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Category not found",
 		})

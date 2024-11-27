@@ -16,26 +16,26 @@ func RegisterUser(name, email, password, address string, phone uint) models.User
 		Address:  address,
 		Phone:    phone,
 	}
-	database.DBConn.Create(&user)
+	database.DB.Create(&user)
 	return user
 }
 
 func GetUser() []models.User {
 	var user []models.User
-	database.DBConn.Find(&user)
+	database.DB.Find(&user)
 	return user
 }
 
 func FindUser(id string) models.User {
 	var user models.User
-	database.DBConn.Find(&user, id)
+	database.DB.Find(&user, id)
 	return user
 }
 
 func UpdateUser(id, name, email, password, address string, phone uint) models.User {
 	var user models.User
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	database.DBConn.First(&user, id)
+	database.DB.First(&user, id)
 	//declare data
 	users := models.User{
 		Name:     name,
@@ -50,15 +50,15 @@ func UpdateUser(id, name, email, password, address string, phone uint) models.Us
 	user.Password = users.Password
 	user.Address = users.Address
 	user.Phone = users.Phone
-	database.DBConn.Save(&user)
+	database.DB.Save(&user)
 	return user
 }
 
 func DeleteUser(id string) error {
 	var user models.User
-	if err := database.DBConn.First(&user, id).Error; err != nil {
+	if err := database.DB.First(&user, id).Error; err != nil {
 		return err
 	}
-	database.DBConn.Delete(&user)
+	database.DB.Delete(&user)
 	return nil
 }

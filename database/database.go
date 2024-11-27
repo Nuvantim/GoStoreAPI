@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	DBConn *gorm.DB
+	DB *gorm.DB
 )
 
 // connectDb
@@ -44,6 +44,6 @@ func MysqlConnect() {
 	// db.AutoMigrate(&models.Chart{})
 	// db.AutoMigrate(&models.Paytment{})
 	// db.AutoMigrate(&models.Review{})
-	DBConn = db
+	DB = db
 
 }
