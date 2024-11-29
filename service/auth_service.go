@@ -13,19 +13,20 @@ import (
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))
 
-// Claims for JWT
+// / Update model Claims to include UserID
 type Claims struct {
-	Email string `json:"email"`
+	UserID uint   `json:"user_id"` // Tambahkan User ID
+	Email  string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-// Login authenticates the user and returns a JWT token
+// Perbarui fungsi Login
 func Login(email, password string) (string, error) {
 	// Find user in the database
 	var user models.User
 	err := database.DB.Where("email = ?", email).First(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errors.New("invalid email or password")
+		return "", errors.New("Internal Server Error")
 	} else if err != nil {
 		return "", err
 	}
@@ -36,8 +37,8 @@ func Login(email, password string) (string, error) {
 		return "", errors.New("invalid email or password")
 	}
 
-	// Create JWT token
-	token, err := CreateToken(user.Email)
+	// Create JWT token with User ID
+	token, err := CreateToken(user.ID, user.Email)
 	if err != nil {
 		return "", err
 	}
@@ -45,10 +46,10 @@ func Login(email, password string) (string, error) {
 	return token, nil
 }
 
-// CreateToken generates a JWT token for the authenticated user
-func CreateToken(email string) (string, error) {
+func CreateToken(userID uint, email string) (string, error) {
 	claims := Claims{
-		Email: email,
+		UserID: userID, // Tambahkan User ID
+		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 		},

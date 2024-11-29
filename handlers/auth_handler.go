@@ -20,8 +20,8 @@ func Login(c fiber.Ctx) error {
 		})
 	}
 
-	// Authenticate user and generate access token (no refresh token)
-	accessToken, err := service.Login(req.Email, req.Password) // Expecting only 2 return values
+	// Authenticate user and generate access token
+	accessToken, err := service.Login(req.Email, req.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Invalid email or password",
@@ -38,8 +38,10 @@ func Login(c fiber.Ctx) error {
 		Path:     "/",
 	})
 
+	// Return success message
 	return c.JSON(fiber.Map{
 		"message": "Login successful",
+		"token":   accessToken, // Opsional: Kirim token ke client (jika diperlukan)
 	})
 }
 

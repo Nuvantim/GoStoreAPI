@@ -2,6 +2,8 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"toy-store-api/database"
+	"toy-store-api/models"
 	"toy-store-api/service"
 )
 
@@ -12,6 +14,22 @@ var user struct {
 	Password string `json:"password" validate:"required"`
 	Address  string `json:"address" validate:"required"`
 	Phone    uint   `json:"phone" validate:"required"`
+}
+
+func GetProfile(c fiber.Ctx) error {
+	// Ambil User ID dari c.Locals
+	userID := c.Locals("user_id")
+	if userID == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	// Query profil pengguna dari database
+	var user models.User
+	if err := database.DB.First(&user, userID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	return c.JSON(user)
 }
 
 func GetUser(c fiber.Ctx) error {

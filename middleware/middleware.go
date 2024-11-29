@@ -4,13 +4,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
+// Setup is the middleware that sets up JWT authentication
 func Setup() fiber.Handler {
-	return func (c fiber.Ctx) error {
-		//jwt auth
-		if err := AuthAndRefreshMiddleware(c); err != nil{
-			return err
-		}
-		//next
-		return c.Next()
+	// Return a handler that uses JwtToken middleware
+	return func(c fiber.Ctx) error {
+		// Apply the JWT token middleware
+		return JwtToken()(c)
 	}
 }
