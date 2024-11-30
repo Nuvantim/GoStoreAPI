@@ -1,75 +1,48 @@
 package handler
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"net/http"
 	"toy-store-api/service"
+	"github.com/gofiber/fiber/v2"
 )
 
-// LoginHandler handles user login and sets cookies
-func Login(c fiber.Ctx) error {
-	// Struct for request body
-	type LoginRequest struct {
+// Fungsi untuk login atau refresh token secara otomatis
+func Login(c *fiber.Ctx) error {
+	// Ambil refresh token dari header jika ada
+	refreshToken := c.Get("Refresh-Token")
+	if refreshToken != "" {
+		// Jika ada refresh token, periksa dan buat access token baru
+		newAccessToken, err := service.RefreshAccessToken(refreshToken)
+		if err != nil {
+			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		// Kirim access token baru
+		return c.JSON(fiber.Map{
+			"access_token": newAccessToken,
+		})
+	}
+
+	// Jika tidak ada refresh token, lakukan login biasa
+	var request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
-	var req LoginRequest
-	if err := c.Bind().Body(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid request body",
-		})
+	// Bind JSON request ke struct
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	// Authenticate user and generate access token
-	accessToken, err := service.Login(req.Email, req.Password)
+	// Panggil service untuk login
+	accessToken, refreshToken, err := service.Login(request.Email, request.Password)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Invalid email or password",
-		})
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	// Set the access token in a cookie
-	c.Cookie(&fiber.Cookie{
-		Name:     "access_token",
-		Value:    accessToken,
-		HTTPOnly: true,
-		Secure:   true, // Set to true in production
-		SameSite: "Strict",
-		Path:     "/",
-	})
-
-	// Return success message
+	// Kirim access token dan refresh token
 	return c.JSON(fiber.Map{
-		"message": "Login successful",
-		"token":   accessToken, // Opsional: Kirim token ke client (jika diperlukan)
-	})
-}
-
-// LogoutHandler clears the access and refresh tokens from cookies
-func Logout(c fiber.Ctx) error {
-	// Clear the access token cookie
-	c.Cookie(&fiber.Cookie{
-		Name:     "access_token",
-		Value:    "",
-		HTTPOnly: true,
-		Secure:   true, // Set to true in production
-		SameSite: "Strict",
-		Path:     "/",
-		MaxAge:   -1, // Delete cookie
-	})
-
-	// Clear the refresh token cookie
-	c.Cookie(&fiber.Cookie{
-		Name:     "refresh_token",
-		Value:    "",
-		HTTPOnly: true,
-		Secure:   true, // Set to true in production
-		SameSite: "Strict",
-		Path:     "/",
-		MaxAge:   -1, // Delete cookie
-	})
-
-	return c.JSON(fiber.Map{
-		"message": "Logout successful",
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
 	})
 }
