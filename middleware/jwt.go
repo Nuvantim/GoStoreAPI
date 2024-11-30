@@ -4,16 +4,25 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"os"
+	"strings"
 	"toy-store-api/service"
 )
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))
 var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
 
-func AuthAndRefreshMiddleware(c fiber.Ctx) error {
-	accessToken := c.Cookies("access_token")
-	refreshToken := c.Cookies("refresh_token")
+func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
+	// Ambil token dari Authorization Header
+	authHeader := c.Get("Authorization")
+	var accessToken string
+	if strings.HasPrefix(authHeader, "Bearer ") {
+		accessToken = strings.TrimPrefix(authHeader, "Bearer ")
+	} else {
+		// Jika tidak ada header Authorization, coba ambil dari cookie
+		accessToken = c.Cookies("access_token")
+	}
 
+	// Cek validitas access token
 	if accessToken != "" {
 		token, err := jwt.ParseWithClaims(accessToken, &service.Claims{}, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
@@ -27,6 +36,8 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 		}
 	}
 
+	// Ambil refresh token dari cookie
+	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
 		refreshTokenClaims := &service.Claims{}
 		refreshTokenObj, err := jwt.ParseWithClaims(refreshToken, refreshTokenClaims, func(token *jwt.Token) (interface{}, error) {
@@ -34,11 +45,13 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 		})
 
 		if err == nil && refreshTokenObj.Valid {
+			// Buat token baru
 			newAccessToken, err := service.CreateToken(refreshTokenClaims.UserID, refreshTokenClaims.Email)
 			if err != nil {
-				return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate new access token")
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate new access token"})
 			}
 
+			// Set cookie untuk token baru
 			c.Cookie(&fiber.Cookie{
 				Name:     "access_token",
 				Value:    newAccessToken,
@@ -55,6 +68,6 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 		}
 	}
 
-	// Jika kedua token tidak valid, log unauthorized
+	// Jika kedua token tidak valid, kembalikan unauthorized
 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
 }
