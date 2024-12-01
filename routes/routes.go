@@ -24,7 +24,7 @@ func Setup(app *fiber.App) {
 	app.Delete("/user/:id", handler.DeleteUser)
 
 	// Category Route
-	app.Get("/category", middleware.Protected(), handler.GetCategory)
+	app.Get("/category", handler.GetCategory)
 	app.Get("/category/:id", handler.FindCategory)
 	app.Post("/category/store", handler.CreateCategory)
 	app.Put("/category/:id", handler.UpdateCategory)

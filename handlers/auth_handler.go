@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"github.com/gofiber/fiber/v3"
 	"net/http"
 	"toy-store-api/service"
-	"github.com/gofiber/fiber/v2"
 )
 
 // Fungsi untuk login atau refresh token secara otomatis
-func Login(c *fiber.Ctx) error {
+func Login(c fiber.Ctx) error {
 	// Ambil refresh token dari header jika ada
 	refreshToken := c.Get("Refresh-Token")
 	if refreshToken != "" {
@@ -30,7 +30,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Bind JSON request ke struct
-	if err := c.BodyParser(&request); err != nil {
+	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
@@ -40,9 +40,54 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	c.Cookie(&fiber.Cookie{
+		Name:     "access_token",
+		Value:    accessToken,
+		HTTPOnly: true,
+		Secure:   true, // Set to true in production
+		SameSite: "Strict",
+		Path:     "/",
+	})
+	c.Cookie(&fiber.Cookie{
+		Name:     "refresh_token",
+		Value:    refreshToken,
+		HTTPOnly: true,
+		Secure:   true, // Set to true in production
+		SameSite: "Strict",
+		Path:     "/",
+	})
+
 	// Kirim access token dan refresh token
 	return c.JSON(fiber.Map{
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
+	})
+}
+
+func Logout(c fiber.Ctx) error {
+	// Clear the access token cookie
+	c.Cookie(&fiber.Cookie{
+		Name:     "access_token",
+		Value:    "",
+		HTTPOnly: true,
+		Secure:   true, // Set to true in production
+		SameSite: "Strict",
+		Path:     "/",
+		MaxAge:   -1, // Delete cookie
+	})
+
+	// Clear the refresh token cookie
+	c.Cookie(&fiber.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		HTTPOnly: true,
+		Secure:   true, // Set to true in production
+		SameSite: "Strict",
+		Path:     "/",
+		MaxAge:   -1, // Delete cookie
+	})
+
+	return c.JSON(fiber.Map{
+		"message": "Logout successful",
 	})
 }

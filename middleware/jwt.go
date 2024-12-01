@@ -11,7 +11,7 @@ import (
 var jwtSecret = []byte(os.Getenv("API_KEY"))
 var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
 
-func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
+func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 	// Ambil token dari Authorization Header
 	authHeader := c.Get("Authorization")
 	var accessToken string
@@ -24,7 +24,8 @@ func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
 
 	// Cek validitas access token
 	if accessToken != "" {
-		token, err := jwt.ParseWithClaims(accessToken, &service.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		ClaimToken := &service.Claims{}
+		token, err := jwt.ParseWithClaims(accessToken, ClaimToken, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
 		})
 		if err == nil && token.Valid {

@@ -9,6 +9,6 @@ func Setup() fiber.Handler {
 	// Return a handler that uses JwtToken middleware
 	return func(c fiber.Ctx) error {
 		// Apply the JWT token middleware
-		return JwtToken()(c)
+		return AuthAndRefreshMiddleware(c)
 	}
 }

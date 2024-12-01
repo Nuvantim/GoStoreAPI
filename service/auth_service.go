@@ -64,7 +64,7 @@ func CreateToken(userID uint, email string) (string, error) {
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)), // Access token berlaku 2 jam
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Second)), // Access token berlaku 2 jam
 		},
 	}
 
@@ -78,7 +78,7 @@ func CreateRefreshToken(userID uint, email string) (string, error) {
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * 24 * time.Hour)), // Refresh token berlaku 30 hari
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Minute)), // Refresh token berlaku 30 hari
 		},
 	}
 
