@@ -7,11 +7,12 @@ import (
 	"gorm.io/gorm"
 	"os"
 	"time"
-	"toy-store-api/database"
-	"toy-store-api/models"
+	"api/database"
+	"api/models"
 )
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))
+var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
 
 // Claims untuk Access Token
 type Claims struct {
@@ -64,7 +65,7 @@ func CreateToken(userID uint, email string) (string, error) {
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Second)), // Access token berlaku 2 jam
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)), // Access token berlaku 2 jam
 		},
 	}
 
@@ -78,12 +79,12 @@ func CreateRefreshToken(userID uint, email string) (string, error) {
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Minute)), // Refresh token berlaku 30 hari
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // Refresh token berlaku 30 hari
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(refreshSecret)
 }
 
 // Fungsi untuk memperbarui access token menggunakan refresh token

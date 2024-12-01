@@ -1,4 +1,4 @@
-module toy-store-api
+module api
 
 go 1.23.1
 

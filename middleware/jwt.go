@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"os"
 	"strings"
-	"toy-store-api/service"
+	"api/service"
 )
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))
@@ -40,7 +40,7 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 	// Ambil refresh token dari cookie
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
-		refreshTokenClaims := &service.Claims{}
+		refreshTokenClaims := &service.RefreshClaims{}
 		refreshTokenObj, err := jwt.ParseWithClaims(refreshToken, refreshTokenClaims, func(token *jwt.Token) (interface{}, error) {
 			return refreshSecret, nil
 		})

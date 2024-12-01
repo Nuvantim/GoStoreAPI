@@ -2,9 +2,9 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"toy-store-api/database"
-	"toy-store-api/models"
-	"toy-store-api/service"
+	"api/database"
+	"api/models"
+	"api/service"
 )
 
 // validate data
@@ -52,7 +52,12 @@ func FindUser(c fiber.Ctx) error {
 }
 
 func UpdateUser(c fiber.Ctx) error {
+	id_user := c.Locals("user_id")
 	id := c.Params("id")
+	if id != id_user {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+	
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}

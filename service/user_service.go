@@ -2,8 +2,8 @@ package service
 
 import (
 	"golang.org/x/crypto/bcrypt"
-	"toy-store-api/database"
-	"toy-store-api/models"
+	"api/database"
+	"api/models"
 )
 
 func RegisterUser(name, email, password, address string, phone uint) models.User {
@@ -34,22 +34,16 @@ func FindUser(id string) models.User {
 
 func UpdateUser(id, name, email, password, address string, phone uint) models.User {
 	var user models.User
-	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	database.DB.First(&user, id)
-	//declare data
-	users := models.User{
-		Name:     name,
-		Email:    email,
-		Password: string(hashPassword),
-		Address:  address,
-		Phone:    phone,
+	
+	user.Name = name
+	user.Email = email
+	user.Address = address
+	user.Phone = phone
+	if password != "" {
+		hashPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		user.Password = string(hashPassword)
 	}
-	//put
-	user.Name = users.Name
-	user.Email = users.Email
-	user.Password = users.Password
-	user.Address = users.Address
-	user.Phone = users.Phone
 	database.DB.Save(&user)
 	return user
 }

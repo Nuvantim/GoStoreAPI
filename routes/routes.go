@@ -2,13 +2,14 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"toy-store-api/handlers"
-	"toy-store-api/middleware"
+	"api/handlers"
+	"api/middleware"
 )
 
 func Setup(app *fiber.App) {
 
 	//auth Route
+	app.Post("/register", handler.RegisterUser)
 	app.Post("/login", handler.Login)
 	app.Post("/logout", handler.Logout)
 
@@ -18,7 +19,6 @@ func Setup(app *fiber.App) {
 	// User Route
 	app.Get("/user", handler.GetUser)
 	app.Get("/profile", handler.GetProfile)
-	app.Post("/register", handler.RegisterUser)
 	app.Get("/user/:id", handler.FindUser)
 	app.Put("/user/:id", handler.UpdateUser)
 	app.Delete("/user/:id", handler.DeleteUser)

@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/gofiber/fiber/v3"
 	"net/http"
-	"toy-store-api/service"
+	"api/service"
 )
 
 // Fungsi untuk login atau refresh token secara otomatis
@@ -39,15 +39,7 @@ func Login(c fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
-
-	c.Cookie(&fiber.Cookie{
-		Name:     "access_token",
-		Value:    accessToken,
-		HTTPOnly: true,
-		Secure:   true, // Set to true in production
-		SameSite: "Strict",
-		Path:     "/",
-	})
+	
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken,

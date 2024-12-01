@@ -4,9 +4,9 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"log"
 	"os"
-	"toy-store-api/config"
-	"toy-store-api/database"
-	"toy-store-api/routes"
+	"api/config"
+	"api/database"
+	"api/routes"
 )
 
 func main() {
