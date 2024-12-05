@@ -1,12 +1,12 @@
 package handler
 
 import(
-	"api/models"
 	"github.com/gofiber/fiber/v3"
+	"api/service"
 )
 
 func GetCart (c fiber.Ctx) error {
-	id := c.Local("user_id")
+	id := c.Locals("user_id").(uint)
 	cart := service.GetCart(id)
 	return c.Status(200).JSON(cart)
 }

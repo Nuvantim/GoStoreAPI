@@ -5,8 +5,8 @@ import (
 	"api/database"
 )
 
-func GetCart(id string) models.Cart{
+func GetCart(id uint) models.Cart{
 	var cart models.Cart
-	database.DB.Preload("CartItem").Find(&id, ID)
+	database.DB.Where("user_id = ?", id).Preload("CartItem").Find(&cart)
 	return cart
 }

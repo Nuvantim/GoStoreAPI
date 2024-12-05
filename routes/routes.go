@@ -37,4 +37,7 @@ func Setup(app *fiber.App) {
 	app.Put("/product/:id", handler.UpdateProduct)
 	app.Delete("/product/:id", handler.DeleteProduct)
 
+	//Cart Route
+	app.Get("/cart", handler.GetCart)
+
 }

@@ -5,21 +5,21 @@ import (
 )
 
 type Cart struct {
-	ID        uint `gorm:"primaryKey"`
+	ID        uint        `gorm:"primaryKey"`
 	UserID    uint
-	User      User       `gorm:"foreignKey:UserID"`
-	Items     []CartItem `gorm:"foreignKey:ChartID"`
+	User      User        `gorm:"foreignKey:UserID"`
+	Items     []CartItem  `gorm:"foreignKey:CartID"`
 	CreatedAt time.Time
-	UpdateAt  time.Time
+	UpdatedAt time.Time
 }
 
 type CartItem struct {
-	ID        uint `gorm:primaryKey`
+	ID        uint        `gorm:"primaryKey"`
 	CartID    uint
-	Cart      Cart `gorm:"foreignKey:CartID"`
+	Cart      Cart        `gorm:"foreignKey:CartID"`
 	ProductID uint
-	Product   Product `gorm:"foreignKey:ProductID"`
+	Product   Product     `gorm:"foreignKey:ProductID"`
 	Quantity  uint
 	CreatedAt time.Time
-	UpdateAt  time.Time
+	UpdatedAt time.Time 
 }
