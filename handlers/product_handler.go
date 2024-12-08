@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"github.com/gofiber/fiber/v3"
 	"api/database"
 	"api/models"
 	"api/service"
+	"github.com/gofiber/fiber/v3"
 )
 
 func GetProduct(c fiber.Ctx) error {
@@ -14,7 +14,7 @@ func GetProduct(c fiber.Ctx) error {
 
 func FindProduct(c fiber.Ctx) error {
 	id := c.Params("id")
-	product := service.GetProductById(id)
+	product := service.FindProduct(id)
 	return c.Status(200).JSON(product)
 }
 

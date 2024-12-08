@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"github.com/gofiber/fiber/v3"
 	"api/database"
 	"api/models"
 	"api/service"
+	"github.com/gofiber/fiber/v3"
 )
 
 // validate data
@@ -38,10 +38,11 @@ func GetUser(c fiber.Ctx) error {
 }
 
 func RegisterUser(c fiber.Ctx) error {
-	if err := c.Bind().Body(&user); err != nil {
+	var users models.User
+	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	users := service.RegisterUser(user.Name, user.Email, user.Password, user.Address, user.Phone)
+	service.RegisterUser(users)
 	return c.Status(200).JSON(users)
 }
 
@@ -52,16 +53,17 @@ func FindUser(c fiber.Ctx) error {
 }
 
 func UpdateUser(c fiber.Ctx) error {
-	id_user := c.Locals("user_id")
+	var users models.User
+	id_user := c.Locals("user_id").(string)
 	id := c.Params("id")
 	if id != id_user {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
 	}
-	
-	if err := c.Bind().Body(&user); err != nil {
+
+	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	users := service.UpdateUser(id, user.Name, user.Email, user.Password, user.Address, user.Phone)
+	service.UpdateUser(id, users)
 	return c.Status(200).JSON(users)
 }
 

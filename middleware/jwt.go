@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"api/service"
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"os"
 	"strings"
-	"api/service"
 )
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))

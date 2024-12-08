@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v3"
-	"log"
-	"os"
 	"api/config"
 	"api/database"
 	"api/routes"
+	"github.com/gofiber/fiber/v3"
+	"log"
+	"os"
 )
 
 func main() {

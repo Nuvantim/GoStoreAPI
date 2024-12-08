@@ -13,7 +13,7 @@ func GetAllProduct() []models.Product {
 }
 
 // get Product from id
-func GetProductById(id string) models.Product {
+func FindProduct(id string) models.Product {
 	var product models.Product
 	database.DB.Find(&product, id)
 	return product

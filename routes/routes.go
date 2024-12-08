@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v3"
 	"api/handlers"
 	"api/middleware"
+	"github.com/gofiber/fiber/v3"
 )
 
 func Setup(app *fiber.App) {
@@ -39,5 +39,6 @@ func Setup(app *fiber.App) {
 
 	//Cart Route
 	app.Get("/cart", handler.GetCart)
+	app.Post("/cart/store", handler.AddCart)
 
 }

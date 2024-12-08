@@ -1,14 +1,14 @@
 package service
 
 import (
+	"api/database"
+	"api/models"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"os"
 	"time"
-	"api/database"
-	"api/models"
 )
 
 var jwtSecret = []byte(os.Getenv("API_KEY"))

@@ -1,13 +1,13 @@
 package database
 
 import (
+	"api/models"
 	"fmt"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 	"os"
-	"api/models"
 )
 
 var (
@@ -42,7 +42,6 @@ func MysqlConnect() {
 	db.AutoMigrate(&models.Category{})
 	// db.AutoMigrate(&models.Order{})
 	db.AutoMigrate(&models.Cart{})
-	db.AutoMigrate(&models.CartItem{})
 	// db.AutoMigrate(&models.Paytment{})
 	// db.AutoMigrate(&models.Review{})
 	DB = db

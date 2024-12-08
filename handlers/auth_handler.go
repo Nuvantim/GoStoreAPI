@@ -1,15 +1,15 @@
 package handler
 
 import (
+	"api/service"
 	"github.com/gofiber/fiber/v3"
 	"net/http"
-	"api/service"
 )
 
 // Fungsi untuk login atau refresh token secara otomatis
 func Login(c fiber.Ctx) error {
 	// Ambil refresh token dari header jika ada
-	refreshToken := c.Get("Refresh-Token")
+	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
 		// Jika ada refresh token, periksa dan buat access token baru
 		newAccessToken, err := service.RefreshAccessToken(refreshToken)
@@ -39,7 +39,7 @@ func Login(c fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
-	
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken,
