@@ -11,7 +11,7 @@ func GetCart(id int) models.Cart {
 	return cart
 }
 
-func FindCart(id int) models.Cart {
+func FindCart(id string) models.Cart {
 	var cart models.Cart
 	database.DB.First(&cart, id)
 	return cart
