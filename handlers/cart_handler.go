@@ -7,7 +7,7 @@ import (
 )
 
 func GetCart(c fiber.Ctx) error {
-	id := c.Locals("user_id").(int)
+	id := c.Locals("user_id").(uint)
 	cart := service.GetCart(id)
 	return c.Status(200).JSON(cart)
 }
@@ -20,21 +20,21 @@ func FindCart(c fiber.Ctx) error {
 
 func AddCart(c fiber.Ctx) error {
 	var cart models.Cart
-	id_user := c.Locals("user_id").(int)
+	id_user := c.Locals("user_id").(uint)
 
 	if err := c.Bind().Body(&cart); err != nil {
 		return c.Status(400).JSON(err.Error)
 	}
 	//check product
-	var product = service.FindProduct(string(cart.ProductID))
+	var product = service.FindProduct(uint(cart.ProductID))
 	//check product
-	if int(product.Stock) == 0 {
+	if uint (product.Stock) < 1 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Stock Product is empty",
 		})
 	}
 
-	cost := product.Price
+	var cost uint= product.Price
 
 	carts := service.AddCart(cart, id_user, cost)
 	return c.Status(200).JSON(carts)
@@ -42,11 +42,14 @@ func AddCart(c fiber.Ctx) error {
 
 func UpdateCart(c fiber.Ctx) error {
 
-	var id_cart = c.Params("id")
 	var user_id = c.Locals("id_user")
 
+	var cart models.Cart
+	if err := c.Bind().Body(&cart); err != nil {
+		return c.Status(400).JSON(err.Error)
+	}
 	//check cart id
-	carts := service.FindCart(id_cart)
+	carts := service.FindCart(string(cart.ID))
 	// if err != nil {
 	// 	c.Status(404).JSON(fiber.Map{
 	// 		"message": "Cart Not Found",
@@ -58,21 +61,15 @@ func UpdateCart(c fiber.Ctx) error {
 		})
 	}
 	//check product
-	product := service.FindProduct(string(carts.ProductID))
+	product := service.FindProduct(uint(carts.ProductID))
 	// if err != nil {
 	// 	c.Status(404).JSON(fiber.Map{
 	// 		"message": "Product Not Found",
 	// 	})
 	// }
 
-	//body request
-	var cart models.Cart
-	if err := c.Bind().Body(&cart); err != nil {
-		return c.Status(400).JSON(err.Error)
-	}
-
-	var cost int
-	if carts.Quantity < product.Stock {
+	var cost uint
+	if cart.Quantity < product.Stock {
 		cost = cart.Quantity * product.Price
 	} else {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -80,7 +77,7 @@ func UpdateCart(c fiber.Ctx) error {
 		})
 	}
 	
-	cart_update := service.UpdateCart(cart, cost, cart_ID)
+	cart_update := service.UpdateCart(cart, cost)
 	return c.Status(200).JSON(cart_update)
 
 }

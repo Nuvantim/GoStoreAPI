@@ -13,9 +13,9 @@ func GetAllProduct() []models.Product {
 }
 
 // get Product from id
-func FindProduct(id string) models.Product {
+func FindProduct(id uint) models.Product {
 	var product models.Product
-	database.DB.Find(&product, id)
+	database.DB.First(&product, id)
 	return product
 }
 

@@ -5,7 +5,7 @@ import (
 	"api/models"
 )
 
-func GetCart(id int) models.Cart {
+func GetCart(id uint) models.Cart {
 	var cart models.Cart
 	database.DB.Where("user_id = ?", id).Preload("Product").Find(&cart)
 	return cart
@@ -17,7 +17,7 @@ func FindCart(id string) models.Cart {
 	return cart
 }
 
-func AddCart(cart_data models.Cart, user_id, cost int) models.Cart {
+func AddCart(cart_data models.Cart, user_id, cost uint) models.Cart {
 	cart := models.Cart{
 		UserID:     user_id,
 		ProductID:  cart_data.ProductID,
@@ -28,9 +28,9 @@ func AddCart(cart_data models.Cart, user_id, cost int) models.Cart {
 	return cart
 }
 
-func UpdateCart(cart_data models.Cart, cost, id int) models.Cart {
+func UpdateCart(cart_data models.Cart, cost uint) models.Cart {
 	var cart models.Cart
-	database.DB.First(&cart, id)
+	database.DB.First(&cart, cart_data.ID)
 	cart.Quantity = cart_data.Quantity
 	cart.Total_Cost = cost
 	database.DB.Save(&cart)

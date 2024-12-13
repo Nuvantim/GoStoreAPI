@@ -5,6 +5,7 @@ import (
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"strconv"
 )
 
 func GetProduct(c fiber.Ctx) error {
@@ -13,8 +14,9 @@ func GetProduct(c fiber.Ctx) error {
 }
 
 func FindProduct(c fiber.Ctx) error {
-	id := c.Params("id")
-	product := service.FindProduct(id)
+	id,_ := strconv.Atoi(c.Params("id"))
+	product_id := uint(id)
+	product := service.FindProduct(product_id)
 	return c.Status(200).JSON(product)
 }
 
