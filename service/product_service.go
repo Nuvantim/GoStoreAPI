@@ -15,7 +15,7 @@ func GetAllProduct() []models.Product {
 // get Product from id
 func FindProduct(id uint) models.Product {
 	var product models.Product
-	database.DB.First(&product, id)
+	database.DB.Preload("Category").First(&product, id)
 	return product
 }
 
@@ -31,7 +31,12 @@ func UpdateProduct(id string, product_request models.Product) models.Product {
 	var product models.Product
 	database.DB.First(&product, id)
 	product.Name = product_request.Name
+	product.Description = product_request.Description
+	product.Price = product_request.Price
+	product.Stock = product_request.Stock
+	product.CategoryID = product_request.CategoryID
 	database.DB.Save(&product)
+	database.DB.Preload("Category").First(&product, product.ID)
 	return product
 }
 

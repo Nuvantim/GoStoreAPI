@@ -41,8 +41,8 @@ func UpdateProduct(c fiber.Ctx) error {
 	if err := c.Bind().Body(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	service.UpdateProduct(id, product)
-	return c.Status(200).JSON(product)
+	products := service.UpdateProduct(id, product)
+	return c.Status(200).JSON(products)
 }
 
 func DeleteProduct(c fiber.Ctx) error {

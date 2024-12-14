@@ -28,13 +28,13 @@ func AddCart(c fiber.Ctx) error {
 	//check product
 	var product = service.FindProduct(uint(cart.ProductID))
 	//check product
-	if uint (product.Stock) < 1 {
+	if uint(product.Stock) < 1 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Stock Product is empty",
 		})
 	}
 
-	var cost uint= product.Price
+	var cost uint = product.Price
 
 	carts := service.AddCart(cart, id_user, cost)
 	return c.Status(200).JSON(carts)
@@ -49,7 +49,7 @@ func UpdateCart(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error)
 	}
 	//check cart id
-	carts := service.FindCart(string(cart.ID))
+	carts := service.FindCart(uint(cart.ID))
 	// if err != nil {
 	// 	c.Status(404).JSON(fiber.Map{
 	// 		"message": "Cart Not Found",
@@ -69,14 +69,14 @@ func UpdateCart(c fiber.Ctx) error {
 	// }
 
 	var cost uint
-	if cart.Quantity < product.Stock {
+	if uint(cart.Quantity) < uint(product.Stock) {
 		cost = cart.Quantity * product.Price
 	} else {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Stock is not compatible",
 		})
 	}
-	
+
 	cart_update := service.UpdateCart(cart, cost)
 	return c.Status(200).JSON(cart_update)
 

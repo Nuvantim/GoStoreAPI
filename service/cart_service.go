@@ -11,7 +11,7 @@ func GetCart(id uint) models.Cart {
 	return cart
 }
 
-func FindCart(id string) models.Cart {
+func FindCart(id uint) models.Cart {
 	var cart models.Cart
 	database.DB.First(&cart, id)
 	return cart
@@ -34,6 +34,7 @@ func UpdateCart(cart_data models.Cart, cost uint) models.Cart {
 	cart.Quantity = cart_data.Quantity
 	cart.Total_Cost = cost
 	database.DB.Save(&cart)
+	database.DB.Preload("Product").First(&cart, cart.ID)
 	return cart
 
 }
