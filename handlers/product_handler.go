@@ -14,9 +14,8 @@ func GetProduct(c fiber.Ctx) error {
 }
 
 func FindProduct(c fiber.Ctx) error {
-	id,_ := strconv.Atoi(c.Params("id"))
-	product_id := uint(id)
-	product := service.FindProduct(product_id)
+	id, _ := strconv.Atoi(c.Params("id"))
+	product := service.FindProduct(uint(id))
 	return c.Status(200).JSON(product)
 }
 

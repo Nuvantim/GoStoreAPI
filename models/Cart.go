@@ -5,8 +5,8 @@ import (
 )
 
 type Cart struct {
-	ID         int     `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	UserID     uint    `json:"user_id"`
+	ID     uint  `json:"id" gorm:"PrimaryKey;autoIncrement"`
+	UserID uint `json:"user_id"`
 	// User       User    `gorm:"foreignKey:UserID"`
 	ProductID  uint    `json:"product_id"`
 	Product    Product `json:"product" gorm:"foreignKey:ProductID"`

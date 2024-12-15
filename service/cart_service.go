@@ -13,7 +13,7 @@ func GetCart(id uint) models.Cart {
 
 func FindCart(id uint) models.Cart {
 	var cart models.Cart
-	database.DB.First(&cart, id)
+	database.DB.Preload("Product").First(&cart, id)
 	return cart
 }
 
@@ -28,13 +28,23 @@ func AddCart(cart_data models.Cart, user_id, cost uint) models.Cart {
 	return cart
 }
 
-func UpdateCart(cart_data models.Cart, cost uint) models.Cart {
+func UpdateCart(id uint, cart_data models.Cart, cost uint) models.Cart {
 	var cart models.Cart
-	database.DB.First(&cart, cart_data.ID)
+	database.DB.First(&cart, id)
 	cart.Quantity = cart_data.Quantity
 	cart.Total_Cost = cost
 	database.DB.Save(&cart)
 	database.DB.Preload("Product").First(&cart, cart.ID)
 	return cart
+
+}
+
+func DeleteCart(id uint) error{
+	var cart models.Cart
+	if err := database.DB.First(&cart, id).Error; err != nil {
+		return err
+	}
+	database.DB.Delete(&cart)
+	return nil
 
 }
