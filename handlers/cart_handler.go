@@ -42,62 +42,61 @@ func AddCart(c fiber.Ctx) error {
 }
 
 func UpdateCart(c fiber.Ctx) error {
+	// Ambil ID user dari context
+	// user_id := c.Locals("id_user").(uint)
 
-	user_id := c.Locals("id_user").(uint)
-	id, _ := strconv.Atoi(c.Params("id"))
-
+	// Bind body request ke struct cart
 	var cart models.Cart
 	if err := c.Bind().Body(&cart); err != nil {
-		return c.Status(400).JSON(err.Error)
-	}
-	//check cart id
-	carts := service.FindCart(uint(id))
-	if carts.ID == 0 {
-		c.Status(404).JSON(fiber.Map{
-			"message": "Cart Not Found",
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
 		})
 	}
 
-	if carts.UserID != user_id {
-		c.Status(401).JSON(fiber.Map{
-			"error": "Unauthorized",
-		})
-	}
-	//check product
+	// Cari cart berdasarkan ID
+	carts := service.FindCart(cart.ID)
+
+	// if carts.UserID != user_id {
+	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+	// 		"error": "Unauthorized",
+	// 	})
+	// }
 	product := service.FindProduct(carts.ProductID)
-	if product.ID == 0 {
-		c.Status(404).JSON(fiber.Map{
-			"message": "Product Not Found",
+
+	if cart.Quantity > product.Stock {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Insufficient stock",
 		})
 	}
 
-	// sum new cost
-	var cost uint
-	if uint(cart.Quantity) < uint(product.Stock) {
-		cost = cart.Quantity * product.Price
-	} else {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Stock is not Compatible",
-		})
-	}
+	
+	// Hitung total biaya
+	cost := cart.Quantity * product.Price
 
-	cart_update := service.UpdateCart(uint(id), cart, cost)
+	// Update cart
+	cart_update := service.UpdateCart(cart, cost)
+
 	return c.Status(200).JSON(cart_update)
 
 }
 
-func DeleteCart(c fiber.Ctx) error{
-	id,_ := strconv.Atoi(c.Params("id"))
-	user_id := c.Locals("id_user").(uint)
-	carts := service.FindCart(uint(id))
+// func DeleteCart(c fiber.Ctx) error {
+// 	id, _ := strconv.Atoi(c.Params("id"))
+// 	user_id := c.Locals("id_user").(uint)
+// 	carts := service.FindCart(uint(id))
 
-	if uint(carts.ID) != user_id {
-		return c.Status(401).JSON(fiber.Map{
-			"error" : "Unauthorized",
-		})
-	}
-	service.DeleteCart(uint(id))
-	return c.Status(200).JSON(fiber.Map{
-		"error": "Success",
-	})
-}
+// 	if carts.ID != user_id {
+// 		return c.Status(401).JSON(fiber.Map{
+// 			"error": "Unauthorized",
+// 		})
+// 	}
+// 	err := service.DeleteCart(uint(id))
+// 	if err != nil {
+// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+// 			"error": "Failed to delete cart",
+// 		})
+// 	}
+// 	return c.Status(200).JSON(fiber.Map{
+// 		"error": "Success",
+// 	})
+// }
