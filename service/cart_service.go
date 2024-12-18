@@ -17,24 +17,16 @@ func FindCart(id uint) models.Cart {
 	return cart
 }
 
-func AddCart(cart_data models.Cart, user_id, cost uint) models.Cart {
-	cart := models.Cart{
-		UserID:     user_id,
-		ProductID:  cart_data.ProductID,
-		Total_Cost: cost,
-	}
-	database.DB.Create(&cart)
-	database.DB.Preload("Product").First(&cart, cart.ID)
-	return cart
-}
-
 func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 	var cart models.Cart
+	// Ambil data cart berdasarkan ID
 	database.DB.First(&cart, cart_update.ID)
-	cart.Quantity = cart_update.Quantity
-	cart.Total_Cost = cost
-
-	database.DB.Update(&cart)
+	
+	// Update menggunakan Updates() untuk langsung mengubah kolom yang diperlukan
+	database.DB.Model(&cart).Updates(map[string]interface{}{
+		"Quantity":   cart_update.Quantity,
+		"Total_Cost": cost,
+	})
 
 	return cart
 }
