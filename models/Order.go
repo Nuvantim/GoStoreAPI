@@ -1,7 +1,7 @@
 package models
 
 type Order struct {
-	ID     uint `gorm:"primaryKey"`
+	ID     uint 			`gorm:"primaryKey"`
 	UserID uint
 	User   User        `gorm:"foreignKey;UserID"`
 	Total  float64     `gorm:"not null"`

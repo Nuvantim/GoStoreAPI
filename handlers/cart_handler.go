@@ -27,7 +27,7 @@ func AddCart(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error)
 	}
 	//check product
-	var product = service.FindProduct(uint(cart.ProductID))
+	var product = service.FindProduct(cart.ProductID)
 	//check product
 	if uint(product.Stock) < 1 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -69,7 +69,6 @@ func UpdateCart(c fiber.Ctx) error {
 		})
 	}
 
-	
 	// Hitung total biaya
 	cost := cart.Quantity * product.Price
 
@@ -80,23 +79,16 @@ func UpdateCart(c fiber.Ctx) error {
 
 }
 
-// func DeleteCart(c fiber.Ctx) error {
-// 	id, _ := strconv.Atoi(c.Params("id"))
-// 	user_id := c.Locals("id_user").(uint)
-// 	carts := service.FindCart(uint(id))
-
-// 	if carts.ID != user_id {
-// 		return c.Status(401).JSON(fiber.Map{
-// 			"error": "Unauthorized",
-// 		})
-// 	}
-// 	err := service.DeleteCart(uint(id))
-// 	if err != nil {
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 			"error": "Failed to delete cart",
-// 		})
-// 	}
-// 	return c.Status(200).JSON(fiber.Map{
-// 		"error": "Success",
-// 	})
-// }
+func DeleteCart(c fiber.Ctx) error {
+	id, _ := strconv.Atoi(c.Params("id"))
+	// user_id := c.Locals("id_user").(uint)
+	// if carts.ID != user_id {
+	// 	return c.Status(401).JSON(fiber.Map{
+	// 		"error": "Unauthorized",
+	// 	})
+	// }
+	service.DeleteCart(uint(id))
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Success",
+	})
+}
