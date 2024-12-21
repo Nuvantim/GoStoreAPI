@@ -55,3 +55,12 @@ func DeleteCart(input interface{}) error {
 		return fmt.Errorf("invalid input type")
 	}
 }
+
+func TransferCart (cart_id []uint) []models.Cart{
+	var cart models.Cart
+	if err := db.Where("id IN ?", cartIDs).Find(&carts).Error; err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	return cart
+}
