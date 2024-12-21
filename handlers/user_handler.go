@@ -42,8 +42,8 @@ func RegisterUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	service.RegisterUser(users)
-	return c.Status(200).JSON(users)
+	register := service.RegisterUser(users)
+	return c.Status(200).JSON(register)
 }
 
 func FindUser(c fiber.Ctx) error {

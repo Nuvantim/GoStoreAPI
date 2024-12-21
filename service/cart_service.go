@@ -14,15 +14,15 @@ func GetCart(id uint) []models.Cart {
 
 func FindCart(id uint) models.Cart {
 	var carts models.Cart
-	database.DB.Where("id = ?", id).Find(&carts)
+	database.DB.Where("id = ?", id).Preload("Product").Find(&carts)
 	return carts
 }
 
-func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart{
+func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart {
 	cart := models.Cart{
-			UserID: id_user,
-			ProductID: cart_data.ProductID,
-			Total_Cost: cost,
+		UserID:     id_user,
+		ProductID:  cart_data.ProductID,
+		Total_Cost: cost,
 	}
 	database.DB.Create(&cart)
 	database.DB.Preload("Product").First(&cart, cart.ID)
@@ -35,7 +35,7 @@ func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 	database.DB.First(&cart, cart_update.ID)
 
 	// Update menggunakan Updates() untuk langsung mengubah kolom yang diperlukan
-	database.DB.Model(&cart).Updates(map[string]interface{}{
+	database.DB.Model(&cart).Preload("Product").Updates(map[string]interface{}{
 		"Quantity":   cart_update.Quantity,
 		"Total_Cost": cost,
 	})
@@ -56,11 +56,8 @@ func DeleteCart(input interface{}) error {
 	}
 }
 
-func TransferCart (cart_id []uint) []models.Cart{
-	var cart models.Cart
-	if err := db.Where("id IN ?", cartIDs).Find(&carts).Error; err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+func TransferCart(cart_id []uint) []models.Cart {
+	var cart []models.Cart
+	database.DB.Where("id IN ?", cart_id).Find(&cart)
 	return cart
 }

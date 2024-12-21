@@ -17,6 +17,7 @@ func RegisterUser(users models.User) models.User {
 		Phone:    users.Phone,
 	}
 	database.DB.Create(&user)
+	database.DB.First(&user, user.ID)
 	return user
 }
 

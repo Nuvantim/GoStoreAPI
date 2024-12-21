@@ -14,8 +14,19 @@ func GetCart(c fiber.Ctx) error {
 }
 
 func FindCart(c fiber.Ctx) error {
+	user_id := c.Locals("user_id").(uint)
 	id, _ := strconv.Atoi(c.Params("id"))
 	cart := service.FindCart(uint(id))
+	if cart.ID == 0  {
+		return c.Status(404).JSON(fiber.Map{
+			"message" : "Cart Not Found",
+		})
+	}
+	if cart.UserID != user_id {
+		return c.Status(401).JSON(fiber.Map{
+			"message" : "Unauthorized",
+		})
+	}
 	return c.Status(200).JSON(cart)
 }
 
