@@ -6,17 +6,26 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
+/*
+HANDLER GET CATEGORY
+*/
 func GetCategory(c fiber.Ctx) error {
 	category := service.GetAllCategory()
 	return c.Status(200).JSON(category)
 }
 
+/*
+HANDLER FIND CATEGORY
+*/
 func FindCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	category := service.GetCategoryById(id)
 	return c.Status(200).JSON(category)
 }
 
+/*
+HANDLER CREATE CATEGORY
+*/
 func CreateCategory(c fiber.Ctx) error {
 	var category models.Category
 	if err := c.Bind().Body(&category); err != nil {
@@ -26,6 +35,9 @@ func CreateCategory(c fiber.Ctx) error {
 	return c.Status(200).JSON(categories)
 }
 
+/*
+HANDLER UPDATE CATEGORY
+*/
 func UpdateCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	var category models.Category
@@ -36,6 +48,9 @@ func UpdateCategory(c fiber.Ctx) error {
 	return c.Status(200).JSON(category)
 }
 
+/*
+HANDLER DELETE CATEGORY
+*/
 func DeleteCategory(c fiber.Ctx) error {
 	id := c.Params("id")
 	if err := service.DeleteCategory(id); err != nil {
