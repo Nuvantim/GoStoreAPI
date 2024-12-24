@@ -105,8 +105,8 @@ func UpdateCart(c fiber.Ctx) error {
 
 	// check product exist
 	if product.ID == 0 {
-		return c.Status(404).JSON(Fiber.Map{
-			"message" : "Product Not Found",
+		return c.Status(404).JSON(fiber.Map{
+			"message": "Product Not Found",
 		})
 	}
 

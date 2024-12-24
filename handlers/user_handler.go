@@ -57,7 +57,7 @@ func UpdateUser(c fiber.Ctx) error {
 	id_user := c.Locals("user_id").(string)
 	id := c.Params("id")
 	if id != id_user {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Forbidden"})
 	}
 
 	if err := c.Bind().Body(&users); err != nil {
