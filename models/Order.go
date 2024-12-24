@@ -6,8 +6,9 @@ type Order struct {
 	User   User   `json:"user" gorm:"foreignKey:UserID"`
 	Total  uint   `json:"total"`
 	Status string `json:"status" gorm:"type:enum('pending', 'paid', 'shipped', 'completed', 'canceled');default:'pending'"`
-	
+	OrderItems []OrderItem  `json:"order_items" gorm:"foreignKey:OrderID"`
 }
+
 
 type OrderItem struct {
 	ID         uint    `json:"id" gorm:"primaryKey;autoIncrement"`
