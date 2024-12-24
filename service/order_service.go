@@ -10,13 +10,13 @@ SERVICE ORDER
 */
 func GetOrder(id uint) []models.Order {
 	var order []models.Order
-	database.DB.Preload("Order_Item").Where("user_id = ?", id).Find(&order)
+	database.DB.Preload("OrderItem").Where("user_id = ?", id).Find(&order)
 	return order
 }
 
 func FindOrder(id uint) models.Order {
 	var order models.Order
-	database.DB.Preload("Order_Item").First(&order, id)
+	database.DB.Preload("OrderItem").First(&order, id)
 	return order
 }
 
@@ -26,33 +26,55 @@ func CreateOrder(id_user, totalPrice uint) models.Order {
 		Total:  totalPrice,
 	}
 	database.DB.Create(&order)
-	database.DB.First(&order, order.ID)
+	database.DB.Preload('OrderItem').First(&order, order.ID)
 	return order
 }
 
 func DeleteOrder(id uint) error {
-	var order models.Order
-	if err := database.DB.First(&order, id).Error; err != nil {
+	// Memulai transaksi database
+	tx := database.DB.Begin()
+
+	// Hapus OrderItem berdasarkan OrderID
+	if err := tx.Where("order_id = ?", id).Delete(&models.OrderItem{}).Error; err != nil {
+		tx.Rollback() // Membatalkan transaksi jika ada error
 		return err
 	}
-	database.DB.Delete(&order)
-	return nil
-}
 
-func CreateOrderItem(order_id uint,cart_data []models.Cart) error{
-	for _,cart_data :=  range cart_data {
-		order_item := models.OrderItem{
-			OrderID : order_id,
-			ProductID : cart_data.ProductID,
-			Quantity : cart_data.Quantity,
-			Total_Cost : cart_data.Total_Cost,
-		}
-		database.DB.Create(&order_item)
+	// Hapus Order berdasarkan ID
+	if err := tx.Delete(&models.Order{}, id).Error; err != nil {
+		tx.Rollback() // Membatalkan transaksi jika ada error
+		return err
 	}
+
+	// Commit transaksi jika semua berhasil
+	if err := tx.Commit().Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func DeleteOrderItem(order_id uint) error{
-	database.DB.Where("order_id IN ?", order_id).Delete(&models.OrderItem{})
+/*
+SERVICE ORDER ITEM
+*/
+func CreateOrderItem(orderID uint, cartData []models.Cart) error {
+	// Membuat slice untuk menyimpan data order items
+	var orderItems []models.OrderItem
+
+	// Menyiapkan data untuk batch insert
+	for _, cart := range cartData {
+		orderItems = append(orderItems, models.OrderItem{
+			OrderID:    orderID,
+			ProductID:  cart.ProductID,
+			Quantity:   cart.Quantity,
+			Total_Cost: cart.Total_Cost,
+		})
+	}
+
+	// Batch insert ke database
+	if err := database.DB.Create(&orderItems).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
