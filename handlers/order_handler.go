@@ -3,6 +3,7 @@ package handler
 import (
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"slices"
 )
 
 // struct Request
@@ -60,6 +61,11 @@ func CreateOrder(c fiber.Ctx) error {
 	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
+	
+	//filter value request
+	slices.Sort(request.CartID)
+	slices.Compact(request.CartID)
+	
 	//get all cart
 	cart := service.TransferCart(request.CartID)
 
