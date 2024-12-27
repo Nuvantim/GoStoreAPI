@@ -20,7 +20,6 @@ func FiberConfig() fiber.Config {
 		AppName:       "fiber-api",
 		CaseSensitive: true,
 		StrictRouting: true,
-		EnablePrefork,
 		ServerHeader:  "Fiber",
 	}
 }
