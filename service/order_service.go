@@ -26,7 +26,7 @@ func CreateOrder(id_user, totalPrice uint) models.Order {
 		Total:  totalPrice,
 	}
 	database.DB.Create(&order)
-	database.DB.Preload('OrderItem').First(&order, order.ID)
+	database.DB.Preload("OrderItem").First(&order, order.ID)
 	return order
 }
 
