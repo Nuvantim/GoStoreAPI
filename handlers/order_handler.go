@@ -116,7 +116,6 @@ func DeleteOrder(c fiber.Ctx) error {
 		})
 	}
 	// connect service
-	service.DeleteOrderItem(uint(id))
 	service.DeleteOrder(uint(id))
 	return c.Status(200).JSON(fiber.Map{
 		"message": "success",
