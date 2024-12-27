@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"time"
         "os"
 	"github.com/gofiber/fiber/v3"
@@ -21,7 +20,7 @@ func FiberConfig() fiber.Config {
 		AppName:       "fiber-api",
 		CaseSensitive: true,
 		StrictRouting: true,
-		EnablePrefork : true,
+		EnablePrefork,
 		ServerHeader:  "Fiber",
 	}
 }
