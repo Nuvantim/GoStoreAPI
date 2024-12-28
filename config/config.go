@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/idempotency"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
+	"github.com/goccy/go-json"
 )
 
 // FiberConfig berisi konfigurasi Fiber yang aman
@@ -21,6 +22,8 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Fiber",
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
 	}
 }
 
