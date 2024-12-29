@@ -11,7 +11,7 @@ import(
 HANDLER Create Review
 */
 func CreateReview(c fiber.Ctx) error{
-  user_id := c.Locals(user_id).(uint)
+  user_id := c.Locals("user_id").(uint)
   product_id,_ := strconv.Atoi(c.Params("id"))
 
   //check product
@@ -47,8 +47,8 @@ func DeleteReview(c fiber.Ctx) error {
 
   //check review
   review := service.FindReview("id")
-  if review.UserId != user_id {
-    return c.status(403).JSON(fiber.Map{
+  if review.UserID != user_id {
+    return c.Status(403).JSON(fiber.Map{
       "message" : "Forbidden",
     })
   }
