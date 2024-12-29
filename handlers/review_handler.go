@@ -46,7 +46,7 @@ func DeleteReview(c fiber.Ctx) error {
   user_id := c.Locals("user_id").(uint)
 
   //check review
-  review := service.FindReview("id")
+  review := service.FindReview(uint("id"))
   if review.UserID != user_id {
     return c.Status(403).JSON(fiber.Map{
       "message" : "Forbidden",
