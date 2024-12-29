@@ -5,7 +5,7 @@ import(
   "api/models"
 )
 
-func CreateReview(review models.Review) model.Product{
+func CreateReview(review models.Review) models.Product{
   var product models.Product
   database.DB.Create(&review)
   database.DB.First(&product, review.ProductID).Preload("Review")
@@ -24,4 +24,5 @@ func DeleteReview(id uint) error {
     return err
   }
   database.DB.Delete(&review)
+  return nil
 }
