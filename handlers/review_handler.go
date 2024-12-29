@@ -46,12 +46,16 @@ func DeleteReview(c fiber.Ctx) error {
   user_id := c.Locals("user_id").(uint)
 
   //check review
-  review := service.FindReview(uint("id"))
-  if review.UserID != user_id {
-    return c.Status(403).JSON(fiber.Map{
-      "message" : "Forbidden",
-    })
-  }
+  review := service.FindReview(uint(id))
+  switch {
+	case review.ID == 0:
+	  return c.Status(404).JSON(fiber.Map{
+		  "message": "Comment Not Found",
+	  })
+        case review.UserID != user_id:
+	  return c.Status(403).JSON(fiber.Map{
+		  "message": "Forbidden",
+	})
   
   //connect to service
   service.DeleteReview(uint(id))
