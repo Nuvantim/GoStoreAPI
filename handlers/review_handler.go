@@ -55,7 +55,8 @@ func DeleteReview(c fiber.Ctx) error {
         case review.UserID != user_id:
 	  return c.Status(403).JSON(fiber.Map{
 		  "message": "Forbidden",
-	})
+	  })
+   }
   
   //connect to service
   service.DeleteReview(uint(id))
