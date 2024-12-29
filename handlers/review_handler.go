@@ -12,7 +12,7 @@ HANDLER Create Review
 */
 func CreateReview(c fiber.Ctx) error{
   user_id := c.Locals(user_id).(uint)
-  product_id := strconv.Atoi(c.Params("id"))
+  product_id,_ := strconv.Atoi(c.Params("id"))
 
   //check product
   product := service.FindProduct(uint(product_id))
@@ -26,19 +26,23 @@ func CreateReview(c fiber.Ctx) error{
   if err := c.Bind().Body(review); err != nil {
     return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
-		})
+    })
   }
+	
+ //attach user_id & product_id
+ review.UserID = user_id
+ review.ProductID = uint(product_id)
 
-//connect to service
-reviews := service.CreateReview(user_id,uint(product_id),review)
-return c.Status(200).JSON(reviews)
+ //connect to service
+ reviews := service.CreateReview(review)
+ return c.Status(200).JSON(reviews)
 }
 
 /*
 HANDLER DELETE REVIEW
 */
 func DeleteReview(c fiber.Ctx) error {
-  id := strconv.Atoi(c.Params("id"))
+  id,_ := strconv.Atoi(c.Params("id"))
   user_id := c.Locals("user_id").(uint)
 
   //check review
