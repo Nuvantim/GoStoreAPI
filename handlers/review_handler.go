@@ -57,5 +57,5 @@ func DeleteReview(c fiber.Ctx) error {
   service.DeleteReview(uint(id))
   return c.Status(200).JSON(fiber.Map{
     "message":"sucess",
-  }
+  })
 }
