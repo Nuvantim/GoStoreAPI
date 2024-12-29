@@ -50,4 +50,8 @@ func Setup(app *fiber.App) {
 	app.Post("/order/store", handler.CreateOrder)
 	app.Delete("/order/:id", handler.DeleteOrder)
 
+	//Review Route
+	app.Post("/review/:id", handler.CreateReview)
+	app.Delete("/review/:id", handler.DeleteReview)
+
 }
