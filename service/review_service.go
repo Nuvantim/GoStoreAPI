@@ -6,11 +6,19 @@ import (
 )
 
 func CreateReview(review models.Review) models.Product {
-	var product models.Product
 	database.DB.Create(&review)
-	database.DB.Preload("Review").First(&product, review.ProductID)
+	
+	var product models.Product
+	database.DB.First(&product, review.ProductID)
+
+	var reviews []models.Review
+	database.DB.Where("product_id = ?", review.ProductID).Find(&reviews)
+
+	product.Reviews = reviews
+
 	return product
 }
+
 
 func FindReview(ID uint) models.Review {
 	var review models.Review
