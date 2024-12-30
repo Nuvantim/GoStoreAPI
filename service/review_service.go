@@ -1,28 +1,28 @@
 package service
 
-import(
-  "api/database"
-  "api/models"
+import (
+	"api/database"
+	"api/models"
 )
 
-func CreateReview(review models.Review) models.Product{
-  var product models.Product
-  database.DB.Create(&review)
-  database.DB.First(&product, review.ProductID).Preload("Review")
-  return product
+func CreateReview(review models.Review) models.Product {
+	var product models.Product
+	database.DB.Create(&review)
+	database.DB.Preload("Review").First(&product, review.ProductID)
+	return product
 }
 
-func FindReview(id uint) models.Review{
-  var review models.Review
-  database.DB.First(&review, id)
-  return review
+func FindReview(ID uint) models.Review {
+	var review models.Review
+	database.DB.First(&review, ID)
+	return review
 }
 
-func DeleteReview(id uint) error {
-  var review models.Review
-  if err := database.DB.First(&review, id).Error; err != nil{
-    return err
-  }
-  database.DB.Delete(&review)
-  return nil
+func DeleteReview(ID uint) error {
+	var review models.Review
+	if err := database.DB.First(&review, ID).Error; err != nil {
+		return err
+	}
+	database.DB.Delete(&review)
+	return nil
 }

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"api/service"
+	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"os"
@@ -24,13 +24,13 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 
 	// Cek validitas access token
 	if accessToken != "" {
-		ClaimToken := &service.Claims{}
+		ClaimToken := &utils.Claims{}
 		token, err := jwt.ParseWithClaims(accessToken, ClaimToken, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
 		})
 		if err == nil && token.Valid {
 			// Simpan User ID dan Email ke c.Locals
-			claims := token.Claims.(*service.Claims)
+			claims := token.Claims.(*utils.Claims)
 			c.Locals("user_id", claims.UserID)
 			c.Locals("email", claims.Email)
 			return c.Next()
@@ -40,14 +40,14 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 	// Ambil refresh token dari cookie
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
-		refreshTokenClaims := &service.RefreshClaims{}
+		refreshTokenClaims := &utils.RefreshClaims{}
 		refreshTokenObj, err := jwt.ParseWithClaims(refreshToken, refreshTokenClaims, func(token *jwt.Token) (interface{}, error) {
 			return refreshSecret, nil
 		})
 
 		if err == nil && refreshTokenObj.Valid {
 			// Buat token baru
-			newAccessToken, err := service.CreateToken(refreshTokenClaims.UserID, refreshTokenClaims.Email)
+			newAccessToken, err := utils.CreateToken(refreshTokenClaims.UserID, refreshTokenClaims.Email)
 			if err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate new access token"})
 			}

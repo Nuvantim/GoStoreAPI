@@ -3,11 +3,12 @@ package service
 import (
 	"api/database"
 	"api/models"
-	"golang.org/x/crypto/bcrypt"
+	"api/utils"
 )
 
 func RegisterUser(users models.User) models.User {
-	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(users.Password), bcrypt.DefaultCost)
+	// hashing password
+	hashPassword := utils.HashBycrypt(users.Password)
 
 	user := models.User{
 		Name:     users.Name,
@@ -42,7 +43,7 @@ func UpdateUser(id string, users models.User) models.User {
 	user.Address = users.Address
 	user.Phone = users.Phone
 	if users.Password != "" {
-		hashPassword, _ := bcrypt.GenerateFromPassword([]byte(users.Password), bcrypt.DefaultCost)
+		hashPassword := utils.HashBycrypt(users.Password)
 		user.Password = string(hashPassword)
 	}
 	database.DB.Save(&user)

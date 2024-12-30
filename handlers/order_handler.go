@@ -64,7 +64,6 @@ func CreateOrder(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
 
-
 	//get all cart
 	cart := service.TransferCart(request.CartID)
 
