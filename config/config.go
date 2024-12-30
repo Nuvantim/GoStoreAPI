@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"os"
 	"time"
+	"log"
 	// "github.com/gofiber/fiber/v3/middleware/csrf"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/idempotency"
@@ -33,7 +34,7 @@ func MiddlewareConfig(app *fiber.App) {
 	app.Use(requestid.New())
 	logFile, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		panic("Failed to open log file: " + err.Error())
+		log.Fatalf("Failed to open log file: " + err.Error())
 	}
 	defer logFile.Close()
 	app.Use(logger.New(logger.Config{
