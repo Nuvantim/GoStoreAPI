@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/idempotency"
 	"github.com/gofiber/fiber/v3/middleware/limiter"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
 // FiberConfig berisi konfigurasi Fiber yang aman
@@ -28,6 +29,8 @@ func MiddlewareConfig(app *fiber.App) {
 		Max:        20,
 		Expiration: 30 * time.Second,
 	}))
+	// Logger
+	app.Use(logger.New())
 
 	//Helmet
 	app.Use(helmet.New())
