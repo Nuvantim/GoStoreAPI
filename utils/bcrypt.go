@@ -1,10 +1,10 @@
 package utils
 
-import(
+import (
 	"golang.org/x/crypto/bcrypt"
 )
 
 func HashBycrypt(password string) []byte {
-	hash,_:= bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return hash
 }

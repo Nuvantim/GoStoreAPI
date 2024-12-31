@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"github.com/golang-jwt/jwt/v5"
-	"time"
-	"os"
 	"errors"
+	"github.com/golang-jwt/jwt/v5"
+	"os"
+	"time"
 )
+
 // get api key from .env
 var jwtSecret = []byte(os.Getenv("API_KEY"))
 var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))

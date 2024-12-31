@@ -81,8 +81,7 @@ func CreateOrder(c fiber.Ctx) error {
 	}
 
 	//connect service
-	order := service.CreateOrder(uint(user_id), totalPrice)
-	service.CreateOrderItem(order.ID, cart)
+	order := service.CreateOrder(uint(user_id), totalPrice, cart)
 
 	// remove cart after create order
 	service.DeleteCart(request.CartID)

@@ -3,10 +3,10 @@ package service
 import (
 	"api/database"
 	"api/models"
+	"api/utils"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"api/utils"
 )
 
 // Fungsi Login

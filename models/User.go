@@ -7,4 +7,5 @@ type User struct {
 	Password string `json:"password" gorm:"type:varchar(255);not null"`
 	Address  string `json:"address" gorm:"type:varchar(100);not null"`
 	Phone    uint   `json:"phone" gorm:"not null"`
+	Review   []Review `json:"review" gorm:"foreignKey:UserID"`
 }

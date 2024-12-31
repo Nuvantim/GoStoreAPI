@@ -13,6 +13,13 @@ HANDLER Create Review
 func CreateReview(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
 
+	// check user review
+	user_review := service.FindUserReview(user_id)
+	if user_review.ID != 0 {
+		return c.Status(403).JSON(fiber.Map{
+			"message": "User Review Already Exist",
+		})
+	}
 	//parse body to json
 	var review models.Review
 	if err := c.Bind().Body(&review); err != nil {

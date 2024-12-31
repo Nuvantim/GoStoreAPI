@@ -8,4 +8,5 @@ type Product struct {
 	Stock       uint     `json:"stock" gorm:"default:0"`
 	CategoryID  uint     `json:"category_id"`
 	Category    Category `json:"category" gorm:"foreignKey:CategoryID"`
+	Review      []Review `json:"review" gorm:"foreignKey:ProductID"`
 }

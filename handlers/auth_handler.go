@@ -2,8 +2,8 @@ package handler
 
 import (
 	"api/service"
-	"github.com/gofiber/fiber/v3"
 	"api/utils"
+	"github.com/gofiber/fiber/v3"
 )
 
 // Fungsi untuk login atau refresh token secara otomatis
