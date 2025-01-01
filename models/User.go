@@ -1,11 +1,16 @@
 package models
 
+import(
+	
+	"time"
+)
+
 type User struct {
-	ID       uint   `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	Name     string `json:"name" gorm:"type:varchar(100);not null"`
-	Email    string `json:"email" gorm:"type:varchar(100);not null"`
-	Password string `json:"password" gorm:"type:varchar(255);not null"`
-	Address  string `json:"address" gorm:"type:varchar(100);not null"`
-	Phone    uint   `json:"phone" gorm:"not null"`
-	Review   []Review `json:"review" gorm:"foreignKey:UserID"`
+	ID       	uint   		`json:"id" gorm:"PrimaryKey;autoIncrement"`
+	Name     	string 		`json:"name" gorm:"not null"`
+	Email    	string 		`json:"email" gorm:"not null"`
+	Password 	string 		`json:"password" gorm:"not null"`
+	Address  	string 		`json:"address" gorm:"not null"`
+	Phone    	uint   		`json:"phone" gorm:"not null"`
+	CreatedAt   time.Time 	`gorm:"type:date"`
 }

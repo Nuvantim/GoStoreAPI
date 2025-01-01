@@ -71,4 +71,3 @@ func DeleteOrder(id uint) error {
 
 	return nil
 }
-

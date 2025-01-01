@@ -8,13 +8,13 @@ import (
 
 func GetCart(id uint) []models.Cart {
 	var cart []models.Cart
-	database.DB.Where("user_id = ?", id).Preload("Product").Find(&cart)
+	database.DB.Where("user_id = ?", id).Preload("Product").Preload("Product.Category").Find(&cart)
 	return cart
 }
 
 func FindCart(id uint) models.Cart {
 	var carts models.Cart
-	database.DB.Where("id = ?", id).Preload("Product").Find(&carts)
+	database.DB.Where("id = ?", id).Preload("Product").Preload("Product.Category").Find(&carts)
 	return carts
 }
 
@@ -25,7 +25,7 @@ func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart {
 		Total_Cost: cost,
 	}
 	database.DB.Create(&cart)
-	database.DB.Preload("Product").First(&cart, cart.ID)
+	database.DB.Preload("Product").Preload("Product.Category").First(&cart, cart.ID)
 	return cart
 }
 
@@ -35,7 +35,7 @@ func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 	database.DB.First(&cart, cart_update.ID)
 
 	// Update menggunakan Updates() untuk langsung mengubah kolom yang diperlukan
-	database.DB.Model(&cart).Preload("Product").Updates(map[string]interface{}{
+	database.DB.Model(&cart).Preload("Product").Preload("Product.Category").Updates(map[string]interface{}{
 		"Quantity":   cart_update.Quantity,
 		"Total_Cost": cost,
 	})
