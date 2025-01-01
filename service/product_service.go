@@ -9,16 +9,17 @@ import (
 func GetAllProduct() []models.Product {
 	var product []models.Product
 	database.DB.Select("id", "name", "price", "stock").
-	Preload("Category").
-	Preload("Review").
-	Preload("Review.User").Find(&product)
+	Preload("Category").Find(&product)
 	return product
 }
 
 // get Product from id
 func FindProduct(id uint) models.Product {
 	var product models.Product
-	database.DB.Preload("Category").Preload("Review.Product").First(&product, id)
+	database.DB.Preload("Category").
+	Preload("Review").
+	Preload("Review.User").
+	First(&product, id)
 	return product
 }
 
