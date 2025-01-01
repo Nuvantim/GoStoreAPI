@@ -14,12 +14,23 @@ func RegisterUser(users models.User) models.User {
 		Name:     users.Name,
 		Email:    users.Email,
 		Password: string(hashPassword),
-		Address:  users.Address,
-		Phone:    users.Phone,
 	}
 	database.DB.Create(&user)
+	
+	info := models.UserInfo{
+		UserID : user.ID,
+	}
+	
+	database.DB.Create(&info)
+	
 	database.DB.First(&user, user.ID)
-	return user
+	database.DB.Where("user_id = ?",user.ID).First(&info)
+
+	data := make[string]interface{}{
+		"user" : user,
+		"user_info" : info,
+	}
+	return data
 }
 
 func GetUser() []models.User {
