@@ -22,15 +22,10 @@ func RegisterUser(users models.User) models.User {
 	}
 	
 	database.DB.Create(&info)
-	
-	database.DB.First(&user, user.ID)
-	database.DB.Where("user_id = ?",user.ID).First(&info)
-
-	data := make[string]interface{}{
-		"user" : user,
-		"user_info" : info,
+	alert := make[string]interface{}{
+		"message" : "Success Register, Please Check Your Email"
 	}
-	return data
+	return alert
 }
 
 func GetUser() []models.User {
@@ -41,8 +36,14 @@ func GetUser() []models.User {
 
 func FindUser(id string) models.User {
 	var user models.User
-	database.DB.Find(&user, id)
-	return user
+	database.DB.First(&user, id)
+	database.DB.Where("user_id = ?",user.ID).First(&info)
+
+	data := make[string]interface{}{
+		"user" : user,
+		"user_info" : info,
+	}
+	return data
 }
 
 func UpdateUser(id string, users models.User) models.User {
