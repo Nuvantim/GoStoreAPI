@@ -13,7 +13,7 @@ type User struct {
 	CreatedAt       time.Time 	`gorm:"autoCreateTime"`
 }
 
-type user_info struct {
+type UserInfo struct {
 	ID              uint            `json:"id" gorm:"PrimaryKey;autoIncrement"`
 	UserID          uint            `json:"user_id"`
 	Age             uint            `json:"age"`
