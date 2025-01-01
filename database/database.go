@@ -43,6 +43,7 @@ func MysqlConnect() {
 	db.AutoMigrate(&models.Order{})
 	db.AutoMigrate(&models.OrderItem{})
 	db.AutoMigrate(&models.Cart{})
+	db.AutoMigrate(&models.UserInfo{})
 	// db.AutoMigrate(&models.Paytment{})
 	db.AutoMigrate(&models.Review{})
 	DB = db
