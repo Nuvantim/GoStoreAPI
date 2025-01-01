@@ -44,7 +44,7 @@ func CreateOrder(id_user, totalPrice uint, cartData []models.Cart) models.Order 
 	// Batch insert ke database
 	database.DB.Create(&orderItems)
 
-	database.DB.Preload("OrderItem").First(&order, order.ID)
+	database.DB.Preload("User").Preload("OrderItem.Product").First(&order, order.ID)
 	return order
 }
 
@@ -72,27 +72,3 @@ func DeleteOrder(id uint) error {
 	return nil
 }
 
-/*
-SERVICE ORDER ITEM
-*/
-func CreateOrderItem(orderID uint, cartData []models.Cart) error {
-	// Membuat slice untuk menyimpan data order items
-	var orderItems []models.OrderItem
-
-	// Menyiapkan data untuk batch insert
-	for _, cart := range cartData {
-		orderItems = append(orderItems, models.OrderItem{
-			OrderID:    orderID,
-			ProductID:  cart.ProductID,
-			Quantity:   cart.Quantity,
-			Total_Cost: cart.Total_Cost,
-		})
-	}
-
-	// Batch insert ke database
-	if err := database.DB.Create(&orderItems).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
