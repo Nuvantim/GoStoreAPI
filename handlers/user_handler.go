@@ -66,7 +66,7 @@ func UpdateUser(c fiber.Ctx) error {
 		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
 	}
 
-	if err := c.Bind().Body(&re); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 	
@@ -81,7 +81,7 @@ func UpdateUser(c fiber.Ctx) error {
 	user_info := models.UserInfo{
 		Age : req.Age,
 		Phone : req.Phone,
-		District : req.Disctrict,
+		District : req.District,
 		City : req.City,
 		State : req.State,
 		Country : req.Country,
