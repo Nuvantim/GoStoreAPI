@@ -70,17 +70,6 @@ func UpdateUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
-	userMap := map[string]interface{}{
-		"name":     user.Name,
-		"email":    user.Email,
-		"password": user.Password,
-		"age":      user.Age,
-		"phone":    user.Phone,
-		"district": user.District,
-		"city":     user.City,
-		"state":    user.State,
-		"country":  user.Country,
-	}
 	users:= service.UpdateUser(user, uint(id))
 	return c.Status(200).JSON(users)
 }
