@@ -41,7 +41,7 @@ func GetUser() []models.User {
 	return user
 }
 
-func FindUser(id string) map[string]interface{} {
+func FindUser(id uint) map[string]interface{} {
 	var user models.User
 	var info models.UserInfo
 
