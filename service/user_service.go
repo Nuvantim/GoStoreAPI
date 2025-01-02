@@ -70,7 +70,7 @@ func UpdateUser(users models.User, user_info models.UserInfo, id uint) map[strin
 	// update user
 	user.Name = users.Name
 	user.Email = users.Email
-	if users.Password != nil {
+	if users.Password != "" {
 		hash := utils.HashBycrypt(users.Password)
 		user.Password = string(hash)
 	}
