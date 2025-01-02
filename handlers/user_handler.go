@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"api/database"
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
@@ -20,9 +19,12 @@ var user_request struct {
 	country  string `json:"country"`
 }
 
+/*
+Handler Get Profile
+*/
 func GetProfile(c fiber.Ctx) error {
 	// Ambil User ID dari c.Locals
-	userID := c.Locals("user_id")
+	userID := c.Locals("user_id").(uint)
 	if userID == nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
