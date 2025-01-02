@@ -7,19 +7,6 @@ import (
 	"strconv"
 )
 
-// validate data
-type UserRequest struct {
-    Name     string `json:"name"`
-    Email    string `json:"email"`
-    Password string `json:"password"`
-    Age      uint   `json:"age"`
-    Phone    uint   `json:"phone"`
-    District string `json:"district"`
-    City     string `json:"city"`
-    State    string `json:"state"`
-    Country  string `json:"country"`
-}
-
 /*
 Handler Get Profile
 */
@@ -49,8 +36,14 @@ Handler Register User
 */
 func RegisterUser(c fiber.Ctx) error {
 	var users models.User
-	if err := c.Bind().Body(&users); err != nil {
-		return c.Status(400).JSON(err.Error())
+	if err := c.Bind().Body(&struct {
+		User     *models.CreateUserInput      `json:"user"`
+		UserInfo *models.CreateUserInfoInput  `json:"user_info"`
+	}{
+		User:     &userInput,
+		UserInfo: &userInfoInput,
+	}); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 	register := service.RegisterUser(users)
 	return c.Status(200).JSON(register)
@@ -60,7 +53,8 @@ func RegisterUser(c fiber.Ctx) error {
 Handler Update User
 */
 func UpdateUser(c fiber.Ctx) error {
-	var user UserRequest
+	var user models.User
+	var user_info models.UserInfo
 	id_user := c.Locals("user_id").(uint)
 	id,_ := strconv.Atoi(c.Params("id"))
 	if uint(id) != id_user {
