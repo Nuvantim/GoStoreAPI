@@ -7,7 +7,7 @@ import (
 )
 
 // validate data
-var user_request struct {
+var user struct {
 	name     string `json:"name" validate:"required"`
 	email    string `json:"email" validate:"required"`
 	password string `json:"password" validate:"required"`
@@ -25,7 +25,7 @@ Handler Get Profile
 func GetProfile(c fiber.Ctx) error {
 	// Ambil User ID dari c.Locals
 	userID := c.Locals("user_id").(uint)
-	if userID == nil {
+	if userID == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
 
@@ -59,10 +59,10 @@ func RegisterUser(c fiber.Ctx) error {
 Handler Update User
 */
 func UpdateUser(c fiber.Ctx) error {
-	id_user := c.Locals("user_id").(string)
-	id := c.Params("id")
-	if id != id_user {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Forbidden"})
+	id_user := c.Locals("user_id").(uint)
+	id := strconv.Atoi(c.Params("id"))
+	if uint(id) != id_user {
+		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
 	}
 
 	if err := c.Bind().Body(&user); err != nil {
