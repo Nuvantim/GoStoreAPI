@@ -8,16 +8,16 @@ import (
 )
 
 // validate data
-var user struct {
-	name     string `json:"name" validate:"required"`
-	email    string `json:"email" validate:"required"`
-	password string `json:"password" validate:"required"`
-	age      uint   `json:"age"`
-	phone    uint   `json:"phone"`
-	district string `json:"district"`
-	city     string `json:"city"`
-	state    string `json:"state"`
-	country  string `json:"country"`
+type UserRequest struct {
+    Name     string `json:"name"`
+    Email    string `json:"email"`
+    Password string `json:"password"`
+    Age      uint   `json:"age"`
+    Phone    uint   `json:"phone"`
+    District string `json:"district"`
+    City     string `json:"city"`
+    State    string `json:"state"`
+    Country  string `json:"country"`
 }
 
 /*
@@ -60,6 +60,7 @@ func RegisterUser(c fiber.Ctx) error {
 Handler Update User
 */
 func UpdateUser(c fiber.Ctx) error {
+	var user UserRequest
 	id_user := c.Locals("user_id").(uint)
 	id := strconv.Atoi(c.Params("id"))
 	if uint(id) != id_user {
@@ -69,18 +70,6 @@ func UpdateUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
-	userMap := map[string]interface{}{
-	"name":     user.Name,
-	"email":    user.Email,
-	"password": user.Password,
-	"age":      user.Age,
-	"phone":    user.Phone,
-	"district": user.District,
-	"city":     user.City,
-	"state":    user.State,
-	"country":  user.Country,
-        }
-
 	users:= service.UpdateUser(userMap, id)
 	return c.Status(200).JSON(users)
 }
