@@ -41,47 +41,79 @@ func GetUser() []models.User {
 	return user
 }
 
-func FindUser(id string) models.User {
+func FindUser(id string) map[string]interface{} {
 	var user models.User
-	database.DB.First(&user, id)
-	database.DB.Where("user_id = ?",user.ID).First(&info)
+	var info models.UserInfo
 
-	data := make[string]interface{} {
-		"user" : user,
-		"user_info" : info,
+	// Ambil data user berdasarkan id
+	database.DB.First(&user, id)
+
+	// Ambil data user_info berdasarkan user_id
+	database.DB.Where("user_id = ?", user.ID).First(&info)
+
+	// Buat peta untuk data yang ingin dikembalikan
+	data := map[string]interface{}{
+		"user":      user,
+		"user_info": info,
 	}
 
+	// Kembalikan data
 	return data
 }
 
-func UpdateUser(users {}interface, id string) models.User {
+func UpdateUser(users map[string]interface{}, id string) map[string]interface{} {
 	var user models.User
+	// Ambil data user berdasarkan id
 	database.DB.First(&user, id)
-	//update User
-	user.Name = users.Name
-	user.Email = users.Email
-	if users.Password != "" {
-		hashPassword := utils.HashBycrypt(users.Password)
+
+	// Update user
+	if name, ok := users["name"].(string); ok {
+		user.Name = name
+	}
+	if email, ok := users["email"].(string); ok {
+		user.Email = email
+	}
+	if password, ok := users["password"].(string); ok && password != "" {
+		hashPassword := utils.HashBycrypt(password)
 		user.Password = string(hashPassword)
 	}
 	database.DB.Save(&user)
-	// update UserInfo
-	var user_info models.UserInfo
-	database.DB.Where("user_id = ? ", id).First(&user_info)
-	user_info.Age = users.age
-	user_info.Phone = users.phone
-	user_info.District = users.disctrict
-	user_info.City  =  users.city
-	user_info.State = users.state
-	user_info.Country =  users.country
-	database.DB.Save(&user_info)
 
-	data := make[string]interface{}{
-		"user" : user,
-		"user_info" : user_info,
+	// Update UserInfo
+	var userInfo models.UserInfo
+	database.DB.Where("user_id = ?", id).First(&userInfo)
+
+	if age, ok := users["age"].(int); ok {
+		userInfo.Age = age
 	}
+	if phone, ok := users["phone"].(string); ok {
+		userInfo.Phone = phone
+	}
+	if district, ok := users["district"].(string); ok {
+		userInfo.District = district
+	}
+	if city, ok := users["city"].(string); ok {
+		userInfo.City = city
+	}
+	if state, ok := users["state"].(string); ok {
+		userInfo.State = state
+	}
+	if country, ok := users["country"].(string); ok {
+		userInfo.Country = country
+	}
+
+	database.DB.Save(&userInfo)
+
+	// Buat peta untuk data yang ingin dikembalikan
+	data := map[string]interface{}{
+		"user":      user,
+		"user_info": userInfo,
+	}
+
+	// Kembalikan data
 	return data
 }
+
 
 func DeleteUser(id string) error {
 	var user models.User
