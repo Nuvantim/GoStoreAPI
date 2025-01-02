@@ -4,6 +4,7 @@ import (
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"strconv"
 )
 
 // validate data
@@ -68,7 +69,19 @@ func UpdateUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
-	users:= service.UpdateUser(&user, id)
+	userMap := map[string]interface{}{
+	"name":     user.Name,
+	"email":    user.Email,
+	"password": user.Password,
+	"age":      user.Age,
+	"phone":    user.Phone,
+	"district": user.District,
+	"city":     user.City,
+	"state":    user.State,
+	"country":  user.Country,
+        }
+
+	users:= service.UpdateUser(userMap, id)
 	return c.Status(200).JSON(users)
 }
 
