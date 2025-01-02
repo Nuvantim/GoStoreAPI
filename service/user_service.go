@@ -74,7 +74,7 @@ func UpdateUser(req map[string]interface{}, id string) map[string]interface{} {
 	// Hash password
 	if password, ok := req["password"].(string); ok && password != "" {
 		hash := utils.HashBycrypt(password)
-		user.Password = hash
+		user.Password = string(hash)
 	}
 
 	// Simpan perubahan user
