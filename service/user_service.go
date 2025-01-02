@@ -6,7 +6,7 @@ import (
 	"api/utils"
 )
 
-func RegisterUser(users models.User) models.User {
+func RegisterUser(users models.User) map[string]interface{} {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
 
@@ -83,10 +83,10 @@ func UpdateUser(users map[string]interface{}, id string) map[string]interface{} 
 	var userInfo models.UserInfo
 	database.DB.Where("user_id = ?", id).First(&userInfo)
 
-	if age, ok := users["age"].(int); ok {
+	if age, ok := users["age"].(uint); ok {
 		userInfo.Age = age
 	}
-	if phone, ok := users["phone"].(string); ok {
+	if phone, ok := users["phone"].(uint); ok {
 		userInfo.Phone = phone
 	}
 	if district, ok := users["district"].(string); ok {
