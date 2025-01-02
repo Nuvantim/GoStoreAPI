@@ -19,7 +19,6 @@ func Setup(app *fiber.App) {
 	// User Route
 	app.Get("/user", handler.GetUser)
 	app.Get("/profile", handler.GetProfile)
-	app.Get("/user/:id", handler.FindUser)
 	app.Put("/user/:id", handler.UpdateUser)
 	app.Delete("/user/:id", handler.DeleteUser)
 
