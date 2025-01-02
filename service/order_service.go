@@ -10,7 +10,7 @@ SERVICE ORDER
 */
 func GetOrder(id uint) []models.Order {
 	var order []models.Order
-	database.DB.Preload("order_items").Where("user_id = ?", id).Find(&order)
+	database.DB.Preload("OrderItem").Preload("OrderItem.Product").Where("user_id = ?", id).Find(&order)
 	return order
 }
 

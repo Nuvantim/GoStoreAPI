@@ -16,17 +16,18 @@ func RegisterUser(users models.User) models.User {
 		Password: string(hashPassword),
 	}
 	database.DB.Create(&user)
-	
+
 	info := models.UserInfo{
 		UserID : user.ID,
 	}
-	
+
 	database.DB.Create(&info)
-	alert := make[string]interface{}{
-		"message" : "Success Register, Please Check Your Email"
+	alert := make[string]interface{} {
+		"message" : "Success Register, Please Check Your Email",
 	}
 	return alert
 }
+
 
 func GetUser() []models.User {
 	var user []models.User
@@ -39,27 +40,41 @@ func FindUser(id string) models.User {
 	database.DB.First(&user, id)
 	database.DB.Where("user_id = ?",user.ID).First(&info)
 
-	data := make[string]interface{}{
+	data := make[string]interface{} {
 		"user" : user,
 		"user_info" : info,
 	}
+
 	return data
 }
 
-func UpdateUser(id string, users models.User) models.User {
+func UpdateUser(users {}interface, id string) models.User {
 	var user models.User
 	database.DB.First(&user, id)
-
+	//update User
 	user.Name = users.Name
 	user.Email = users.Email
-	user.Address = users.Address
-	user.Phone = users.Phone
 	if users.Password != "" {
 		hashPassword := utils.HashBycrypt(users.Password)
 		user.Password = string(hashPassword)
 	}
 	database.DB.Save(&user)
-	return user
+	// update UserInfo
+	var user_info models.UserInfo
+	database.DB.Where("user_id = ? ", id).First(&user_info)
+	user_info.Age = users.age
+	user_info.Phone = users.phone
+	user_info.District = users.disctrict
+	user_info.City  =  users.city
+	user_info.State = users.state
+	user_info.Country =  users.country
+	database.DB.Save(&user_info)
+
+	data := make[string]interface{}{
+		"user" : user,
+		"user_info" : user_info,
+	}
+	return data
 }
 
 func DeleteUser(id string) error {

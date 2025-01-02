@@ -8,33 +8,42 @@ import (
 )
 
 // validate data
-var user struct {
-	Name     string `json:"name" validate:"required"`
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
+var user_request struct {
+	name     string `json:"name" validate:"required"`
+	email    string `json:"email" validate:"required"`
+	password string `json:"password" validate:"required"`
+	age      uint   `json:"age"`
+	phone    uint   `json:"phone"`
+	district string `json:"district"`
+	city     string `json:"city"`
+	state    string `json:"state"`
+	country  string `json:"country"`
 }
 
 func GetProfile(c fiber.Ctx) error {
 	// Ambil User ID dari c.Locals
 	userID := c.Locals("user_id")
 	if userID == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
 
 	// Query profil pengguna dari database
-	var user models.User
-	if err := database.DB.First(&user, userID).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
-	}
+	user := service.FindUser(userID)
 
 	return c.JSON(user)
 }
 
+/*
+Handler GetUser
+*/
 func GetUser(c fiber.Ctx) error {
 	user := service.GetUser()
 	return c.Status(400).JSON(user)
 }
 
+/*
+Handler Register User
+*/
 func RegisterUser(c fiber.Ctx) error {
 	var users models.User
 	if err := c.Bind().Body(&users); err != nil {
@@ -44,27 +53,26 @@ func RegisterUser(c fiber.Ctx) error {
 	return c.Status(200).JSON(register)
 }
 
-func FindUser(c fiber.Ctx) error {
-	id := c.Params("id")
-	user := service.FindUser(id)
-	return c.Status(200).JSON(user)
-}
-
+/*
+Handler Update User
+*/
 func UpdateUser(c fiber.Ctx) error {
-	var users models.User
 	id_user := c.Locals("user_id").(string)
 	id := c.Params("id")
 	if id != id_user {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Forbidden"})
 	}
 
-	if err := c.Bind().Body(&users); err != nil {
-		return c.Status(400).JSON(err.Error())
+	if err := c.Bind().Body(&user); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
 	}
-	service.UpdateUser(id, users)
+	users:= service.UpdateUser(user, id)
 	return c.Status(200).JSON(users)
 }
 
+/*
+Handler Delete User
+*/
 func DeleteUser(c fiber.Ctx) error {
 	id := c.Params("id")
 	if err := service.DeleteUser(id); err != nil {
