@@ -7,6 +7,18 @@ import (
 	"strconv"
 )
 
+
+type UserRequest struct {
+    Name     string `json:"name"`
+    Email    string `json:"email"`
+    Password string `json:"password"`
+    Age      uint   `json:"age"`
+    Phone    uint   `json:"phone"`
+    District string `json:"district"`
+    City     string `json:"city"`
+    State    string `json:"state"`
+    Country  string `json:"country"`
+}
 /*
 Handler Get Profile
 */
@@ -36,14 +48,8 @@ Handler Register User
 */
 func RegisterUser(c fiber.Ctx) error {
 	var users models.User
-	if err := c.Bind().Body(&struct {
-		User     *models.CreateUserInput      `json:"user"`
-		UserInfo *models.CreateUserInfoInput  `json:"user_info"`
-	}{
-		User:     &userInput,
-		UserInfo: &userInfoInput,
-	}); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	if err := c.Bind().Body(&users); err != nil {
+		return c.Status(400).JSON(err.Error())
 	}
 	register := service.RegisterUser(users)
 	return c.Status(200).JSON(register)
@@ -53,18 +59,34 @@ func RegisterUser(c fiber.Ctx) error {
 Handler Update User
 */
 func UpdateUser(c fiber.Ctx) error {
-	var user models.User
-	var user_info models.UserInfo
+	var req UserRequest
 	id_user := c.Locals("user_id").(uint)
 	id,_ := strconv.Atoi(c.Params("id"))
 	if uint(id) != id_user {
 		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
 	}
 
-	if err := c.Bind().Body(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
+	if err := c.Bind().Body(&re); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
-	users:= service.UpdateUser(user, uint(id))
+	
+	//parsing user model
+	user := models.User{
+		Name : req.Name,
+		Email : req.Email,
+		Password : req.Password,
+	}
+	
+	//parsing user_info model
+	user_info := models.UserInfo{
+		Age : req.Age,
+		Phone : req.Phone,
+		District : req.Disctrict,
+		City : req.City,
+		State : req.State,
+		Country : req.Country,
+	}
+	users:= service.UpdateUser(user,user_info, uint(id))
 	return c.Status(200).JSON(users)
 }
 
