@@ -61,58 +61,58 @@ func FindUser(id uint) map[string]interface{} {
 	return data
 }
 
-func UpdateUser(users map[string]interface{}, id string) map[string]interface{} {
-	var user models.User
+func UpdateUser(req map[string]interface{}, id string) map[string]interface{} {
 	// Ambil data user berdasarkan id
-	database.DB.First(&user, id)
+	var user models.User
+	if err := database.DB.First(&user, id).Error; err != nil {
+		return map[string]interface{}{"error": "User not found"}
+	}
 
 	// Update user
-	if name, ok := users["name"].(string); ok {
-		user.Name = name
+	user.Name = req["name"].(string)
+	user.Email = req["email"].(string)
+	// Hash password
+	if password, ok := req["password"].(string); ok && password != "" {
+		hash, err := utils.Bcrypt(password)
+		if err != nil {
+			return map[string]interface{}{"error": "Failed to hash password"}
+		}
+		user.Password = hash
 	}
-	if email, ok := users["email"].(string); ok {
-		user.Email = email
-	}
-	if password, ok := users["password"].(string); ok && password != "" {
-		hashPassword := utils.HashBycrypt(password)
-		user.Password = string(hashPassword)
-	}
-	database.DB.Save(&user)
 
-	// Update UserInfo
+	// Simpan perubahan user
+	if err := database.DB.Save(&user).Error; err != nil {
+		return map[string]interface{}{"error": "Failed to update user"}
+	}
+
+	// Ambil data user_info berdasarkan user_id
 	var userInfo models.UserInfo
-	database.DB.Where("user_id = ?", id).First(&userInfo)
-
-	if age, ok := users["age"].(uint); ok {
-		userInfo.Age = age
-	}
-	if phone, ok := users["phone"].(uint); ok {
-		userInfo.Phone = phone
-	}
-	if district, ok := users["district"].(string); ok {
-		userInfo.District = district
-	}
-	if city, ok := users["city"].(string); ok {
-		userInfo.City = city
-	}
-	if state, ok := users["state"].(string); ok {
-		userInfo.State = state
-	}
-	if country, ok := users["country"].(string); ok {
-		userInfo.Country = country
+	if err := database.DB.Where("user_id = ?", id).First(&userInfo).Error; err != nil {
+		return map[string]interface{}{"error": "User info not found"}
 	}
 
-	database.DB.Save(&userInfo)
+	// Update user_info
+	userInfo.Age = req["age"].(uint)
+	userInfo.Phone = req["phone"].(uint)
+	userInfo.District = req["district"].(string)
+	userInfo.City = req["city"].(string)
+	userInfo.State = req["state"].(string)
+	userInfo.Country = req["country"].(string)
 
-	// Buat peta untuk data yang ingin dikembalikan
+	// Simpan perubahan user_info
+	if err := database.DB.Save(&userInfo).Error; err != nil {
+		return map[string]interface{}{"error": "Failed to update user info"}
+	}
+
+	// Kembalikan data yang telah diperbarui
 	data := map[string]interface{}{
 		"user":      user,
 		"user_info": userInfo,
 	}
 
-	// Kembalikan data
 	return data
 }
+
 
 
 func DeleteUser(id string) error {
