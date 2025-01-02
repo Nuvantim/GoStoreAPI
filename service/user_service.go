@@ -73,10 +73,7 @@ func UpdateUser(req map[string]interface{}, id string) map[string]interface{} {
 	user.Email = req["email"].(string)
 	// Hash password
 	if password, ok := req["password"].(string); ok && password != "" {
-		hash, err := utils.HashBycrypt(password)
-		if err != nil {
-			return map[string]interface{}{"error": "Failed to hash password"}
-		}
+		hash,_ := utils.HashBycrypt(password)
 		user.Password = hash
 	}
 
