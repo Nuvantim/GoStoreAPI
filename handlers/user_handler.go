@@ -62,7 +62,7 @@ Handler Update User
 func UpdateUser(c fiber.Ctx) error {
 	var user UserRequest
 	id_user := c.Locals("user_id").(uint)
-	id := strconv.Atoi(c.Params("id"))
+	id,_ := strconv.Atoi(c.Params("id"))
 	if uint(id) != id_user {
 		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
 	}
