@@ -10,23 +10,29 @@ func RegisterUser(users models.User) models.User {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
 
+	// Buat user baru
 	user := models.User{
 		Name:     users.Name,
 		Email:    users.Email,
 		Password: string(hashPassword),
 	}
+	// Simpan user ke database
 	database.DB.Create(&user)
 
+	// Buat info user
 	info := models.UserInfo{
-		UserID : user.ID,
+		UserID: user.ID,
 	}
-
+	// Simpan info user ke database
 	database.DB.Create(&info)
-	alert := make[string]interface{} {
-		"message" : "Success Register, Please Check Your Email",
+
+	// Buat notifikasi sukses
+	alert := map[string]interface{}{
+		"message": "Success Register, Please Check Your Email",
 	}
 	return alert
 }
+
 
 
 func GetUser() []models.User {
