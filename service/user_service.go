@@ -61,7 +61,7 @@ func FindUser(id uint) map[string]interface{} {
 	return data
 }
 
-func UpdateUser(req map[string]interface{}, id string) map[string]interface{} {
+func UpdateUser(req map[string]interface{}, id uint) map[string]interface{} {
 	// Ambil data user berdasarkan id
 	var user models.User
 	if err := database.DB.First(&user, id).Error; err != nil {
