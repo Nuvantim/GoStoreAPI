@@ -33,7 +33,6 @@ func RegisterUser(users models.User) map[string]interface{} {
 	return alert
 }
 
-
 func GetUser() []models.User {
 	var user []models.User
 	database.DB.Find(&user)
@@ -74,7 +73,7 @@ func UpdateUser(users models.User, user_info models.UserInfo, id uint) map[strin
 		hash := utils.HashBycrypt(users.Password)
 		user.Password = string(hash)
 	}
-	
+
 	// Simpan perubahan user
 	if err := database.DB.Save(&user).Error; err != nil {
 		return map[string]interface{}{"error": "Failed to update user"}

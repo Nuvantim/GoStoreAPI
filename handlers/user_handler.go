@@ -7,18 +7,18 @@ import (
 	"strconv"
 )
 
-
 type UserRequest struct {
-    Name     string `json:"name"`
-    Email    string `json:"email"`
-    Password string `json:"password"`
-    Age      uint   `json:"age"`
-    Phone    uint   `json:"phone"`
-    District string `json:"district"`
-    City     string `json:"city"`
-    State    string `json:"state"`
-    Country  string `json:"country"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Age      uint   `json:"age"`
+	Phone    uint   `json:"phone"`
+	District string `json:"district"`
+	City     string `json:"city"`
+	State    string `json:"state"`
+	Country  string `json:"country"`
 }
+
 /*
 Handler Get Profile
 */
@@ -61,7 +61,7 @@ Handler Update User
 func UpdateUser(c fiber.Ctx) error {
 	var req UserRequest
 	id_user := c.Locals("user_id").(uint)
-	id,_ := strconv.Atoi(c.Params("id"))
+	id, _ := strconv.Atoi(c.Params("id"))
 	if uint(id) != id_user {
 		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
 	}
@@ -69,24 +69,24 @@ func UpdateUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
-	
+
 	//parsing user model
 	user := models.User{
-		Name : req.Name,
-		Email : req.Email,
-		Password : req.Password,
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
 	}
-	
+
 	//parsing user_info model
 	user_info := models.UserInfo{
-		Age : req.Age,
-		Phone : req.Phone,
-		District : req.District,
-		City : req.City,
-		State : req.State,
-		Country : req.Country,
+		Age:      req.Age,
+		Phone:    req.Phone,
+		District: req.District,
+		City:     req.City,
+		State:    req.State,
+		Country:  req.Country,
 	}
-	users:= service.UpdateUser(user,user_info, uint(id))
+	users := service.UpdateUser(user, user_info, uint(id))
 	return c.Status(200).JSON(users)
 }
 

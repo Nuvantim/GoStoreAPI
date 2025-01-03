@@ -3,6 +3,7 @@ package handler
 import (
 	"api/models"
 	"api/service"
+	"strconv"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -39,12 +40,12 @@ func CreateCategory(c fiber.Ctx) error {
 HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c fiber.Ctx) error {
-	id := c.Params("id")
+	id,_ := strconv.Atoi(c.Params("id"))
 	var category models.Category
 	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	service.UpdateCategory(id, category)
+	service.UpdateCategory(uint(id), category)
 	return c.Status(200).JSON(category)
 }
 
@@ -52,9 +53,11 @@ func UpdateCategory(c fiber.Ctx) error {
 HANDLER DELETE CATEGORY
 */
 func DeleteCategory(c fiber.Ctx) error {
-	id := c.Params("id")
-	if err := service.DeleteCategory(id); err != nil {
+	id,_ := strconv.Atoi(c.Params("id"))
+	if err := service.DeleteCategory(uint(id)); err != nil {
 		return c.Status(500).SendString("Failed Delete Category")
 	}
-	return c.SendStatus(204)
+	return c.Status(200).JSON(fiber.Map{
+		"message":"Success",
+	})
 }
