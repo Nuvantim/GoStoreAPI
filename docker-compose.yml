@@ -1,0 +1,43 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-app:release
+    container_name: golang-app
+    restart: always
+    ports:
+      - "7373:7373"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: akuWijaya321
+      DB_NAME: api_store
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - db
+    networks:
+      - golang-network
+
+  db:
+    image: mysql
+    container_name: golang-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: akuWijaya321
+      MYSQL_DATABASE: api_store
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - golang-network
+
+volumes:
+  mysql-data:
+
+networks:
+  golang-network:
+    driver: bridge
