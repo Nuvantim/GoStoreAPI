@@ -51,6 +51,12 @@ func RegisterUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
+	emails := service.CheckEmail(users.Email)
+	if emails.ID != 0{
+		return C.Status(400).JSON(fiber.Map{
+			"message":"Your email already exist",
+		}
+	}
 	register := service.RegisterUser(users)
 	return c.Status(200).JSON(register)
 }
