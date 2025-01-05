@@ -8,12 +8,6 @@ services:
     restart: always
     ports:
       - "7373:7373"
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: akuWijaya321
-      DB_NAME: api_store
     volumes:
       - ./logs:/app/logs
     depends_on:
@@ -22,16 +16,16 @@ services:
       - golang-network
 
   db:
-    image: mysql
+    image: mariadb
     container_name: golang-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: akuWijaya321
-      MYSQL_DATABASE: api_store
+      MARIADB_ROOT_PASSWORD: akuWijaya321
+      MARIADB_DATABASE: api_store
     ports:
       - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mariadb
     networks:
       - golang-network
 
