@@ -5,7 +5,13 @@ import (
 	"api/models"
 )
 
-func CreateReview(review models.Review) models.Product {
+func CreateReview(review_data models.Review) models.Product {
+	review := models.Review{
+		UserID : review_data.UserID,
+		ProductID: review_data.ProductID,
+		Rating : review_data.Rating,
+		Comment : review_data.Comment,
+	}
 	database.DB.Create(&review)
 
 	var product models.Product
@@ -14,15 +20,15 @@ func CreateReview(review models.Review) models.Product {
 	return product
 }
 
-func FindReview(ID uint) models.Review {
+func FindReview(id uint) models.Review {
 	var review models.Review
-	database.DB.First(&review, ID)
+	database.DB.First(&review, id)
 	return review
 }
 
-func FindUserReview(ID uint) models.Review {
+func FindUserReview(id uint) models.Review {
 	var review models.Review
-	database.DB.Where("user_id = ?", ID).First(&review)
+	database.DB.First(&review, "user_id = ?", id)
 	return review
 }
 

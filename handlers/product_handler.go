@@ -49,5 +49,8 @@ func DeleteProduct(c fiber.Ctx) error {
 	if err := service.DeleteProduct(id); err != nil {
 		return c.Status(500).SendString("Failed Delete Product")
 	}
-	return c.SendStatus(204)
+	
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Success",
+	})
 }

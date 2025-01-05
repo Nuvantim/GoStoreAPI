@@ -6,12 +6,13 @@ import (
 	"api/utils"
 )
 
-func CheckEmail(email string)models.User{
+func CheckEmail(email string) models.User {
 	var user models.User
-	database.DB.Fisrt(&user,"email = ?",email)
+	database.DB.First(&user, "email = ?", email)
 	return user
 }
-func RegisterUser(users models.User) map[string]interface{} {
+
+func RegisterAccount(users models.User) map[string]interface{} {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
 
@@ -38,13 +39,13 @@ func RegisterUser(users models.User) map[string]interface{} {
 	return alert
 }
 
-func GetUser() []models.User {
-	var user []models.User
-	database.DB.Find(&user)
-	return user
-}
+// func GetUser() []models.User {
+// 	var user []models.User
+// 	database.DB.Find(&user)
+// 	return user
+// }
 
-func FindUser(id uint) map[string]interface{} {
+func FindAccount(id uint) map[string]interface{} {
 	var user models.User
 	var info models.UserInfo
 
@@ -64,10 +65,11 @@ func FindUser(id uint) map[string]interface{} {
 	return data
 }
 
-func UpdateUser(users models.User, user_info models.UserInfo, id uint) map[string]interface{} {
+func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) map[string]interface{} {
 	// Ambil data user berdasarkan id
 	var user models.User
-	if err := database.DB.First(&user, id).Error; err != nil {
+
+	if err := database.DB.First(&user, user_id).Error; err != nil {
 		return map[string]interface{}{"error": "User not found"}
 	}
 
@@ -86,7 +88,7 @@ func UpdateUser(users models.User, user_info models.UserInfo, id uint) map[strin
 
 	// Ambil data user_info berdasarkan user_id
 	var userInfo models.UserInfo
-	if err := database.DB.Where("user_id = ?", id).First(&userInfo).Error; err != nil {
+	if err := database.DB.Where("user_id = ?", user_id).First(&userInfo).Error; err != nil {
 		return map[string]interface{}{"error": "User info not found"}
 	}
 
@@ -112,9 +114,9 @@ func UpdateUser(users models.User, user_info models.UserInfo, id uint) map[strin
 	return data
 }
 
-func DeleteUser(id string) error {
+func DeleteAccount(user_id uint) error {
 	var user models.User
-	if err := database.DB.First(&user, id).Error; err != nil {
+	if err := database.DB.First(&user, user_id).Error; err != nil {
 		return err
 	}
 	database.DB.Delete(&user)

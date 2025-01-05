@@ -4,7 +4,6 @@ import (
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
-	"strconv"
 )
 
 type UserRequest struct {
@@ -30,7 +29,7 @@ func GetProfile(c fiber.Ctx) error {
 	}
 
 	// Query profil pengguna dari database
-	user := service.FindUser(userID)
+	user := service.FindAccount(userID)
 
 	return c.JSON(user)
 }
@@ -38,39 +37,35 @@ func GetProfile(c fiber.Ctx) error {
 /*
 Handler GetUser
 */
-func GetUser(c fiber.Ctx) error {
-	user := service.GetUser()
-	return c.Status(400).JSON(user)
-}
+// func GetUser(c fiber.Ctx) error {
+// 	user := service.GetUser()
+// 	return c.Status(400).JSON(user)
+// }
 
 /*
 Handler Register User
 */
-func RegisterUser(c fiber.Ctx) error {
+func RegisterAccount(c fiber.Ctx) error {
 	var users models.User
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	emails := service.CheckEmail(users.Email)
-	if emails.ID != 0{
-		return C.Status(400).JSON(fiber.Map{
-			"message":"Your email already exist",
-		}
+	if emails.ID != 0 {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Your email already exist",
+		})
 	}
-	register := service.RegisterUser(users)
+	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(register)
 }
 
 /*
 Handler Update User
 */
-func UpdateUser(c fiber.Ctx) error {
+func UpdateAccount(c fiber.Ctx) error {
 	var req UserRequest
-	id_user := c.Locals("user_id").(uint)
-	id, _ := strconv.Atoi(c.Params("id"))
-	if uint(id) != id_user {
-		return c.Status(403).JSON(fiber.Map{"message": "Forbidden"})
-	}
+	user_id := c.Locals("user_id").(uint)
 
 	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
@@ -92,16 +87,16 @@ func UpdateUser(c fiber.Ctx) error {
 		State:    req.State,
 		Country:  req.Country,
 	}
-	users := service.UpdateUser(user, user_info, uint(id))
+	users := service.UpdateAccount(user, user_info, user_id)
 	return c.Status(200).JSON(users)
 }
 
 /*
 Handler Delete User
 */
-func DeleteUser(c fiber.Ctx) error {
-	id := c.Params("id")
-	if err := service.DeleteUser(id); err != nil {
+func DeleteAccount(c fiber.Ctx) error {
+	user_id := c.Locals("user_id").(uint)
+	if err := service.DeleteAccount(user_id); err != nil {
 		return c.Status(500).SendString("Failed Delete User")
 	}
 	return c.Status(201).JSON(fiber.Map{

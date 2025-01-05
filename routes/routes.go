@@ -9,18 +9,17 @@ import (
 func Setup(app *fiber.App) {
 
 	//auth Route
-	app.Post("/register", handler.RegisterUser)
+	app.Post("/account/register", handler.RegisterAccount)
 	app.Post("/login", handler.Login)
-	app.Post("/logout", handler.Logout)
 
 	//protected
 	app.Use(middleware.Setup())
 
 	// User Route
-	app.Get("/user", handler.GetUser)
-	app.Get("/profile", handler.GetProfile)
-	app.Put("/user/:id", handler.UpdateUser)
-	app.Delete("/user/:id", handler.DeleteUser)
+	app.Get("/account/profile", handler.GetProfile)
+	app.Put("/account/update", handler.UpdateAccount)
+	app.Delete("/account/delete", handler.DeleteAccount)
+	app.Post("/logout", handler.Logout)
 
 	// Category Route
 	app.Get("/category", handler.GetCategory)

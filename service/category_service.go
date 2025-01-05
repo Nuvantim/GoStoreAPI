@@ -31,7 +31,6 @@ func UpdateCategory(id uint, category_request models.Category) models.Category {
 	database.DB.First(&category, id)
 	category.Name = category_request.Name
 	database.DB.Save(&category)
-	database.DB.First(&category, id)
 	return category
 }
 

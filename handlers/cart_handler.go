@@ -137,7 +137,7 @@ func DeleteCart(c fiber.Ctx) error {
 
 	// Find Cart
 	carts := service.FindCart(uint(id))
-	if carts.ID != user_id {
+	if carts.UserID != user_id {
 		return c.Status(403).JSON(fiber.Map{
 			"message": "Forbidden",
 		})
