@@ -6,6 +6,11 @@ import (
 	"api/utils"
 )
 
+func CheckEmail(email string)models.User{
+	var user models.User
+	database.DB.Fisrt(&user,"email = ?",email)
+	return user
+}
 func RegisterUser(users models.User) map[string]interface{} {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
