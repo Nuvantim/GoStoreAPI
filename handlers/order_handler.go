@@ -69,13 +69,12 @@ func CreateOrder(c fiber.Ctx) error {
 
 	//get all cart
 	cart := service.TransferCart(request.CartID)
-		for _,cart := range cart{
-			if cart.ID == 0 {
-				return c.Status(404).JSON(fiber.Map{
-					"message":"Cart Not Found",
-				})
-			}
-		}
+	//check cart
+	if cart == nil {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "Cart not found",
+		})
+	}
 
 	//sum total_cost
 	for _, cart := range cart {
