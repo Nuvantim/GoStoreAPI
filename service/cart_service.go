@@ -62,8 +62,7 @@ func TransferCart(cart_id []uint) []models.Cart {
 	if result.RowsAffected == 0 {
 		return nil // Mengembalikan nil jika tidak ada data
 	}
-	
+
 	database.DB.Where("id IN ?", cart_id).Find(&cart)
 	return cart
 }
-

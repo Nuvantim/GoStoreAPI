@@ -28,7 +28,7 @@ func FindReview(user_id uint) models.Review {
 
 func FindUserReview(user_id, product_id uint) models.Review {
 	var review models.Review
-	database.DB.Where("user_id = ?",user_id).Where("product_id = ?",product_id).First(&review)
+	database.DB.Where("user_id = ?", user_id).Where("product_id = ?", product_id).First(&review)
 	return review
 }
 

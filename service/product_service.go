@@ -8,7 +8,7 @@ import (
 // get category
 func GetAllProduct() []models.Product {
 	var product []models.Product
-	database.DB.Select("id", "name", "price", "stock").Preload("Category").Find(&product)
+	database.DB.Select("id", "name", "price", "stock","category_id").Preload("Category").Find(&product)
 	return product
 }
 

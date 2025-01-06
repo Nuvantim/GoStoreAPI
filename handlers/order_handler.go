@@ -62,8 +62,8 @@ func CreateOrder(c fiber.Ctx) error {
 	// Bind body request ke struct request
 	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message":"Invalid request body",
-			"error": err.Error(),
+			"message": "Invalid request body",
+			"error":   err.Error(),
 		})
 	}
 
