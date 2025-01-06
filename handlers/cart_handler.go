@@ -59,10 +59,15 @@ func AddCart(c fiber.Ctx) error {
 	}
 	// check product
 	var product = service.FindProduct(cart.ProductID)
+	if product.ID == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "Product Not Found",
+		})
+	}
 
 	// check product
 	if uint(product.Stock) < 1 {
-		return c.Status(404).JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"message": "Stock Product is empty",
 		})
 	}

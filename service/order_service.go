@@ -10,13 +10,13 @@ SERVICE ORDER
 */
 func GetOrder(id uint) []models.Order {
 	var order []models.Order
-	database.DB.Preload("OrderItem").Preload("OrderItem.Product").Where("user_id = ?", id).Find(&order)
+	database.DB.Where("user_id = ?", id).Find(&order)
 	return order
 }
 
 func FindOrder(id uint) models.Order {
 	var order models.Order
-	database.DB.Preload("OrderItem").First(&order, id)
+	database.DB.Preload("OrderItem.Product").First(&order, id)
 	return order
 }
 
@@ -44,7 +44,7 @@ func CreateOrder(id_user, totalPrice uint, cartData []models.Cart) models.Order 
 	// Batch insert ke database
 	database.DB.Create(&orderItems)
 
-	database.DB.Preload("User").Preload("OrderItem.Product").First(&order, order.ID)
+	database.DB.Preload("OrderItem.Product").First(&order, order.ID)
 	return order
 }
 

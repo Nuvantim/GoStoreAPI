@@ -70,5 +70,5 @@ func AuthAndRefreshMiddleware(c fiber.Ctx) error {
 	}
 
 	// Jika kedua token tidak valid, kembalikan unauthorized
-	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Session Expired"})
 }

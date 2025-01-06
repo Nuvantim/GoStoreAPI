@@ -61,11 +61,21 @@ func CreateOrder(c fiber.Ctx) error {
 
 	// Bind body request ke struct request
 	if err := c.Bind().Body(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message":"Invalid request body",
+			"error": err.Error(),
+		})
 	}
 
 	//get all cart
 	cart := service.TransferCart(request.CartID)
+		for _,cart := range cart{
+			if cart.ID == 0 {
+				return c.Status(404).JSON(fiber.Map{
+					"message":"Cart Not Found",
+				})
+			}
+		}
 
 	//sum total_cost
 	for _, cart := range cart {

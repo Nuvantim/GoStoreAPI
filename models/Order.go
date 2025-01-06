@@ -7,7 +7,6 @@ import (
 type Order struct {
 	ID        uint   `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID    uint   `json:"user_id"`
-	User      User   `gorm:"foreignKey:UserID"`
 	Total     uint   `json:"total"`
 	Status    string `json:"status" gorm:"type:enum('pending', 'paid', 'shipped', 'completed', 'canceled');default:'pending'"`
 	OrderItem []OrderItem
