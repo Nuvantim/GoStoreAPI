@@ -58,6 +58,8 @@ func CreateOrder(c fiber.Ctx) error {
 
 	//declare variabel totalPrice
 	var totalPrice uint
+	//declare variabel totalItem
+	var totalItem uint
 
 	// Bind body request ke struct request
 	if err := c.Bind().Body(&request); err != nil {
@@ -75,7 +77,6 @@ func CreateOrder(c fiber.Ctx) error {
 			"message": "Cart not found",
 		})
 	}
-
 	//sum total_cost
 	for _, cart := range cart {
 
@@ -87,10 +88,13 @@ func CreateOrder(c fiber.Ctx) error {
 		}
 		// sum total price
 		totalPrice += cart.Total_Cost
+		
 	}
+	// sum total item
+	totalItem = uint(len(cart))
 
 	//connect service
-	order := service.CreateOrder(uint(user_id), totalPrice, cart)
+	order := service.CreateOrder(uint(user_id), totalItem,totalPrice, cart)
 
 	// remove cart after create order
 	service.DeleteCart(request.CartID)

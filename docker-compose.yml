@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: go-app:release
+    image: go-app
     container_name: golang-app
     restart: always
     ports:

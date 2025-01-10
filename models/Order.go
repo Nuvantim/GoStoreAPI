@@ -5,12 +5,13 @@ import (
 )
 
 type Order struct {
-	ID        uint   `json:"id" gorm:"primaryKey;autoIncrement"`
-	UserID    uint   `json:"user_id"`
-	Total     uint   `json:"total"`
-	Status    string `json:"status" gorm:"type:enum('pending', 'paid', 'shipped', 'completed', 'canceled');default:'pending'"`
+	ID        		uint   	`json:"id" gorm:"primaryKey;autoIncrement"`
+	UserID    		uint   	`json:"user_id"`
+	Total_Price     uint   	`json:"total"`
+	Total_Item 		uint 	`json:"item_quantity"`
+	Status    		string 	`json:"status" gorm:"type:enum('pending', 'paid', 'shipped', 'completed', 'canceled');default:'pending'"`
 	OrderItem []OrderItem
-	CreatedAt time.Time `gorm:"autoCreateTime"`
+	CreatedAt time.Time 	`gorm:"autoCreateTime"`
 }
 
 type OrderItem struct {

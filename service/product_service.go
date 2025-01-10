@@ -16,9 +16,9 @@ func GetAllProduct() []models.Product {
 func FindProduct(id uint) models.Product {
 	var product models.Product
 	database.DB.Preload("Category").
-		Preload("Review").
-		Preload("Review.User").
-		First(&product, id)
+	Preload("Review").
+	Preload("Review.User").
+	First(&product, id)
 	return product
 }
 
