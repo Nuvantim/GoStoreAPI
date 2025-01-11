@@ -33,8 +33,8 @@ func MysqlConnect() {
 
 	// Open the MySQL database connection using GORM
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		SkipDefaultTransaction: true,  // Avoid default transaction wrapping
-		PrepareStmt:            true,  // Enable statement preparation for better performance
+		SkipDefaultTransaction: true, // Avoid default transaction wrapping
+		PrepareStmt:            true, // Enable statement preparation for better performance
 	})
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)

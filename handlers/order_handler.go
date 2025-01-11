@@ -3,7 +3,6 @@ package handler
 import (
 	"api/service"
 	"github.com/gofiber/fiber/v3"
-	"strconv"
 )
 
 // struct Request
@@ -28,17 +27,17 @@ HANDLER FIND ORDER
 */
 func FindOrder(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
-	id, _ := strconv.Atoi(c.Params("id"))
+	id := c.Params("id")
 
 	// connect service
-	order := service.FindOrder(uint(id))
+	order := service.FindOrder(id)
 
 	// check order exist
-	if order.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Order Not Found",
-		})
-	}
+	// if order.ID == "0" {
+	// 	return c.Status(404).JSON(fiber.Map{
+	// 		"message": "Order Not Found",
+	// 	})
+	// }
 
 	// check user order
 	if order.UserID != user_id {
@@ -88,13 +87,13 @@ func CreateOrder(c fiber.Ctx) error {
 		}
 		// sum total price
 		totalPrice += cart.Total_Cost
-		
+
 	}
 	// sum total item
 	totalItem = uint(len(cart))
 
 	//connect service
-	order := service.CreateOrder(uint(user_id), totalItem,totalPrice, cart)
+	order := service.CreateOrder(uint(user_id), totalItem, totalPrice, cart)
 
 	// remove cart after create order
 	service.DeleteCart(request.CartID)
@@ -107,18 +106,18 @@ HANDLER DELETE ORDER
 */
 func DeleteOrder(c fiber.Ctx) error {
 	// get endpoint id & user_id
-	id, _ := strconv.Atoi(c.Params("id"))
-	user_id := c.Locals("user_id").(uint)
+	id := c.Params("id")
+	user_id := c.Locals("user_id")
 
 	// find Order
-	order := service.FindOrder(uint(id))
+	order := service.FindOrder(id)
 
 	// cek order exist
-	if order.ID == 0 {
-		c.Status(404).JSON(fiber.Map{
-			"message": "Order Not Found",
-		})
-	}
+	// if order.ID == 0 {
+	// 	c.Status(404).JSON(fiber.Map{
+	// 		"message": "Order Not Found",
+	// 	})
+	// }
 
 	// cek user order
 	if order.UserID != user_id {
@@ -127,7 +126,7 @@ func DeleteOrder(c fiber.Ctx) error {
 		})
 	}
 	// connect service
-	service.DeleteOrder(uint(id))
+	service.DeleteOrder(id)
 	return c.Status(200).JSON(fiber.Map{
 		"message": "success",
 	})

@@ -14,7 +14,7 @@ func GetOrder(id uint) []models.Order {
 	return order
 }
 
-func FindOrder(id uint) models.Order {
+func FindOrder(id string) models.Order {
 	var order models.Order
 	database.DB.Preload("OrderItem.Product").First(&order, id)
 	return order
@@ -22,7 +22,7 @@ func FindOrder(id uint) models.Order {
 
 func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) models.Order {
 	// Create Order
-	order := models.Order{
+	order := models.Order {
 		UserID: id_user,
 		Total_Price:  totalPrice,
 		Total_Item: totalItem,
@@ -49,7 +49,7 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 	return order
 }
 
-func DeleteOrder(id uint) error {
+func DeleteOrder(id string) error {
 	// Memulai transaksi database
 	tx := database.DB.Begin()
 
