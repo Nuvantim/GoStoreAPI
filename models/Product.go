@@ -12,6 +12,6 @@ type Product struct {
 	Stock       uint      `json:"stock" gorm:"default:0"`
 	CategoryID  uint      `json:"category_id" gorm:"not null"`
 	Category    Category  `json:"category, omitempty" gorm:"foreignKey:CategoryID"`
-	Review      []Review  `json:"review,omitempty"`
+	Review      *[]Review  `json:"review,omitempty"`
 	CreatedAt   time.Time `gorm:"autoCreateTime"`
 }
