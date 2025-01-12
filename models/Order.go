@@ -2,30 +2,34 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"time"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Order struct {
-	ID          string 		`json:"id" gorm:"type:uuid;primaryKey"`
-	UserID      uint      `json:"user_id"`
-	Total_Price uint      `json:"total_price"`
-	Total_Item  uint      `json:"total_item"`
-	Status      string    `json:"status" gorm:"type:enum('pending', 'paid', 'shipped', 'completed', 'canceled');default:'pending'"`
-	OrderItem   []OrderItem
-	CreatedAt   time.Time `gorm:"autoCreateTime"`
+	ID         uuid.UUID   `json:"id" gorm:"type:uuid;primaryKey"`
+	UserID     uint        `json:"user_id" gorm:"not null"`
+	TotalPrice uint        `json:"total_price" gorm:"not null"`
+	TotalItem  uint        `json:"total_item" gorm:"not null"`
+	Status     string      `json:"status" gorm:"type:enum('pending','paid','shipped','completed','canceled');default:'pending'"`
+	OrderItems []OrderItem `json:"order_items,omitempty" gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE"`
+	CreatedAt  time.Time   `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt  time.Time   `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
 type OrderItem struct {
-	ID         uint      `json:"id" gorm:"primaryKey;autoIncrement"`
-	OrderID    string    `json:"order_id" gorm:"type:uuid"`
-	ProductID  uint      `json:"product_id"`
-	Product    Product   `gorm:"foreignKey:ProductID"`
-	Quantity   uint      `json:"quantity"`
-	Total_Cost uint      `json:"total_cost"`
+	ID        uint       `json:"id" gorm:"primaryKey;autoIncrement"`
+	OrderID   uuid.UUID  `json:"order_id" gorm:"type:uuid;not null"`
+	ProductID uint       `json:"product_id" gorm:"not null"`
+	Product   *Product   `json:"product,omitempty"`
+	Quantity  uint       `json:"quantity" gorm:"not null"`
+	TotalCost uint       `json:"total_cost" gorm:"not null"`
+	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
 }
 
-func (o *Order) BeforeCreate(tx *gorm.DB) (err error){
-	o.ID = uuid.New().String()
-	return
+func (o *Order) BeforeCreate(tx *gorm.DB) error {
+	if o.ID == uuid.Nil {
+		o.ID = uuid.New()
+	}
+	return nil
 }
