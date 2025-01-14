@@ -4,12 +4,12 @@ import (
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
-	"reflect"
+	"api/utils"
 )
 
 type UserRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
 	Password string `json:"password"`
 	Age      uint   `json:"age"`
 	Phone    uint   `json:"phone"`
@@ -51,10 +51,11 @@ func RegisterAccount(c fiber.Ctx) error {
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	//check filed data
-	if reflect.DeepEqual(users, models.User{}){
+
+	// validate data
+	if err := utils.Validator(users); err != nil{
 		return c.Status(500).JSON(fiber.Map{
-			"error" : "All data must be field",
+			"error" : err.Error(),
 		})
 	}
 
@@ -79,6 +80,13 @@ func UpdateAccount(c fiber.Ctx) error {
 
 	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	// validate data
+	if err := utils.Validator(req); err != nil{
+		return c.Status(500).JSON(fiber.Map{
+			"error" : err.Error(),
+		})
 	}
 
 	//parsing user model

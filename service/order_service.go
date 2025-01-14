@@ -23,7 +23,7 @@ func FindOrder(id string) models.Order {
 func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) models.Order {
 	// Create Order
 	order := models.Order{
-		UserID:      id_user,
+		UserID:     id_user,
 		TotalPrice: totalPrice,
 		TotalItem:  totalItem,
 	}
@@ -35,9 +35,9 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 	// Menyiapkan data untuk batch insert
 	for _, cart := range cartData {
 		orderItems = append(orderItems, models.OrderItem{
-			OrderID:    order.ID,
-			ProductID:  cart.ProductID,
-			Quantity:   cart.Quantity,
+			OrderID:   order.ID,
+			ProductID: cart.ProductID,
+			Quantity:  cart.Quantity,
 			TotalCost: cart.Total_Cost,
 		})
 	}

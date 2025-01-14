@@ -11,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
-
 // FiberConfig berisi konfigurasi Fiber yang aman
 func FiberConfig() fiber.Config {
 	return fiber.Config{
