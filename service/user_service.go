@@ -4,6 +4,7 @@ import (
 	"api/database"
 	"api/models"
 	"api/utils"
+	"strings"
 )
 
 func CheckEmail(email string) models.User {

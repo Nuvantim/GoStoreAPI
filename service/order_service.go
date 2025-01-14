@@ -22,10 +22,10 @@ func FindOrder(id string) models.Order {
 
 func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) models.Order {
 	// Create Order
-	order := models.Order {
-		UserID: id_user,
-		Total_Price:  totalPrice,
-		Total_Item: totalItem,
+	order := models.Order{
+		UserID:      id_user,
+		TotalPrice: totalPrice,
+		TotalItem:  totalItem,
 	}
 	database.DB.Create(&order)
 
@@ -38,7 +38,7 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 			OrderID:    order.ID,
 			ProductID:  cart.ProductID,
 			Quantity:   cart.Quantity,
-			Total_Cost: cart.Total_Cost,
+			TotalCost: cart.Total_Cost,
 		})
 	}
 

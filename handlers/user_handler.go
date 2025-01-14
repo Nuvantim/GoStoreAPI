@@ -4,6 +4,7 @@ import (
 	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"reflect"
 )
 
 type UserRequest struct {
@@ -50,12 +51,21 @@ func RegisterAccount(c fiber.Ctx) error {
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
+	//check filed data
+	if reflect.DeepEqual(users, models.User{}){
+		return c.Status(500).JSON(fiber.Map{
+			"error" : "All data must be field",
+		})
+	}
+
+	//check email
 	emails := service.CheckEmail(users.Email)
 	if emails.ID != 0 {
 		return c.Status(400).JSON(fiber.Map{
 			"message": "Your email already exist",
 		})
 	}
+
 	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(register)
 }
