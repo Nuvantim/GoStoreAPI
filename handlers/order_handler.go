@@ -3,6 +3,7 @@ package handler
 import (
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 )
 
 // struct Request
@@ -33,7 +34,7 @@ func FindOrder(c fiber.Ctx) error {
 	order := service.FindOrder(id)
 
 	// check order exist
-	if order.ID == 0 {
+	if order.ID == uuid.Nil {
 		return c.Status(404).JSON(fiber.Map{
 			"message": "Order Not Found",
 		})
@@ -113,7 +114,7 @@ func DeleteOrder(c fiber.Ctx) error {
 	order := service.FindOrder(id)
 
 	// cek order exist
-	if order.ID == 0 {
+	if order.ID == uuid.Nil {
 		c.Status(404).JSON(fiber.Map{
 			"message": "Order Not Found",
 		})
