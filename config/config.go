@@ -3,7 +3,6 @@ package config
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
-        "github.com/go-playground/validator/v10"
 	"time"
 	// "github.com/gofiber/fiber/v3/middleware/csrf"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
@@ -11,10 +10,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/limiter"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 )
-//implement the Validate method
-func (v *structValidator) Validate(out any) error {
-    return v.validate.Struct(out)
-}
+
 
 // FiberConfig berisi konfigurasi Fiber yang aman
 func FiberConfig() fiber.Config {
@@ -23,7 +19,6 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Fiber",
-		StructValidator: &structValidator{validate: validator.New()},
 	}
 }
 
