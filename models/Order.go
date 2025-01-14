@@ -1,13 +1,13 @@
 package models
 
 import (
-	// "github.com/google/uuid"
-	// "gorm.io/gorm"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"time"
 )
 
 type Order struct {
-	ID         uint        `json:"id" gorm:"autoIncrement;primaryKey"`
+	ID         uuid.UUID   `json:"id" gorm:"type:uuid;primaryKey"`
 	UserID     uint        `json:"user_id" gorm:"not null"`
 	TotalPrice uint        `json:"total_price" gorm:"not null"`
 	TotalItem  uint        `json:"total_item" gorm:"not null"`
@@ -18,8 +18,8 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement"`
-	OrderID   uint      `json:"order_id" gorm:"type:uuid;not null"`
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
+	OrderID   uuid.UUID `json:"order_id" gorm:"type:uuid;not null"`
 	ProductID uint      `json:"product_id" gorm:"not null"`
 	Product   *Product  `json:"product,omitempty"`
 	Quantity  uint      `json:"quantity" gorm:"not null"`
@@ -27,9 +27,16 @@ type OrderItem struct {
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
-// func (o *Order) BeforeCreate(tx *gorm.DB) error {
-// 	if o.ID == uuid.Nil {
-// 		o.ID = uuid.New()
-// 	}
-// 	return nil
-// }
+func (o *Order) BeforeCreate(tx *gorm.DB) error {
+	if o.ID == uuid.Nil {
+		o.ID = uuid.New()
+	}
+	return nil
+}
+
+func (oi *OrderItem) BeforeCreate(tx *gorm.DB) error {
+	if oi.ID == uuid.Nil {
+		oi.ID = uuid.New()
+	}
+	return nil
+}
