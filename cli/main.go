@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	database.MysqlConnect()
+	database.Setup()
 
 	app := fiber.New(config.FiberConfig())
 
@@ -22,6 +22,6 @@ func main() {
 		return c.SendStatus(404) // => 404 "Not Found"
 	})
 
-	log.Fatal(app.Listen(":" + os.Getenv("PORT"), ListenConfig{EnablePrefork: true}))
+	log.Fatal(app.Listen(":"+os.Getenv("PORT")))
 
 }

@@ -2,9 +2,7 @@ package database
 
 import (
 	"api/models"
-	"fmt"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -15,8 +13,8 @@ var (
 	DB *gorm.DB
 )
 
-// MysqlConnect initializes the connection to the MySQL database
-func MysqlConnect() {
+// Setup initializes the connection to the MySQL database
+func Setup() {
 	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
@@ -24,21 +22,22 @@ func MysqlConnect() {
 	}
 
 	// Prepare the DSN (Data Source Name)
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"))
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	name := os.Getenv("DB_NAME")
+	driver := os.Getenv("DB_DRIVER")
 
-	// Open the MySQL database connection using GORM
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		SkipDefaultTransaction: true, // Avoid default transaction wrapping
-		PrepareStmt:            true, // Enable statement preparation for better performance
-	})
-	if err != nil {
-		log.Fatal("Failed to connect to database: ", err)
-		os.Exit(2)
+	// Initialize db connection based on the driver
+	var db *gorm.DB
+	switch driver {
+	case "mysql":
+		db = ConnectMySQL(user, password, host, port, name)
+	case "pgsql" :
+		db = ConnectPostgres(user, password, host, port, name)
+	default:
+		log.Fatal("Unsupported DB_DRIVER. Please set it to either 'mysql' or 'postgres'")
 	}
 
 	// Set up database connection pooling
@@ -46,6 +45,7 @@ func MysqlConnect() {
 	if err != nil {
 		log.Fatal("Failed to get db object: ", err)
 	}
+
 	// Set maximum idle and open connections, and maximum connection lifetime
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
@@ -72,3 +72,4 @@ func MysqlConnect() {
 	// Assign the DB object to the global variable
 	DB = db
 }
+

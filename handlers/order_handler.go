@@ -3,6 +3,7 @@ package handler
 import (
 	"api/service"
 	"github.com/gofiber/fiber/v3"
+	"api/utils"
 )
 
 // struct Request
@@ -64,7 +65,13 @@ func CreateOrder(c fiber.Ctx) error {
 	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
-			"error":   err.Error(),
+		})
+	}
+
+	// validate data
+	if err := utils.Validator(request); err != nil{
+		return c.Status(422).JSON(fiber.Map{
+			"error" : err.Error(),
 		})
 	}
 

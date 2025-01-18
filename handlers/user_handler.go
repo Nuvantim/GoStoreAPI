@@ -54,7 +54,7 @@ func RegisterAccount(c fiber.Ctx) error {
 
 	// validate data
 	if err := utils.Validator(users); err != nil{
-		return c.Status(500).JSON(fiber.Map{
+		return c.Status(422).JSON(fiber.Map{
 			"error" : err.Error(),
 		})
 	}

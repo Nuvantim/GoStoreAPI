@@ -33,6 +33,7 @@ func Login(c fiber.Ctx) error {
 	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
+	
 
 	// Panggil service untuk login
 	accessToken, refreshToken, err := service.Login(request.Email, request.Password)

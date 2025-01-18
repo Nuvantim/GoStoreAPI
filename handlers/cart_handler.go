@@ -5,6 +5,7 @@ import (
 	"api/service"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
+	"api/utils"
 )
 
 /*
@@ -57,6 +58,13 @@ func AddCart(c fiber.Ctx) error {
 	if err := c.Bind().Body(&cart); err != nil {
 		return c.Status(400).JSON(err.Error)
 	}
+
+	// validate data
+	if err := utils.Validator(cart); err != nil{
+		return c.Status(422).JSON(fiber.Map{
+			"error" : err.Error(),
+		})
+	}
 	// check product
 	var product = service.FindProduct(cart.ProductID)
 	if product.ID == 0 {
@@ -94,7 +102,12 @@ func UpdateCart(c fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-
+	// validate data
+	if err := utils.Validator(cart); err != nil{
+		return c.Status(422).JSON(fiber.Map{
+			"error" : err.Error(),
+		})
+	}
 	// Find cart
 	carts := service.FindCart(cart.ID)
 
