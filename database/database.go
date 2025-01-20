@@ -31,7 +31,7 @@ func Setup() {
 
 	// Initialize db connection based on the driver
 	var db *gorm.DB
-	switch driver {
+	switch string(driver) {
 	case "mysql":
 		db = ConnectMySQL(user, password, host, port, name)
 	case "pgsql":
@@ -60,7 +60,7 @@ func Setup() {
 		&models.Product{},
 		&models.Category{},
 		&models.Order{},
-		&models.OrderItem{},
+		// &models.OrderItem{},
 		&models.Cart{},
 		&models.UserInfo{},
 		&models.Review{},

@@ -4,6 +4,7 @@ import (
 	"api/config"
 	"api/database"
 	"api/routes"
+	"api/database/seeder"
 	"github.com/gofiber/fiber/v3"
 	"log"
 	"os"
@@ -11,6 +12,8 @@ import (
 
 func main() {
 	database.Setup()
+
+	seeder.SeederSetup()
 
 	app := fiber.New(config.FiberConfig())
 
