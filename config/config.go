@@ -30,7 +30,11 @@ func MiddlewareConfig(app *fiber.App) {
 		Expiration: 30 * time.Second,
 	}))
 	// Logger
-	app.Use(logger.New())
+	app.Use(logger.New(logger.Config{
+        Format:     "${pid} ${status} - ${method} ${path}\n",
+        TimeFormat: "02-Jan-2006",
+        TimeZone:   "Asia/Jakarta",
+        }))
 
 	//Helmet
 	app.Use(helmet.New())
