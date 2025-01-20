@@ -3,9 +3,9 @@ package handler
 import (
 	"api/models"
 	"api/service"
+	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
-	"api/utils"
 )
 
 /*
@@ -34,9 +34,9 @@ func CreateCategory(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(category); err != nil{
+	if err := utils.Validator(category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	categories := service.CreateCategory(category)
@@ -53,9 +53,9 @@ func UpdateCategory(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(category); err != nil{
+	if err := utils.Validator(category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	category_update := service.UpdateCategory(uint(id), category)

@@ -2,8 +2,8 @@ package handler
 
 import (
 	"api/service"
-	"github.com/gofiber/fiber/v3"
 	"api/utils"
+	"github.com/gofiber/fiber/v3"
 )
 
 // struct Request
@@ -34,11 +34,11 @@ func FindOrder(c fiber.Ctx) error {
 	order := service.FindOrder(id)
 
 	// check order exist
-	if order.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Order Not Found",
-		})
-	}
+	// if order.ID == 0 {
+	// 	return c.Status(404).JSON(fiber.Map{
+	// 		"message": "Order Not Found",
+	// 	})
+	// }
 
 	// check user order
 	if order.UserID != user_id {
@@ -69,9 +69,9 @@ func CreateOrder(c fiber.Ctx) error {
 	}
 
 	// validate data
-	if err := utils.Validator(request); err != nil{
+	if err := utils.Validator(request); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 
@@ -120,11 +120,11 @@ func DeleteOrder(c fiber.Ctx) error {
 	order := service.FindOrder(id)
 
 	// cek order exist
-	if order.ID == 0 {
-		c.Status(404).JSON(fiber.Map{
-			"message": "Order Not Found",
-		})
-	}
+	// if order.ID == 0 {
+	// 	c.Status(404).JSON(fiber.Map{
+	// 		"message": "Order Not Found",
+	// 	})
+	// }
 
 	// cek user order
 	if order.UserID != user_id {

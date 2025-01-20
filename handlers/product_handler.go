@@ -4,9 +4,9 @@ import (
 	"api/database"
 	"api/models"
 	"api/service"
+	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
-	"api/utils"
 )
 
 func GetProduct(c fiber.Ctx) error {
@@ -27,9 +27,9 @@ func CreateProduct(c fiber.Ctx) error {
 	}
 
 	// validate data
-	if err := utils.Validator(product); err != nil{
+	if err := utils.Validator(product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	var category models.Category
@@ -49,9 +49,9 @@ func UpdateProduct(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(product); err != nil{
+	if err := utils.Validator(product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	products := service.UpdateProduct(id, product)

@@ -34,7 +34,7 @@ func Setup() {
 	switch driver {
 	case "mysql":
 		db = ConnectMySQL(user, password, host, port, name)
-	case "pgsql" :
+	case "pgsql":
 		db = ConnectPostgres(user, password, host, port, name)
 	default:
 		log.Fatal("Unsupported DB_DRIVER. Please set it to either 'mysql' or 'postgres'")
@@ -72,4 +72,3 @@ func Setup() {
 	// Assign the DB object to the global variable
 	DB = db
 }
-

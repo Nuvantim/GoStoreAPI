@@ -3,8 +3,8 @@ package handler
 import (
 	"api/models"
 	"api/service"
-	"github.com/gofiber/fiber/v3"
 	"api/utils"
+	"github.com/gofiber/fiber/v3"
 )
 
 type UserRequest struct {
@@ -53,9 +53,9 @@ func RegisterAccount(c fiber.Ctx) error {
 	}
 
 	// validate data
-	if err := utils.Validator(users); err != nil{
+	if err := utils.Validator(users); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 
@@ -83,9 +83,9 @@ func UpdateAccount(c fiber.Ctx) error {
 	}
 
 	// validate data
-	if err := utils.Validator(req); err != nil{
+	if err := utils.Validator(req); err != nil {
 		return c.Status(500).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 

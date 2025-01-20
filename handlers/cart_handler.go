@@ -3,9 +3,9 @@ package handler
 import (
 	"api/models"
 	"api/service"
+	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
-	"api/utils"
 )
 
 /*
@@ -60,9 +60,9 @@ func AddCart(c fiber.Ctx) error {
 	}
 
 	// validate data
-	if err := utils.Validator(cart); err != nil{
+	if err := utils.Validator(cart); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	// check product
@@ -103,9 +103,9 @@ func UpdateCart(c fiber.Ctx) error {
 		})
 	}
 	// validate data
-	if err := utils.Validator(cart); err != nil{
+	if err := utils.Validator(cart); err != nil {
 		return c.Status(422).JSON(fiber.Map{
-			"error" : err.Error(),
+			"error": err.Error(),
 		})
 	}
 	// Find cart
