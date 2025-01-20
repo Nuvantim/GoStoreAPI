@@ -12,15 +12,14 @@ type Order struct {
 	UserID     uint        `json:"user_id" gorm:"not null" validate:"required"`
 	TotalPrice uint        `json:"total_price" gorm:"not null"`
 	TotalItem  uint        `json:"total_item" gorm:"not null"`
-	Status     string      `json:"status" gorm:"type:enum('pending','paid','shipped','completed','canceled');default:'pending'"`
+	Status     string      `json:"status" gorm:"type:default:'pending'"`
 	OrderItems []OrderItem `json:"order_items,omitempty" gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE"`
-	CreatedAt  time.Time   `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt  time.Time   `json:"updated_at" gorm:"autoUpdateTime"`
+	CreatedAt  *time.Time   `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type OrderItem struct {
 	ID      *uint     		`json:"id" gorm:"PrimaryKey;autoIncrement"`
-	OrderID uuid.UUID   	`json:"order_id" gorm:"not null"`
+	OrderID uuid.UUID   	`json:"order_id" gorm:"not null;references:ID"`
 	// OrderID   uint      `json:"order_id" gorm:"not null"`
 	ProductID uint      	`json:"product_id" gorm:"not null"`
 	Product   Product   	`json:"product,omitempty"`
