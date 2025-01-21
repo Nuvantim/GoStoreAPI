@@ -5,10 +5,25 @@ import (
 	"api/database"
 	"log"
 	"api/utils"
+	"time"
 )
 
 func SeederSetup() {
 	log.Println("Seeding database...")
+	start.time.Now()
+	//cek data seed
+	models := []interface{}{&User{}, &Category, &Product{}}
+	for _, model := range models {
+		var count int64
+		if err := db.Model(model).Count(&count).Error; err != nil {
+			log.Println("Gagal menghitung data:", err)
+			return err
+		}
+		if count > 0 {
+			return nil // Skip jika data sudah ada
+		}
+	}
+	
 	// seeding user data
 	password := utils.HashBycrypt("12345678")
 	user := models.User {
@@ -52,6 +67,8 @@ func SeederSetup() {
 			log.Println(err)
 		}
 	}
+	elapsed := time.Since(start)
+	log.Println("Seeding database success..",elapsed.Milliseconds())
 
 
 }
