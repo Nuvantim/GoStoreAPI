@@ -3,10 +3,9 @@ package main
 import (
 	"api/config"
 	"api/database"
-	"api/routes"
 	"api/database/seeder"
+	"api/routes"
 	"github.com/gofiber/fiber/v3"
-	"log"
 	"os"
 )
 
@@ -24,7 +23,7 @@ func main() {
 	app.Use(func(c fiber.Ctx) error {
 		return c.SendStatus(404) // => 404 "Not Found"
 	})
-
-	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
+	// app.Listen(":"+os.Getenv("PORT"), fiber.ListenConfig{EnablePrefork: true})
+	app.Listen(":" + os.Getenv("PORT"))
 
 }

@@ -7,7 +7,7 @@ services:
     container_name: golang-app
     restart: always
     ports:
-      - "7373:7373"
+      - "127.0.0.1:7373:7373"
     volumes:
       - ./logs:/app/logs
     depends_on:
@@ -23,7 +23,7 @@ services:
       MARIADB_ROOT_PASSWORD: akuWijaya321
       MARIADB_DATABASE: api_store
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql-data:/var/lib/mariadb
     networks:

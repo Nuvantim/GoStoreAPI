@@ -10,7 +10,7 @@ import (
 type UserRequest struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"omitempty,min=8"` `
+	Password string `json:"password" validate:"omitempty,min=8"`
 	Age      uint   `json:"age"`
 	Phone    uint   `json:"phone"`
 	District string `json:"district"`
