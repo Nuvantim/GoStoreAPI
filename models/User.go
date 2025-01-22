@@ -5,10 +5,10 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id" gorm:"PrimaryKey;autoIncrement"`
+	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"not null" validate:"required"`
 	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password  string    `json:"password" gorm:"not null" validate:"required"`
+	Password  string    `json:"-" gorm:"not null" validate:"required"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 

@@ -3,6 +3,7 @@ module api
 go 1.23.1
 
 require (
+	github.com/badoux/checkmail v1.2.4
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/golang-jwt/jwt/v5 v5.2.1

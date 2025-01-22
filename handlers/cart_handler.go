@@ -3,7 +3,6 @@ package handler
 import (
 	"api/models"
 	"api/service"
-	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
 )
@@ -59,12 +58,6 @@ func AddCart(c fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error)
 	}
 
-	// validate data
-	if err := utils.Validator(cart); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
 	// check product
 	var product = service.FindProduct(cart.ProductID)
 	if product.ID == 0 {
@@ -102,12 +95,7 @@ func UpdateCart(c fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	// validate data
-	if err := utils.Validator(cart); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+
 	// Find cart
 	carts := service.FindCart(cart.ID)
 

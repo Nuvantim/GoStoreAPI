@@ -2,8 +2,8 @@ package handler
 
 import (
 	"api/service"
-	"api/utils"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 )
 
 // struct Request
@@ -27,25 +27,26 @@ func GetOrder(c fiber.Ctx) error {
 HANDLER FIND ORDER
 */
 func FindOrder(c fiber.Ctx) error {
-	user_id := c.Locals("user_id").(uint)
-	id := c.Params("id")
+	// user_id := c.Locals("user_id").(uint)
+	id_order := c.Params("id")
+	id,_ := uuid.Parse(id_order)
 
 	// connect service
 	order := service.FindOrder(id)
 
 	// check order exist
-	// if order.ID == 0 {
+	// if order.ID == uuid.Nil {
 	// 	return c.Status(404).JSON(fiber.Map{
 	// 		"message": "Order Not Found",
 	// 	})
 	// }
 
-	// check user order
-	if order.UserID != user_id {
-		return c.Status(403).JSON(fiber.Map{
-			"message": "Forbidden",
-		})
-	}
+	// // check user order
+	// if order.UserID != user_id {
+	// 	return c.Status(403).JSON(fiber.Map{
+	// 		"message": "Forbidden",
+	// 	})
+	// }
 	return c.Status(200).JSON(order)
 }
 
@@ -65,13 +66,6 @@ func CreateOrder(c fiber.Ctx) error {
 	if err := c.Bind().Body(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request body",
-		})
-	}
-
-	// validate data
-	if err := utils.Validator(request); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
 		})
 	}
 
@@ -113,18 +107,19 @@ HANDLER DELETE ORDER
 */
 func DeleteOrder(c fiber.Ctx) error {
 	// get endpoint id & user_id
-	id := c.Params("id")
+	id_order := c.Params("id")
+	id,_ := uuid.Parse(id_order)
 	user_id := c.Locals("user_id")
 
 	// find Order
 	order := service.FindOrder(id)
 
 	// cek order exist
-	// if order.ID == 0 {
-	// 	c.Status(404).JSON(fiber.Map{
-	// 		"message": "Order Not Found",
-	// 	})
-	// }
+	if order.ID == uuid.Nil {
+		c.Status(404).JSON(fiber.Map{
+			"message": "Order Not Found",
+		})
+	}
 
 	// cek user order
 	if order.UserID != user_id {

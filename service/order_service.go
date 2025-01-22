@@ -3,6 +3,7 @@ package service
 import (
 	"api/database"
 	"api/models"
+	"github.com/google/uuid"
 )
 
 /*
@@ -14,9 +15,9 @@ func GetOrder(id uint) []models.Order {
 	return order
 }
 
-func FindOrder(id string) models.Order {
+func FindOrder(id uuid.UUID) models.Order {
 	var order models.Order
-	database.DB.Preload("OrderItem.Product").First(&order, id)
+	database.DB.Preload("OrderItem.Product").First(&order,"id = ?", id)
 	return order
 }
 
@@ -49,7 +50,7 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 	return order
 }
 
-func DeleteOrder(id string) error {
+func DeleteOrder(id uuid.UUID) error {
 	// Memulai transaksi database
 	tx := database.DB.Begin()
 

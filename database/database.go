@@ -60,7 +60,7 @@ func Setup() {
 		&models.Product{},
 		&models.Category{},
 		&models.Order{},
-		// &models.OrderItem{},
+		&models.OrderItem{},
 		&models.Cart{},
 		&models.UserInfo{},
 		&models.Review{},
