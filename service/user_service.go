@@ -7,9 +7,9 @@ import (
 )
 
 func CheckEmail(email string) models.User {
-	var user models.User
-	database.DB.First(&user, "email = ?", email)
-	return user
+    var user models.User
+    database.DB.Where("email = ?", email).Take(&user)
+    return user
 }
 
 func RegisterAccount(users models.User) map[string]interface{} {
