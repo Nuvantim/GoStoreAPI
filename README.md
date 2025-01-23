@@ -1,5 +1,6 @@
 # GoStoreAPI
-
+## Descriptions
+Go-Store-API is a simple Golang-based API for managing online product orders. Built using Fiber as a framework, GORM as an ORM, and MySQL as a database, this API also features JWT-based authentication for security.
 ## Prerequisites
 - Go (version 1.20+)
 - MySQL / Postgres
