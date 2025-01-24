@@ -61,7 +61,7 @@ func RegisterAccount(c fiber.Ctx) error {
 
 	//check email
 	emails := service.CheckEmail(users.Email)
-	if emails.ID != 0 {
+	if emails == true {
 		return c.Status(400).JSON(fiber.Map{
 			"message": "Your email already exist",
 		})

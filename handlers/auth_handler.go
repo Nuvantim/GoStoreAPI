@@ -6,7 +6,13 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-// Fungsi untuk login atau refresh token secara otomatis
+var otp struct {
+	code string `json:"otp"`
+}
+
+/*
+LOGIN HANDLER
+*/
 func Login(c fiber.Ctx) error {
 	// Ambil refresh token dari header jika ada
 	refreshToken := c.Cookies("refresh_token")
@@ -56,6 +62,9 @@ func Login(c fiber.Ctx) error {
 	})
 }
 
+/*
+LOGOUT HANDLER
+*/
 func Logout(c fiber.Ctx) error {
 	// Clear the access token cookie
 	c.Cookie(&fiber.Cookie{
@@ -82,4 +91,20 @@ func Logout(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "Logout successful",
 	})
+}
+
+/*
+vERIFY OTP HANDLER
+*/
+func OtpVerify(c fiber.Ctx) error {
+	// bind body
+	if err := c.Bind().Body(&otp).Error; err != nil {
+		c.Status(400).JSON(fiber.Map{
+			"error": err,
+		})
+	}
+	verify := service.OtpVerify(otp.code)
+
+	return c.Status(200).JSON(verify)
+
 }

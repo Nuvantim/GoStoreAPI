@@ -1,36 +1,45 @@
 package service
 
+// database.DB.Where("email = ?", email).Take(&user)
 import (
 	"api/database"
 	"api/models"
 	"api/utils"
 )
 
-func CheckEmail(email string) models.User {
-    var user models.User
-    database.DB.Where("email = ?", email).Take(&user)
-    return user
+func CheckEmail(email string) bool {
+	var user models.User
+	var usertemp models.UserTemp
+	// check User
+	var UserCount int64
+	database.DB.Where("email = ?", email).Take(&user).Count(&UserCount)
+	if UserCount > 0 {
+		return true
+	}
+
+	// check UserTemp
+	var UserTempCount int64
+	database.DB.Where("email = ?", email).Take(&usertemp).Count(&UserTempCount)
+	if UserTempCount > 0 {
+		return true
+	}
+	return false
 }
 
 func RegisterAccount(users models.User) map[string]interface{} {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
-
+	// create Otp
+	otp := utils.GenerateOTP()
 	// Buat user baru
-	user := models.User{
+	usertemp := models.UserTemp{
+		Otp:      otp,
 		Name:     users.Name,
 		Email:    users.Email,
 		Password: string(hashPassword),
 	}
 	// Simpan user ke database
-	database.DB.Create(&user)
-
-	// Buat info user
-	info := models.UserInfo{
-		UserID: user.ID,
-	}
-	// Simpan info user ke database
-	database.DB.Create(&info)
+	database.DB.Create(&usertemp)
 
 	// Buat notifikasi sukses
 	alert := map[string]interface{}{

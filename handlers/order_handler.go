@@ -29,7 +29,7 @@ HANDLER FIND ORDER
 func FindOrder(c fiber.Ctx) error {
 	// user_id := c.Locals("user_id").(uint)
 	id_order := c.Params("id")
-	id,_ := uuid.Parse(id_order)
+	id, _ := uuid.Parse(id_order)
 
 	// connect service
 	order := service.FindOrder(id)
@@ -108,7 +108,7 @@ HANDLER DELETE ORDER
 func DeleteOrder(c fiber.Ctx) error {
 	// get endpoint id & user_id
 	id_order := c.Params("id")
-	id,_ := uuid.Parse(id_order)
+	id, _ := uuid.Parse(id_order)
 	user_id := c.Locals("user_id")
 
 	// find Order

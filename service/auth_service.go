@@ -39,3 +39,34 @@ func Login(email, password string) (string, string, error) {
 
 	return accessToken, refreshToken, nil
 }
+
+func OtpVerify(otp string) map[string]interface{}{
+	// check otp
+	var usertemp models.UserTemp
+	database.DB.Where("otp = ?", otp).Take(&usertemp)
+	// Buat user baru
+	user := models.User{
+		Name:     usertemp.Name,
+		Email:    usertemp.Email,
+		Password: usertemp.Password,
+	}
+	// Simpan user ke database
+	database.DB.Create(&user)
+
+	// Buat info user
+	info := models.UserInfo{
+		UserID: user.ID,
+	}
+	// Simpan info user ke database
+	database.DB.Create(&info)
+
+	// delete userTemp
+	var user_temp models.UserTemp
+	database.DB.First(&user_temp, usertemp.ID)
+	database.DB.Delete(&user_temp)
+
+	alert := map[string]interface{}{
+		"message": "Success Verification, Please Login !",
+	}
+	return alert
+}

@@ -8,7 +8,7 @@ type User struct {
 	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"not null" validate:"required"`
 	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password  string    `json:"-" gorm:"not null" validate:"required"`
+	Password  string    `json:"password" gorm:"not null" validate:"required"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
@@ -22,4 +22,12 @@ type UserInfo struct {
 	State     string    `json:"state"`
 	Country   string    `json:"country"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
+}
+
+type UserTemp struct {
+	ID       uint   `json:"id" gorm:PrimaryKey;autoIncrement`
+	Otp      string `json:otp gorm:"not null" validate:"required"`
+	Name     string `json:"name" gorm:"not null" validate:"required"`
+	Email    string `json:"email" gorm:"unique;not null" validate:"required,email"`
+	Password string `json:"-" gorm:"not null" validate:"required"`
 }

@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/badoux/checkmail"
+	"github.com/go-playground/validator/v10"
 	"reflect"
 )
 
