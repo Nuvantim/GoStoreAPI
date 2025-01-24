@@ -3,6 +3,10 @@ package utils
 import (
 	"crypto/rand"
 	"math/big"
+	"log"
+        "net/smtp"
+        "os"
+        "github.com/jordan-wright/email"
 )
 
 func GenerateOTP() string {
@@ -16,3 +20,30 @@ func GenerateOTP() string {
 
 	return string(code)
 }
+
+func SendOTP(targetEmail, otp string) error{
+    // environment variables
+    mailSMTP := os.Getenv("MAIL_MAILER")
+    mailPort := os.Getenv("MAIL_PORT")
+    mailUsername := os.Getenv("MAIL_USERNAME")
+    mailPassword := os.Getenv("MAIL_PASSWORD")
+    mailAddress := os.Getenv("MAIL_FROM_ADDRESS")
+
+    // set Email
+    e := email.NewEmail()
+    e.From = mailAddress
+    e.To = []string{targetEmail} // Target email
+    e.Subject = "Verify Email"
+    e.Text = []byte(fmt.Sprintf("Your OTP for verification is: %s", otp))
+
+    // Combine SMTP server & port
+    serverAddr := fmt.Sprintf("%s:%s", mailSMTP, mailPort)
+
+    // Send Email
+    err := e.Send(serverAddr, smtp.PlainAuth("", mailUsername, mailPassword, mailSMTP))
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
