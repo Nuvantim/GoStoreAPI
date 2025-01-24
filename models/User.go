@@ -8,7 +8,7 @@ type User struct {
 	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"not null" validate:"required"`
 	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password  string    `json:"password" gorm:"not null" validate:"required"`
+	Password  string    `json:"-" gorm:"not null"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
