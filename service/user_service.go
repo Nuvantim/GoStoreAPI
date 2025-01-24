@@ -8,22 +8,26 @@ import (
 )
 
 func CheckEmail(email string) bool {
-	var user models.User
-	var usertemp models.UserTemp
-	// check User
-	var UserCount int64
-	database.DB.Where("email = ?", email).Take(&user).Count(&UserCount)
-	if UserCount > 0 {
-		return true
-	}
+    var user models.User
+    var usertemp models.UserTemp
 
-	// check UserTemp
-	var UserTempCount int64
-	database.DB.Where("email = ?", email).Take(&usertemp).Count(&UserTempCount)
-	if UserTempCount > 0 {
-		return true
-	}
-	return false
+    database.DB = database.DB.Session(&gorm.Session{
+        Logger: logger.Default.LogMode(logger.Silent),
+    })
+
+    // Check User
+    result := database.DB.Where("email = ?", email).Find(&user)
+    if result.RowsAffected > 0 {
+        return true
+    }
+
+    // Check UserTemp
+    resultTemp := database.DB.Where("email = ?", email).Find(&usertemp)
+    if resultTemp.RowsAffected > 0 {
+        return true
+    }
+
+    return false
 }
 
 func RegisterAccount(users models.User) map[string]interface{} {
