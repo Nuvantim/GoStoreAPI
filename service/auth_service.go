@@ -39,30 +39,23 @@ func Login(email, password string) (string, string, error) {
 
 	return accessToken, refreshToken, nil
 }
-
-func OtpVerify(otp string) map[string]interface{} {
+func OtpVerify(otp string) string {
     // Validasi input OTP
     if otp == "" {
-        return map[string]interface{}{
-            "error": "OTP tidak boleh kosong",
-        }
+        return "OTP cannot be empty"
     }
 
     // Cari user temporary
     var userTemp models.UserTemp
     result := database.DB.Where("otp = ?", otp).First(&userTemp)
     if result.Error != nil {
-        return map[string]interface{}{
-            "error": "OTP tidak valid",
-        }
+        return "Invalid OTP"
     }
 
     // Mulai transaksi database
     tx := database.DB.Begin()
     if tx.Error != nil {
-        return map[string]interface{}{
-            "error": "Gagal memulai transaksi database",
-        }
+        return "Failed to start database transaction"
     }
 
     // Buat user baru
@@ -75,9 +68,7 @@ func OtpVerify(otp string) map[string]interface{} {
     // Simpan user ke database
     if err := tx.Create(&user).Error; err != nil {
         tx.Rollback()
-        return map[string]interface{}{
-            "error": "Gagal membuat user",
-        }
+        return "Failed to create user"
     }
 
     // Buat info user
@@ -88,27 +79,19 @@ func OtpVerify(otp string) map[string]interface{} {
     // Simpan info user ke database
     if err := tx.Create(&userInfo).Error; err != nil {
         tx.Rollback()
-        return map[string]interface{}{
-            "error": "Gagal membuat info user",
-        }
+        return "Failed to create user infor"
     }
 
     // Hapus user temporary
     if err := tx.Delete(&userTemp).Error; err != nil {
         tx.Rollback()
-        return map[string]interface{}{
-            "error": "Gagal menghapus user temporary",
-        }
+        return "Failed to delete temporary user"
     }
 
     // Commit transaksi
     if err := tx.Commit().Error; err != nil {
-        return map[string]interface{}{
-            "error": "Gagal commit transaksi",
-        }
+        return "Failed to commit transaction"
     }
 
-    return map[string]interface{}{
-        "message": "Verifikasi berhasil, silakan login!",
-    }
-}
+    return "Verification successful, please login!"
+
