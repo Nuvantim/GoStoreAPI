@@ -67,6 +67,13 @@ func RegisterAccount(c fiber.Ctx) error {
 		})
 	}
 
+	//check password
+	if users.Password == nil || users.Password == ""{
+		return c.Status(422).JSON(fiber.Map{
+			"message" : "Password was not be empty",
+		}
+	}
+
 	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(register)
 }
