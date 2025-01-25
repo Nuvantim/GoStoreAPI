@@ -26,8 +26,8 @@ type UserInfo struct {
 
 type UserTemp struct {
 	ID       uint   `json:"id" gorm:PrimaryKey;autoIncrement`
-	Otp      string `json:otp gorm:"not null" validate:"required"`
+	Otp      string `json:otp gorm:"not null"`
 	Name     string `json:"name" gorm:"not null" validate:"required"`
 	Email    string `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password string `json:"-" gorm:"not null" validate:"required"`
+	Password string `json:"password" gorm:"not null" validate:"required,min=8"`
 }

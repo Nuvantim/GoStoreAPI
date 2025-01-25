@@ -6,8 +6,15 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
+// struct login
+var login struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+}
+
+// struct otp
 var otp struct {
-	code string `json:"otp"`
+	Code string `json:"code"`
 }
 
 /*
@@ -29,19 +36,19 @@ func Login(c fiber.Ctx) error {
 		})
 	}
 
-	// Jika tidak ada refresh token, lakukan login biasa
-	var request struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-
-	// Bind JSON request ke struct
-	if err := c.Bind().Body(&request); err != nil {
+	// Bind data
+	if err := c.Bind().Body(&login); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
+	// validate data
+	if err := utils.Validator(login); err != nil {
+		return c.Status(422).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
 	// Panggil service untuk login
-	accessToken, refreshToken, err := service.Login(request.Email, request.Password)
+	accessToken, refreshToken, err := service.Login(login.Email, login.Password)
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -98,13 +105,11 @@ vERIFY OTP HANDLER
 */
 func OtpVerify(c fiber.Ctx) error {
 	// bind body
-	if err := c.Bind().Body(&otp).Error; err != nil {
-		c.Status(400).JSON(fiber.Map{
-			"error": err,
-		})
+	if err := c.Bind().Body(&otp); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": err})
 	}
-	verify := service.OtpVerify(otp.code)
+	verify := service.OtpVerify(otp.Code)
 
-	return c.Status(200).JSON(verify)
+	return c.Status(200).JSON(fiber.Map{"message": verify})
 
 }

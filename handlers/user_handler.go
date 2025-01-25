@@ -47,7 +47,7 @@ Handler GetUser
 Handler Register User
 */
 func RegisterAccount(c fiber.Ctx) error {
-	var users models.User
+	var users models.UserTemp
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -68,14 +68,16 @@ func RegisterAccount(c fiber.Ctx) error {
 	}
 
 	//check password
-	if users.Password == nil || users.Password == ""{
-		return c.Status(422).JSON(fiber.Map{
-			"message" : "Password was not be empty",
-		}
-	}
+	// if users.Password == nil || users.Password == "" {
+	// 	return c.Status(422).JSON(fiber.Map{
+	// 		"message": "Password was not be empty",
+	// 	})
+	// }
 
 	register := service.RegisterAccount(users)
-	return c.Status(200).JSON(register)
+	return c.Status(200).JSON(fiber.Map{
+		"message" : register,
+	})
 }
 
 /*

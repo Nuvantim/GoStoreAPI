@@ -8,34 +8,39 @@ import (
 )
 
 func CheckEmail(email string) bool {
-    var user models.User
-    var usertemp models.UserTemp
+	var user models.User
+	var usertemp models.UserTemp
 
-    database.DB = database.DB.Session(&gorm.Session{
-        Logger: logger.Default.LogMode(logger.Silent),
-    })
+	// database.DB = database.DB.Session(&gorm.Session{
+	// 	Logger: logger.Default.LogMode(logger.Silent),
+	// })
 
-    // Check User
-    result := database.DB.Where("email = ?", email).Find(&user)
-    if result.RowsAffected > 0 {
-        return true
-    }
+	// Check User
+	result := database.DB.Where("email = ?", email).Find(&user)
+	if result.RowsAffected > 0 {
+		return true
+	}
 
-    // Check UserTemp
-    resultTemp := database.DB.Where("email = ?", email).Find(&usertemp)
-    if resultTemp.RowsAffected > 0 {
-        return true
-    }
+	// Check UserTemp
+	resultTemp := database.DB.Where("email = ?", email).Find(&usertemp)
+	if resultTemp.RowsAffected > 0 {
+		return true
+	}
 
-    return false
+	return false
 }
 
-func RegisterAccount(users models.User) map[string]interface{} {
+func RegisterAccount(users models.UserTemp) string {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
+
 	// create Otp
 	otp := utils.GenerateOTP()
-	// Buat user baru
+
+	// Send OTP
+	// utils.SendOTP(users.Email, otp)
+
+	// Create UserTemp
 	usertemp := models.UserTemp{
 		Otp:      otp,
 		Name:     users.Name,
@@ -45,11 +50,7 @@ func RegisterAccount(users models.User) map[string]interface{} {
 	// Simpan user ke database
 	database.DB.Create(&usertemp)
 
-	// Buat notifikasi sukses
-	alert := map[string]interface{}{
-		"message": "Success Register, Please Check Your Email",
-	}
-	return alert
+	return "Success Register, Please Check Your Email"
 }
 
 // func GetUser() []models.User {
