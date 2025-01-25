@@ -34,7 +34,7 @@ func SendOTP(targetEmail, otp string) error {
 	e.From = mailAddress
 	e.To = []string{targetEmail} // Target email
 	e.Subject = "Verify Email"
-	e.Text = []byte(fmt.Sprintf("Your OTP for verification is: %s", otp))
+	e.Text = []byte("Your OTP for verification is: " + otp)
 
 	// Combine SMTP server & port
 	serverAddr := fmt.Sprintf("%s:%s", mailSMTP, mailPort)
