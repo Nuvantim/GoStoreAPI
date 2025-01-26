@@ -18,7 +18,7 @@ RUN go mod tidy
 COPY . .
 
 # Build aplikasi
-RUN go build -ldflags="-s -w" -o /app/bin/main cli/main.go
+RUN go build -trimpath -ldflags="-s -w" -o /app/bin/main cli/main.go
 
 # Stage 2: Runtime
 FROM alpine:latest
