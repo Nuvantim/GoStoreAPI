@@ -76,7 +76,7 @@ func RegisterAccount(c fiber.Ctx) error {
 
 	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(fiber.Map{
-		"message" : register,
+		"message": register,
 	})
 }
 

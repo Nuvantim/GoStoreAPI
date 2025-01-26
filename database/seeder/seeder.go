@@ -16,6 +16,4 @@ func SeederSetup() {
 	// seeding product data
 	seed_Product()
 
-	log.Println("Seeding database success..")
-
 }

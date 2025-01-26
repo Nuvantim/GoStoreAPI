@@ -27,7 +27,7 @@ func GetOrder(c fiber.Ctx) error {
 HANDLER FIND ORDER
 */
 func FindOrder(c fiber.Ctx) error {
-	// user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint)
 	id_order := c.Params("id")
 	id, _ := uuid.Parse(id_order)
 
@@ -35,18 +35,18 @@ func FindOrder(c fiber.Ctx) error {
 	order := service.FindOrder(id)
 
 	// check order exist
-	// if order.ID == uuid.Nil {
-	// 	return c.Status(404).JSON(fiber.Map{
-	// 		"message": "Order Not Found",
-	// 	})
-	// }
+	if order.ID == uuid.Nil {
+		return c.Status(404).JSON(fiber.Map{
+			"message": "Order Not Found",
+		})
+	}
 
-	// // check user order
-	// if order.UserID != user_id {
-	// 	return c.Status(403).JSON(fiber.Map{
-	// 		"message": "Forbidden",
-	// 	})
-	// }
+	// check user order
+	if order.UserID != user_id {
+		return c.Status(403).JSON(fiber.Map{
+			"message": "Forbidden",
+		})
+	}
 	return c.Status(200).JSON(order)
 }
 
@@ -116,14 +116,14 @@ func DeleteOrder(c fiber.Ctx) error {
 
 	// cek order exist
 	if order.ID == uuid.Nil {
-		c.Status(404).JSON(fiber.Map{
+		return c.Status(404).JSON(fiber.Map{
 			"message": "Order Not Found",
 		})
 	}
 
 	// cek user order
 	if order.UserID != user_id {
-		c.Status(403).JSON(fiber.Map{
+		return c.Status(403).JSON(fiber.Map{
 			"message": "Forbiden",
 		})
 	}

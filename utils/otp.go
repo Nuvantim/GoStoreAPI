@@ -2,11 +2,11 @@ package utils
 
 import (
 	"crypto/rand"
+	"fmt"
 	"github.com/jordan-wright/email"
 	"math/big"
 	"net/smtp"
 	"os"
-	"fmt"
 )
 
 func GenerateOTP() string {
@@ -23,6 +23,7 @@ func GenerateOTP() string {
 
 func SendOTP(targetEmail, otp string) error {
 	// environment variables
+	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
 	mailPort := os.Getenv("MAIL_PORT")
 	mailUsername := os.Getenv("MAIL_USERNAME")
@@ -31,9 +32,9 @@ func SendOTP(targetEmail, otp string) error {
 
 	// set Email
 	e := email.NewEmail()
-	e.From = mailAddress
+	e.From = AppName + " <" + mailAddress + ">"
 	e.To = []string{targetEmail} // Target email
-	e.Subject = "Verify Email"
+	e.Subject = "Verify Your Account"
 	e.Text = []byte("Your OTP for verification is: " + otp)
 
 	// Combine SMTP server & port

@@ -30,5 +30,3 @@ func (o *Order) BeforeCreate(tx *gorm.DB) error {
 	o.ID, _ = uuid.NewV7()
 	return nil
 }
-
-// OrderItem: unsupported relations for schema Order

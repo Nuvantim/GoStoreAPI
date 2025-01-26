@@ -17,7 +17,7 @@ func FiberConfig() fiber.Config {
 		AppName:       "fiber-api",
 		CaseSensitive: true,
 		StrictRouting: true,
-		ServerHeader:  "Fiber",
+		ServerHeader:  "Kalveir Project",
 	}
 }
 

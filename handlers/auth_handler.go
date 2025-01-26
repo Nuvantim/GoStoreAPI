@@ -64,8 +64,8 @@ func Login(c fiber.Ctx) error {
 
 	// Kirim access token dan refresh token
 	return c.JSON(fiber.Map{
+		"Message": "Login Success!",
 		"access_token":  accessToken,
-		"refresh_token": refreshToken,
 	})
 }
 

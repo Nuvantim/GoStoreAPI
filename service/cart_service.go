@@ -3,7 +3,7 @@ package service
 import (
 	"api/database"
 	"api/models"
-	"fmt"
+	"errors"
 )
 
 func GetCart(id uint) []models.Cart {
@@ -52,7 +52,7 @@ func DeleteCart(input interface{}) error {
 		return database.DB.Where("id IN ?", v).Delete(&models.Cart{}).Error
 
 	default:
-		return fmt.Errorf("invalid input type")
+		return errors.New("invalid input type")
 	}
 }
 

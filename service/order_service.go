@@ -17,7 +17,7 @@ func GetOrder(id uint) []models.Order {
 
 func FindOrder(id uuid.UUID) models.Order {
 	var order models.Order
-	database.DB.Preload("OrderItem.Product").First(&order, "id = ?", id)
+	database.DB.Preload("OrderItems.Product").First(&order, "id = ?", id)
 	return order
 }
 

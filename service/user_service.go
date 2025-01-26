@@ -38,7 +38,7 @@ func RegisterAccount(users models.UserTemp) string {
 	otp := utils.GenerateOTP()
 
 	// Send OTP
-	// utils.SendOTP(users.Email, otp)
+	utils.SendOTP(users.Email, otp)
 
 	// Create UserTemp
 	usertemp := models.UserTemp{
