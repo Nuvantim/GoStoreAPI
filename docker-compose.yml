@@ -14,14 +14,13 @@ services:
       - db
     networks:
       - golang-network
-
   db:
     image: postgres
     container_name: golang-db
     restart: always
     environment:
-      POSTGRES_PASSWORD: Superpassword123
-      POSTGRES_DB: api_store
+      POSTGRES_PASSWORD: "SuperPassword123"
+      POSTGRES_DB: "api_store"
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
@@ -31,7 +30,6 @@ services:
 
 volumes:
   postgres-data:
-
 networks:
   golang-network:
     driver: bridge
