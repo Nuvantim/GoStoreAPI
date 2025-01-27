@@ -28,7 +28,7 @@ func CreateCategory(category models.Category) models.Category {
 // update category
 func UpdateCategory(id uint, category_request models.Category) models.Category {
 	var category models.Category
-	database.DB.First(&category, id)
+	database.DB.Take(&category, id)
 	category.Name = category_request.Name
 	database.DB.Save(&category)
 	return category
@@ -37,7 +37,7 @@ func UpdateCategory(id uint, category_request models.Category) models.Category {
 // delete category
 func DeleteCategory(id uint) error {
 	var category models.Category
-	if err := database.DB.First(&category, id).Error; err != nil {
+	if err := database.DB.Take(&category, id).Error; err != nil {
 		return err
 	}
 	database.DB.Delete(&category)

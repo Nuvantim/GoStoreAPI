@@ -3,7 +3,6 @@ package handler
 import (
 	"api/models"
 	"api/service"
-	"api/utils"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
 )
@@ -18,13 +17,6 @@ func CreateReview(c fiber.Ctx) error {
 	var review models.Review
 	if err := c.Bind().Body(&review); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	// validate data
-	if err := utils.Validator(review); err != nil {
-		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}

@@ -2,11 +2,10 @@ package utils
 
 import (
 	"crypto/rand"
-	"fmt"
-	"github.com/jordan-wright/email"
+	"gopkg.in/gomail.v2"
 	"math/big"
-	"net/smtp"
 	"os"
+	"strconv"
 )
 
 func GenerateOTP() string {
@@ -25,24 +24,23 @@ func SendOTP(targetEmail, otp string) error {
 	// environment variables
 	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
-	mailPort := os.Getenv("MAIL_PORT")
+	mailPort, _ := strconv.Atoi(os.Getenv("MAIL_PORT"))
 	mailUsername := os.Getenv("MAIL_USERNAME")
 	mailPassword := os.Getenv("MAIL_PASSWORD")
 	mailAddress := os.Getenv("MAIL_FROM_ADDRESS")
 
-	// set Email
-	e := email.NewEmail()
-	e.From = AppName + " <" + mailAddress + ">"
-	e.To = []string{targetEmail} // Target email
-	e.Subject = "Verify Your Account"
-	e.Text = []byte("Your OTP for verification is: " + otp)
+	// Create new message
+	m := gomail.NewMessage()
+	m.SetHeader("From", AppName+" <"+mailAddress+">")
+	m.SetHeader("To", targetEmail)
+	m.SetHeader("Subject", "Verify Your Account")
+	m.SetBody("text/plain", "Your OTP for verification is: "+otp)
 
-	// Combine SMTP server & port
-	serverAddr := fmt.Sprintf("%s:%s", mailSMTP, mailPort)
+	// Create dialer
+	d := gomail.NewDialer(mailSMTP, mailPort, mailUsername, mailPassword)
 
-	// Send Email
-	err := e.Send(serverAddr, smtp.PlainAuth("", mailUsername, mailPassword, mailSMTP))
-	if err != nil {
+	// Send email
+	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
 	return nil

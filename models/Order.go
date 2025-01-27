@@ -8,7 +8,7 @@ import (
 
 type Order struct {
 	ID         uuid.UUID   `json:"id" gorm:"primaryKey;type:char(36);not null;unique"`
-	UserID     uint        `json:"user_id" gorm:"not null"`
+	UserID     uint        `json:"-" gorm:"not null"`
 	TotalPrice uint        `json:"total_price" gorm:"not null"`
 	TotalItem  uint        `json:"total_item" gorm:"not null"`
 	Status     string      `json:"status" gorm:"default:'pending'"`
@@ -17,7 +17,7 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID        *uint     `json:"id" gorm:"primaryKey;autoIncrement"`
+	ID        uint      `json:"-" gorm:"primaryKey;autoIncrement"`
 	OrderID   uuid.UUID `json:"order_id" gorm:"not null;type:char(36);references:ID"`
 	ProductID uint      `json:"product_id" gorm:"not null"`
 	Product   Product   `json:"product,omitempty"`

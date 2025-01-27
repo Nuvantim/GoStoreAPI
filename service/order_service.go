@@ -4,6 +4,7 @@ import (
 	"api/database"
 	"api/models"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 /*
@@ -17,7 +18,9 @@ func GetOrder(id uint) []models.Order {
 
 func FindOrder(id uuid.UUID) models.Order {
 	var order models.Order
-	database.DB.Preload("OrderItems.Product").First(&order, "id = ?", id)
+	database.DB.Preload("OrderItems.Product", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name", "price", "stock")}).
+	Take(&order, "id = ?", id)
 	return order
 }
 
@@ -46,23 +49,23 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 	// Batch insert ke database
 	database.DB.Create(&orderItems)
 
-	database.DB.Preload("OrderItem.Product").First(&order, order.ID)
+	database.DB.Take(&order, order.ID)
 	return order
 }
 
 func DeleteOrder(id uuid.UUID) error {
-	// Memulai transaksi database
+	// start transaction database
 	tx := database.DB.Begin()
 
 	// Hapus OrderItem berdasarkan OrderID
 	if err := tx.Where("order_id = ?", id).Delete(&models.OrderItem{}).Error; err != nil {
-		tx.Rollback() // Membatalkan transaksi jika ada error
+		tx.Rollback() // cancel transaction if error
 		return err
 	}
 
-	// Hapus Order berdasarkan ID
+	// Delete Order by ID
 	if err := tx.Delete(&models.Order{}, id).Error; err != nil {
-		tx.Rollback() // Membatalkan transaksi jika ada error
+		tx.Rollback() // cancel transaction if error
 		return err
 	}
 

@@ -1,6 +1,5 @@
 package service
 
-// database.DB.Where("email = ?", email).Take(&user)
 import (
 	"api/database"
 	"api/models"
@@ -10,10 +9,6 @@ import (
 func CheckEmail(email string) bool {
 	var user models.User
 	var usertemp models.UserTemp
-
-	// database.DB = database.DB.Session(&gorm.Session{
-	// 	Logger: logger.Default.LogMode(logger.Silent),
-	// })
 
 	// Check User
 	result := database.DB.Where("email = ?", email).Find(&user)
@@ -53,21 +48,16 @@ func RegisterAccount(users models.UserTemp) string {
 	return "Success Register, Please Check Your Email"
 }
 
-// func GetUser() []models.User {
-// 	var user []models.User
-// 	database.DB.Find(&user)
-// 	return user
-// }
 
 func FindAccount(id uint) map[string]interface{} {
 	var user models.User
 	var info models.UserInfo
 
-	// Ambil data user berdasarkan id
-	database.DB.First(&user, id)
+	// Get data by ID
+	database.DB.Take(&user, id)
 
 	// Ambil data user_info berdasarkan user_id
-	database.DB.Where("user_id = ?", user.ID).First(&info)
+	database.DB.Where("user_id = ?", user.ID).Take(&info)
 
 	// Buat peta untuk data yang ingin dikembalikan
 	data := map[string]interface{}{
@@ -83,7 +73,7 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) m
 	// Ambil data user berdasarkan id
 	var user models.User
 
-	if err := database.DB.First(&user, user_id).Error; err != nil {
+	if err := database.DB.Take(&user, user_id).Error; err != nil {
 		return map[string]interface{}{"error": "User not found"}
 	}
 
@@ -102,7 +92,7 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) m
 
 	// Ambil data user_info berdasarkan user_id
 	var userInfo models.UserInfo
-	if err := database.DB.Where("user_id = ?", user_id).First(&userInfo).Error; err != nil {
+	if err := database.DB.Where("user_id = ?", user_id).Take(&userInfo).Error; err != nil {
 		return map[string]interface{}{"error": "User info not found"}
 	}
 
@@ -130,7 +120,7 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) m
 
 func DeleteAccount(user_id uint) error {
 	var user models.User
-	if err := database.DB.First(&user, user_id).Error; err != nil {
+	if err := database.DB.Take(&user, user_id).Error; err != nil {
 		return err
 	}
 	database.DB.Delete(&user)

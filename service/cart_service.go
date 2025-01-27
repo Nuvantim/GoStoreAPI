@@ -4,17 +4,28 @@ import (
 	"api/database"
 	"api/models"
 	"errors"
+	"gorm.io/gorm"
 )
 
 func GetCart(id uint) []models.Cart {
 	var cart []models.Cart
-	database.DB.Where("user_id = ?", id).Preload("Product").Preload("Product.Category").Find(&cart)
+	database.DB.Where("user_id = ?", id).
+		Preload("Product", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "name", "price", "stock", "category_id")
+		}).
+		Preload("Product.Category").
+		Find(&cart)
 	return cart
 }
 
 func FindCart(id uint) models.Cart {
 	var carts models.Cart
-	database.DB.Where("id = ?", id).Preload("Product").Preload("Product.Category").Find(&carts)
+	database.DB.Where("id = ?", id).
+		Preload("Product", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "name", "price", "stock", "category_id")
+		}).
+		Preload("Product.Category").
+		Take(&carts)
 	return carts
 }
 
@@ -25,21 +36,22 @@ func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart {
 		Total_Cost: cost,
 	}
 	database.DB.Create(&cart)
-	database.DB.Preload("Product").Preload("Product.Category").First(&cart, cart.ID)
+	cart = FindCart(cart.ID)
 	return cart
 }
 
 func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 	var cart models.Cart
-	// Ambil data cart berdasarkan ID
-	database.DB.First(&cart, cart_update.ID)
+	//Get cart by ID
+	database.DB.Take(&cart, cart_update.ID)
 
-	// Update menggunakan Updates() untuk langsung mengubah kolom yang diperlukan
-	database.DB.Model(&cart).Preload("Product").Preload("Product.Category").Updates(map[string]interface{}{
-		"Quantity":   cart_update.Quantity,
-		"Total_Cost": cost,
-	})
+	// Update data
+	cart.Quantity = cart_update.Quantity
+	cart.Total_Cost = cost
+	database.DB.Save(&cart)
 
+	// return data
+	cart = FindCart(cart.ID)
 	return cart
 }
 

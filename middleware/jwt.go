@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"api/utils"
+	"errors"
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"os"
@@ -12,63 +13,88 @@ var jwtSecret = []byte(os.Getenv("API_KEY"))
 var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
 
 func AuthAndRefreshMiddleware(c fiber.Ctx) error {
-	// Ambil token dari Authorization Header
-	authHeader := c.Get("Authorization")
-	var accessToken string
-	if strings.HasPrefix(authHeader, "Bearer ") {
-		accessToken = strings.TrimPrefix(authHeader, "Bearer ")
-	} else {
-		// Jika tidak ada header Authorization, coba ambil dari cookie
-		accessToken = c.Cookies("access_token")
-	}
+	// Extract access token
+	accessToken := extractToken(c)
 
-	// Cek validitas access token
+	// Validate access token
 	if accessToken != "" {
-		ClaimToken := &utils.Claims{}
-		token, err := jwt.ParseWithClaims(accessToken, ClaimToken, func(token *jwt.Token) (interface{}, error) {
-			return jwtSecret, nil
-		})
-		if err == nil && token.Valid {
-			// Simpan User ID dan Email ke c.Locals
-			claims := token.Claims.(*utils.Claims)
-			c.Locals("user_id", claims.UserID)
-			c.Locals("email", claims.Email)
+		claims, err := validateAccessToken(accessToken)
+		if err == nil {
+			setContextLocals(c, claims)
 			return c.Next()
 		}
 	}
 
-	// Ambil refresh token dari cookie
+	// Attempt token refresh
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
-		refreshTokenClaims := &utils.RefreshClaims{}
-		refreshTokenObj, err := jwt.ParseWithClaims(refreshToken, refreshTokenClaims, func(token *jwt.Token) (interface{}, error) {
-			return refreshSecret, nil
-		})
-
-		if err == nil && refreshTokenObj.Valid {
-			// Buat token baru
-			newAccessToken, err := utils.CreateToken(refreshTokenClaims.UserID, refreshTokenClaims.Email)
-			if err != nil {
-				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate new access token"})
-			}
-
-			// Set cookie untuk token baru
-			c.Cookie(&fiber.Cookie{
-				Name:     "access_token",
-				Value:    newAccessToken,
-				HTTPOnly: true,
-				Secure:   true,
-				SameSite: "Strict",
-				Path:     "/",
-			})
-
-			// Simpan User ID dan Email ke c.Locals
-			c.Locals("user_id", refreshTokenClaims.UserID)
-			c.Locals("email", refreshTokenClaims.Email)
+		newAccessToken, err := refreshAccessToken(refreshToken)
+		if err == nil {
+			setNewAccessTokenCookie(c, newAccessToken)
 			return c.Next()
 		}
 	}
 
-	// Jika kedua token tidak valid, kembalikan unauthorized
-	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Session Expired"})
+	// Unauthorized if no valid tokens
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"message": "Authentication required",
+	})
+}
+
+func validateAccessToken(tokenString string) (*utils.Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &utils.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(*utils.Claims)
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	return claims, nil
+}
+
+func refreshAccessToken(refreshToken string) (string, error) {
+	token, err := jwt.ParseWithClaims(refreshToken, &utils.RefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return refreshSecret, nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	claims, ok := token.Claims.(*utils.RefreshClaims)
+	if !ok || !token.Valid {
+		return "", errors.New("invalid refresh token")
+	}
+
+	return utils.CreateToken(claims.UserID, claims.Email)
+}
+
+func extractToken(c fiber.Ctx) string {
+	authHeader := c.Get("Authorization")
+	if strings.HasPrefix(authHeader, "Bearer ") {
+		return strings.TrimPrefix(authHeader, "Bearer ")
+	}
+	return c.Cookies("access_token")
+}
+
+func setContextLocals(c fiber.Ctx, claims *utils.Claims) {
+	c.Locals("user_id", claims.UserID)
+	c.Locals("email", claims.Email)
+}
+
+func setNewAccessTokenCookie(c fiber.Ctx, newToken string) {
+	c.Cookie(&fiber.Cookie{
+		Name:     "access_token",
+		Value:    newToken,
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "Strict",
+		Path:     "/",
+	})
 }

@@ -11,22 +11,22 @@ import (
 
 // Fungsi Login
 func Login(email, password string) (string, string, error) {
-	// Cari user di database
+	// Find User in Database
 	var user models.User
-	err := database.DB.Where("email = ?", email).First(&user).Error
+	err := database.DB.Where("email = ?", email).Take(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", "", errors.New("user not found")
 	} else if err != nil {
 		return "", "", err
 	}
 
-	// Bandingkan password
+	// Compared Database
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return "", "", errors.New("invalid email or password")
 	}
 
-	// Buat access token dan refresh token
+	// Create access token and refresh token
 	accessToken, err := utils.CreateToken(user.ID, user.Email)
 	if err != nil {
 		return "", "", err
@@ -47,7 +47,7 @@ func OtpVerify(otp string) string {
 
 	// Cari user temporary
 	var userTemp models.UserTemp
-	result := database.DB.Where("otp = ?", otp).First(&userTemp)
+	result := database.DB.Where("otp = ?", otp).Take(&userTemp)
 	if result.Error != nil {
 		return "Invalid OTP"
 	}

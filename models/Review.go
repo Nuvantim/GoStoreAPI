@@ -6,7 +6,7 @@ import (
 
 type Review struct {
 	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement"`
-	UserID    uint      `json:"user_id" gorm:"not null"`
+	UserID    uint      `json:"-" gorm:"not null"`
 	User      User      `gorm:"foreignKey:UserID"`
 	ProductID uint      `json:"product_id" gorm:"not null"`
 	Rating    int       `json:"rating" gorm:"not null;check:rating >= 1 AND rating <= 5"`
