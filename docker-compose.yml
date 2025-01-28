@@ -19,8 +19,8 @@ services:
     container_name: golang-db
     restart: always
     environment:
-      POSTGRES_PASSWORD: "SuperPassword123"
-      POSTGRES_DB: "api_store"
+      POSTGRES_PASSWORD: SuperPassword123
+      POSTGRES_DB: api_store
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
