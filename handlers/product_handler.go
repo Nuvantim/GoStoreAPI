@@ -34,12 +34,14 @@ func CreateProduct(c fiber.Ctx) error {
 	}
 
 	// check category
-	var category models.Category
-	if err := database.DB.First(&category, product.CategoryID).Error; err != nil {
+	ctg := service.FindCategory(product.CategoryID)
+	if ctg.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"Message": "Category not found",
 		})
 	}
+
+	
 	products := service.CreateProduct(product)
 	return c.Status(200).JSON(products)
 }
