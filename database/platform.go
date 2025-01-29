@@ -25,7 +25,7 @@ func ConnectMySQL(user, password, host, port, name string) *gorm.DB {
 
 func ConnectPostgres(user, password, host, port, name string) *gorm.DB {
 	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + name + " port=" + port + " sslmode=disable TimeZone=Asia/Jakarta"
-	
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,

@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Fungsi Login
+// Login Action
 func Login(email, password string) (string, string, error) {
 	// Find User in Database
 	var user models.User
@@ -39,56 +39,58 @@ func Login(email, password string) (string, string, error) {
 
 	return accessToken, refreshToken, nil
 }
+
+// Verification Otp
 func OtpVerify(otp string) string {
-	// Validasi input OTP
+	// check otp
 	if otp == "" {
 		return "OTP cannot be empty"
 	}
 
-	// Cari user temporary
+	// search user temporary
 	var userTemp models.UserTemp
 	result := database.DB.Where("otp = ?", otp).Take(&userTemp)
 	if result.Error != nil {
 		return "Invalid OTP"
 	}
 
-	// Mulai transaksi database
+	// Start transaction database
 	tx := database.DB.Begin()
 	if tx.Error != nil {
 		return "Failed to start database transaction"
 	}
 
-	// Buat user baru
+	// Create new User
 	user := models.User{
 		Name:     userTemp.Name,
 		Email:    userTemp.Email,
 		Password: userTemp.Password,
 	}
 
-	// Simpan user ke database
+	// Save database
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
 		return "Failed to create user"
 	}
 
-	// Buat info user
+	// Create user info
 	userInfo := models.UserInfo{
 		UserID: user.ID,
 	}
 
-	// Simpan info user ke database
+	// save user info on database
 	if err := tx.Create(&userInfo).Error; err != nil {
 		tx.Rollback()
 		return "Failed to create user infor"
 	}
 
-	// Hapus user temporary
+	// delete user temporary
 	if err := tx.Delete(&userTemp).Error; err != nil {
 		tx.Rollback()
 		return "Failed to delete temporary user"
 	}
 
-	// Commit transaksi
+	// Commit transaction
 	if err := tx.Commit().Error; err != nil {
 		return "Failed to commit transaction"
 	}

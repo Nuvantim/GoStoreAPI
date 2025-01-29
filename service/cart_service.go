@@ -56,12 +56,13 @@ func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 }
 
 func DeleteCart(input interface{}) error {
+	var cart models.Cart
 	switch v := input.(type) {
 	case uint: // Jika input adalah ID tunggal
-		return database.DB.Where("id = ?", v).Delete(&models.Cart{}).Error
+		return database.DB.Where("id = ?", v).Delete(&cart).Error
 
 	case []uint: // Jika input adalah array ID
-		return database.DB.Where("id IN ?", v).Delete(&models.Cart{}).Error
+		return database.DB.Where("id IN ?", v).Delete(&cart).Error
 
 	default:
 		return errors.New("invalid input type")

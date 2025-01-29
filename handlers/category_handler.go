@@ -4,8 +4,8 @@ import (
 	"api/models"
 	"api/service"
 	"api/utils"
-	"github.com/gofiber/fiber/v3"
 	"strconv"
+	"github.com/gofiber/fiber/v3"
 )
 
 /*
@@ -20,8 +20,8 @@ func GetCategory(c fiber.Ctx) error {
 HANDLER FIND CATEGORY
 */
 func FindCategory(c fiber.Ctx) error {
-	id := c.Params("id")
-	category := service.GetCategoryById(id)
+	id, _ := strconv.Atoi(c.Params("id"))
+	category := service.FindCategory(uint(id))
 	return c.Status(200).JSON(category)
 }
 

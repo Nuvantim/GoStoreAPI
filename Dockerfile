@@ -1,40 +1,19 @@
-# Stage 1: Build
-FROM golang:1.23-alpine as builder
-
-# Set environment variable
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-# Buat direktori kerja di container
-WORKDIR /app
-
-# Copy go.mod dan go.sum, lalu install dependensi
-COPY go.mod go.sum ./
-RUN go mod tidy
-
-# Copy seluruh file project ke container
-COPY . .
-
-# Build aplikasi
-RUN go build -trimpath -ldflags="-s -w" -o /app/bin/main cli/main.go
-
-# Stage 2: Runtime
 FROM alpine:latest
 
-# Set direktori kerja
+# Set working directory di dalam container
 WORKDIR /app
 
-# Salin file .env dari build stage
-COPY --from=builder /app/.env /app/.env
+# Copy binary file terlebih dahulu karena jarang berubah
+COPY bin/main ./
 
-# Salin hasil build dari stage builder
-COPY --from=builder /app/bin/main /app/main
+# Copy environment file
+COPY .env ./
 
-# Expose port untuk aplikasi
-EXPOSE 7373
+# Copy file lainnya
+COPY . .
+
+# Set izin eksekusi untuk binary
+RUN chmod +x ./main
 
 # Jalankan aplikasi
-CMD ["/app/main"]
-
+CMD ["./main"]

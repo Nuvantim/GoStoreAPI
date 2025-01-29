@@ -7,7 +7,7 @@ services:
     container_name: golang-app
     restart: always
     ports:
-      - "127.0.0.1:7373:7373"
+      - "7373:7373"
     volumes:
       - ./logs:/app/logs
     depends_on:
@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: SuperPassword123
       POSTGRES_DB: api_store
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:

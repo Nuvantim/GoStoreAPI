@@ -19,8 +19,9 @@ func GetOrder(id uint) []models.Order {
 func FindOrder(id uuid.UUID) models.Order {
 	var order models.Order
 	database.DB.Preload("OrderItems.Product", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name", "price", "stock")}).
-	Take(&order, "id = ?", id)
+		return db.Select("id", "name", "price", "stock")
+	}).
+		Take(&order, "id = ?", id)
 	return order
 }
 

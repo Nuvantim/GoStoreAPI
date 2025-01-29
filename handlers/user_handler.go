@@ -23,25 +23,20 @@ type UserRequest struct {
 Handler Get Profile
 */
 func GetProfile(c fiber.Ctx) error {
-	// Ambil User ID dari c.Locals
+	// Get UserID from locals variable
 	userID := c.Locals("user_id").(uint)
 	if userID == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
 
-	// Query profil pengguna dari database
-	user := service.FindAccount(userID)
+	// Query user profile by id
+	user,info := service.FindAccount(userID)
 
-	return c.JSON(user)
+	return c.Status(200).JSON(fiber.Map{
+		"user":      user,
+		"user_info": info,
+	})
 }
-
-/*
-Handler GetUser
-*/
-// func GetUser(c fiber.Ctx) error {
-// 	user := service.GetUser()
-// 	return c.Status(400).JSON(user)
-// }
 
 /*
 Handler Register User
@@ -66,13 +61,6 @@ func RegisterAccount(c fiber.Ctx) error {
 			"message": "Your email already exist",
 		})
 	}
-
-	//check password
-	// if users.Password == nil || users.Password == "" {
-	// 	return c.Status(422).JSON(fiber.Map{
-	// 		"message": "Password was not be empty",
-	// 	})
-	// }
 
 	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(fiber.Map{
@@ -114,8 +102,17 @@ func UpdateAccount(c fiber.Ctx) error {
 		State:    req.State,
 		Country:  req.Country,
 	}
-	users := service.UpdateAccount(user, user_info, user_id)
-	return c.Status(200).JSON(users)
+	users,userInfo, error := service.UpdateAccount(user, user_info, user_id)
+	if error != nil{
+		return c.Status(400).JSON(fiber.Map{
+			"error" : error,
+		})
+	}
+	// Make return interface
+	return c.Status(200).JSON(fiber.Map{
+		"user":      users,
+		"user_info": userInfo,
+	})
 }
 
 /*

@@ -4,6 +4,7 @@ import (
 	"api/database"
 	"api/models"
 	"api/utils"
+	"errors"
 )
 
 func CheckEmail(email string) bool {
@@ -48,8 +49,7 @@ func RegisterAccount(users models.UserTemp) string {
 	return "Success Register, Please Check Your Email"
 }
 
-
-func FindAccount(id uint) map[string]interface{} {
+func FindAccount(id uint) (models.User, models.UserInfo) {
 	var user models.User
 	var info models.UserInfo
 
@@ -59,22 +59,18 @@ func FindAccount(id uint) map[string]interface{} {
 	// Ambil data user_info berdasarkan user_id
 	database.DB.Where("user_id = ?", user.ID).Take(&info)
 
-	// Buat peta untuk data yang ingin dikembalikan
-	data := map[string]interface{}{
-		"user":      user,
-		"user_info": info,
-	}
-
 	// Kembalikan data
-	return data
+	return user, info
 }
 
-func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) map[string]interface{} {
-	// Ambil data user berdasarkan id
+func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (models.User, models.UserInfo, error) {
+	// Declare variable
 	var user models.User
+	var userInfo models.UserInfo
 
+	// Get user data by id
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
-		return map[string]interface{}{"error": "User not found"}
+		return user,userInfo,errors.New("User not found")
 	}
 
 	// update user
@@ -87,13 +83,12 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) m
 
 	// Simpan perubahan user
 	if err := database.DB.Save(&user).Error; err != nil {
-		return map[string]interface{}{"error": "Failed to update user"}
+		return user,userInfo,errors.New("Failed to update user")
 	}
 
 	// Ambil data user_info berdasarkan user_id
-	var userInfo models.UserInfo
 	if err := database.DB.Where("user_id = ?", user_id).Take(&userInfo).Error; err != nil {
-		return map[string]interface{}{"error": "User info not found"}
+		return user,userInfo,errors.New("User info not found")
 	}
 
 	// Update user_info
@@ -106,16 +101,10 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) m
 
 	// Simpan perubahan user_info
 	if err := database.DB.Save(&userInfo).Error; err != nil {
-		return map[string]interface{}{"error": "Failed to update user info"}
+		return user,userInfo,errors.New("Failed to update user info")
 	}
 
-	// Kembalikan data yang telah diperbarui
-	data := map[string]interface{}{
-		"user":      user,
-		"user_info": userInfo,
-	}
-
-	return data
+	return users,userInfo,nil
 }
 
 func DeleteAccount(user_id uint) error {

@@ -13,7 +13,7 @@ func GetAllCategory() []models.Category {
 }
 
 // get category from id
-func GetCategoryById(id string) models.Category {
+func FindCategory(id uint) models.Category {
 	var category models.Category
 	database.DB.Find(&category, id)
 	return category
