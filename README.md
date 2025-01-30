@@ -4,6 +4,7 @@ Go-Store-API is a simple Golang-based API for managing online product orders. Bu
 ## Prerequisites
 - Go (version 1.20+)
 - MySQL / Postgres
+- [Ultimate Packer for eXecuatables (upx)](https://upx.github.io)
 
 ## Installation :cd:
 
@@ -64,11 +65,15 @@ DB_NAME=api_store
 DB_PORT=5432
 PORT=7373
 ```
-## 2. Run Docker Compose
+## 2. Compile project
+```bash
+make build
+```
+## 3. Run Docker Compose
 ```bash
 docker compose up -d --build
 ```
-## 3. Check Logs App
+## 4. Check Logs App
 ```bash
 docker logs golang-app
 ```

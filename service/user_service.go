@@ -70,7 +70,7 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (
 
 	// Get user data by id
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
-		return user,userInfo,errors.New("User not found")
+		return user, userInfo, errors.New("User not found")
 	}
 
 	// update user
@@ -83,12 +83,12 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (
 
 	// Simpan perubahan user
 	if err := database.DB.Save(&user).Error; err != nil {
-		return user,userInfo,errors.New("Failed to update user")
+		return user, userInfo, errors.New("Failed to update user")
 	}
 
 	// Ambil data user_info berdasarkan user_id
 	if err := database.DB.Where("user_id = ?", user_id).Take(&userInfo).Error; err != nil {
-		return user,userInfo,errors.New("User info not found")
+		return user, userInfo, errors.New("User info not found")
 	}
 
 	// Update user_info
@@ -101,10 +101,10 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (
 
 	// Simpan perubahan user_info
 	if err := database.DB.Save(&userInfo).Error; err != nil {
-		return user,userInfo,errors.New("Failed to update user info")
+		return user, userInfo, errors.New("Failed to update user info")
 	}
 
-	return users,userInfo,nil
+	return users, userInfo, nil
 }
 
 func DeleteAccount(user_id uint) error {

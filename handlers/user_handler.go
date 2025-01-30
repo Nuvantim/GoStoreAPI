@@ -30,7 +30,7 @@ func GetProfile(c fiber.Ctx) error {
 	}
 
 	// Query user profile by id
-	user,info := service.FindAccount(userID)
+	user, info := service.FindAccount(userID)
 
 	return c.Status(200).JSON(fiber.Map{
 		"user":      user,
@@ -102,10 +102,10 @@ func UpdateAccount(c fiber.Ctx) error {
 		State:    req.State,
 		Country:  req.Country,
 	}
-	users,userInfo, error := service.UpdateAccount(user, user_info, user_id)
-	if error != nil{
+	users, userInfo, error := service.UpdateAccount(user, user_info, user_id)
+	if error != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error" : error,
+			"error": error,
 		})
 	}
 	// Make return interface

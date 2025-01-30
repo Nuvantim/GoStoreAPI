@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"api/database"
 	"api/models"
 	"api/service"
 	"api/utils"
@@ -41,7 +40,6 @@ func CreateProduct(c fiber.Ctx) error {
 		})
 	}
 
-	
 	products := service.CreateProduct(product)
 	return c.Status(200).JSON(products)
 }
