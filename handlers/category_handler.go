@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"api/models"
 	"api/service"
 	"api/utils"
 	"github.com/gofiber/fiber/v3"
@@ -29,17 +28,16 @@ func FindCategory(c fiber.Ctx) error {
 HANDLER CREATE CATEGORY
 */
 func CreateCategory(c fiber.Ctx) error {
-	var category models.Category
-	if err := c.Bind().Body(&category); err != nil {
+	if err := c.Bind().Body(&service.Category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(category); err != nil {
+	if err := utils.Validator(service.Category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	categories := service.CreateCategory(category)
+	categories := service.CreateCategory(service.Category)
 	return c.Status(200).JSON(categories)
 }
 
@@ -48,17 +46,16 @@ HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
-	var category models.Category
-	if err := c.Bind().Body(&category); err != nil {
+	if err := c.Bind().Body(&service.Category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(category); err != nil {
+	if err := utils.Validator(service.Category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	category_update := service.UpdateCategory(uint(id), category)
+	category_update := service.UpdateCategory(uint(id), service.Category)
 	return c.Status(200).JSON(category_update)
 }
 

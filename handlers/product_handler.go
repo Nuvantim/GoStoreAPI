@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"api/models"
 	"api/service"
 	"api/utils"
 	"github.com/gofiber/fiber/v3"
@@ -20,43 +19,41 @@ func FindProduct(c fiber.Ctx) error {
 }
 
 func CreateProduct(c fiber.Ctx) error {
-	var product models.Product
-	if err := c.Bind().Body(&product); err != nil {
+	if err := c.Bind().Body(&service.Product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
 	// validate data
-	if err := utils.Validator(product); err != nil {
+	if err := utils.Validator(service.Product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
 	// check category
-	ctg := service.FindCategory(product.CategoryID)
+	ctg := service.FindCategory(service.Product.CategoryID)
 	if ctg.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"Message": "Category not found",
 		})
 	}
 
-	products := service.CreateProduct(product)
+	products := service.CreateProduct(service.Product)
 	return c.Status(200).JSON(products)
 }
 
 func UpdateProduct(c fiber.Ctx) error {
 	id := c.Params("id")
-	var product models.Product
-	if err := c.Bind().Body(&product); err != nil {
+	if err := c.Bind().Body(&service.Product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(product); err != nil {
+	if err := utils.Validator(service.Product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	products := service.UpdateProduct(id, product)
+	products := service.UpdateProduct(id, service.Product)
 	return c.Status(200).JSON(products)
 }
 

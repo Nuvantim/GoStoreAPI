@@ -21,14 +21,11 @@ func GetCart(id uint) []models.Cart {
 func FindCart(id uint) models.Cart {
 	var carts models.Cart
 	database.DB.Where("id = ?", id).
-		Preload("Product", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "name", "price", "stock", "category_id")
-		}).
-		Preload("Product.Category").
-		Take(&carts)
+	Preload("Product", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name", "price", "stock", "category_id")
+	}).Preload("Product.Category").Take(&carts)
 	return carts
 }
-
 
 func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart {
 	cart := models.Cart{

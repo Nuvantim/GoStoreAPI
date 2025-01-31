@@ -9,6 +9,7 @@ import (
 func Setup(app *fiber.App) {
 
 	//auth Route
+	app.Get("/", handler.Home)
 	app.Post("/account/register", handler.RegisterAccount)
 	app.Post("/otp/verify", handler.OtpVerify)
 	app.Post("/login", handler.Login)
