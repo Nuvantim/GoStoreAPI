@@ -17,11 +17,10 @@ var otp struct {
 	Code string `json:"code"`
 }
 
-
 /*
 Home Handler
 */
-func Home(c fiber.Ctx) error{
+func Home(c fiber.Ctx) error {
 	return c.Status(200).SendString("Welcome To GoStoreAPI")
 }
 

@@ -7,39 +7,41 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetCart(id uint) []models.Cart {
-	var cart []models.Cart
+type Cart models.Cart // declare type models Cart 
+var cart Cart // declare variabel Cart
+
+func GetCart(id uint) []Cart {
+	var carts []Cart
 	database.DB.Where("user_id = ?", id).
 		Preload("Product", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "name", "price", "stock", "category_id")
 		}).
 		Preload("Product.Category").
-		Find(&cart)
-	return cart
-}
-
-func FindCart(id uint) models.Cart {
-	var carts models.Cart
-	database.DB.Where("id = ?", id).
-	Preload("Product", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name", "price", "stock", "category_id")
-	}).Preload("Product.Category").Take(&carts)
+		Find(&carts)
 	return carts
 }
 
-func AddCart(cart_data models.Cart, id_user, cost uint) models.Cart {
-	cart := models.Cart{
+func FindCart(id uint) Cart {
+	var cart Cart
+	database.DB.Where("id = ?", id).
+	Preload("Product", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name", "price", "stock", "category_id")
+	}).Preload("Product.Category").Take(&cart)
+	return cart
+}
+
+func CreateCart(cart_data Cart, id_user, cost uint) Cart {
+	cart := Cart{
 		UserID:     id_user,
 		ProductID:  cart_data.ProductID,
 		Total_Cost: cost,
 	}
 	database.DB.Create(&cart)
-	cart = FindCart(cart.ID)
-	return cart
+	carts := FindCart(cart.ID)
+	return carts
 }
 
-func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
-	var cart models.Cart
+func UpdateCart(cart_update Cart, cost uint) Cart {
 	//Get cart by ID
 	database.DB.Take(&cart, cart_update.ID)
 
@@ -49,12 +51,11 @@ func UpdateCart(cart_update models.Cart, cost uint) models.Cart {
 	database.DB.Save(&cart)
 
 	// return data
-	cart = FindCart(cart.ID)
-	return cart
+	carts := FindCart(cart.ID)
+	return carts
 }
 
 func DeleteCart(input interface{}) error {
-	var cart models.Cart
 	switch v := input.(type) {
 	case uint:
 		return database.DB.Where("id = ?", v).Delete(&cart).Error
@@ -67,38 +68,13 @@ func DeleteCart(input interface{}) error {
 	}
 }
 
-func TransferCart(cart_id []uint) []models.Cart {
-	var cart []models.Cart
-	result := database.DB.Where("id IN ?", cart_id).Limit(1).Find(&cart)
+func TransferCart(cart_id []uint) []models.Cart{
+	var carts []models.Cart
+	result := database.DB.Where("id IN ?", cart_id).Limit(1).Find(&carts)
 	if result.RowsAffected == 0 {
 		return nil // Mengembalikan nil jika tidak ada data
 	}
 
-	database.DB.Where("id IN ?", cart_id).Find(&cart)
-	return cart
+	database.DB.Where("id IN ?", cart_id).Find(&carts)
+	return carts
 }
-
-// func FindCart(id interface{}) interface{} {
-//     var cart models.Cart
-//     var carts []models.Cart
-
-//     switch v := id.(type) {
-
-//     case uint: // single id
-//         database.DB.Where("id = ?", v).Preload("Product", func(db *gorm.DB) *gorm.DB {
-//             return db.Select("id", "name", "price", "stock", "category_id")
-//         }).Preload("Product.Category").Take(&cart)
-
-//         return cart  // Return single cart
-
-//     case []uint: // multiple ids
-//         result := database.DB.Where("id IN ?", v).Find(&carts)
-//         if result.RowsAffected == 0 {
-//             return nil  // Return nil if no carts are found
-//         }
-//         return carts  // Return slice of carts
-
-//     default: // invalid id
-//         return nil  // Return nil for invalid id
-//     }
-// }

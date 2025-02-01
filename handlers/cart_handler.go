@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
 )
-
+var cart service.Cart // declare variabel Cart
 /*
 HANDLER GET CART
 */
@@ -48,8 +47,6 @@ func FindCart(c fiber.Ctx) error {
 HANDLER CREATE CART
 */
 func AddCart(c fiber.Ctx) error {
-	var cart models.Cart
-
 	// get user id
 	id_user := c.Locals("user_id").(uint)
 
@@ -77,7 +74,7 @@ func AddCart(c fiber.Ctx) error {
 	var cost uint = product.Price
 
 	// Connect service
-	carts := service.AddCart(cart, id_user, cost)
+	carts := service.CreateCart(cart, id_user, cost)
 	return c.Status(200).JSON(carts)
 }
 
@@ -89,7 +86,6 @@ func UpdateCart(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
 
 	// Bind body request ke struct cart
-	var cart models.Cart
 	if err := c.Bind().Body(&cart); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),

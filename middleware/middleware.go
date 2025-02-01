@@ -10,7 +10,7 @@ func Setup() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		return MethodMiddleware(c)
 	}
-    // JWT middleware
+	// JWT middleware
 	return func(c fiber.Ctx) error {
 		return AuthAndRefreshMiddleware(c)
 	}

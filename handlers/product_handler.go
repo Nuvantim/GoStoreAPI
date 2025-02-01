@@ -7,9 +7,11 @@ import (
 	"strconv"
 )
 
+var product service.Product //declare variabel Product
+
 func GetProduct(c fiber.Ctx) error {
-	product := service.GetAllProduct()
-	return c.Status(200).JSON(product)
+	products := service.GetAllProduct()
+	return c.Status(200).JSON(products)
 }
 
 func FindProduct(c fiber.Ctx) error {
@@ -19,47 +21,47 @@ func FindProduct(c fiber.Ctx) error {
 }
 
 func CreateProduct(c fiber.Ctx) error {
-	if err := c.Bind().Body(&service.Product); err != nil {
+	if err := c.Bind().Body(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
 	// validate data
-	if err := utils.Validator(service.Product); err != nil {
+	if err := utils.Validator(product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
 	// check category
-	ctg := service.FindCategory(service.Product.CategoryID)
+	ctg := service.FindCategory(product.CategoryID)
 	if ctg.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"Message": "Category not found",
 		})
 	}
 
-	products := service.CreateProduct(service.Product)
-	return c.Status(200).JSON(products)
+	service.CreateProduct(product)
+	return c.Status(200).JSON(product)
 }
 
 func UpdateProduct(c fiber.Ctx) error {
-	id := c.Params("id")
-	if err := c.Bind().Body(&service.Product); err != nil {
+	id,_ := strconv.Atoi(c.Params("id"))
+	if err := c.Bind().Body(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(service.Product); err != nil {
+	if err := utils.Validator(product); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	products := service.UpdateProduct(id, service.Product)
+	products := service.UpdateProduct(uint(id), product)
 	return c.Status(200).JSON(products)
 }
 
 func DeleteProduct(c fiber.Ctx) error {
-	id := c.Params("id")
-	if err := service.DeleteProduct(id); err != nil {
+	id,_ := strconv.Atoi(c.Params("id"))
+	if err := service.DeleteProduct(uint(id)); err != nil {
 		return c.Status(500).SendString("Failed Delete Product")
 	}
 

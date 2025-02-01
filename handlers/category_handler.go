@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+var category service.Category //declare variabel Category
 /*
 HANDLER GET CATEGORY
 */
@@ -28,16 +29,16 @@ func FindCategory(c fiber.Ctx) error {
 HANDLER CREATE CATEGORY
 */
 func CreateCategory(c fiber.Ctx) error {
-	if err := c.Bind().Body(&service.Category); err != nil {
+	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(service.Category); err != nil {
+	if err := utils.Validator(category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	categories := service.CreateCategory(service.Category)
+	categories := service.CreateCategory(category)
 	return c.Status(200).JSON(categories)
 }
 
@@ -46,16 +47,16 @@ HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
-	if err := c.Bind().Body(&service.Category); err != nil {
+	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 	// validate data
-	if err := utils.Validator(service.Category); err != nil {
+	if err := utils.Validator(category); err != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	category_update := service.UpdateCategory(uint(id), service.Category)
+	category_update := service.UpdateCategory(uint(id), category)
 	return c.Status(200).JSON(category_update)
 }
 

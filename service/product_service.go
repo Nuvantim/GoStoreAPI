@@ -5,51 +5,50 @@ import (
 	"api/models"
 )
 
-var(
-	Product models.Product
-	Products []models.Product
-)
+type Product  models.Product // declare type models Product
+var product Product //declare variabel Product
 
 // get category
-func GetAllProduct() []models.Product {
-	database.DB.Select("id", "name", "price", "stock", "category_id").Preload("Category").Find(&Products)
-	return Products
+func GetAllProduct() []Product {
+	var products []Product
+	database.DB.Select("id", "name", "price", "stock", "category_id").Preload("Category").Find(&products)
+	return products
 }
 
 // get Product from id
-func FindProduct(id uint) models.Product {
+func FindProduct(id uint) Product {
 	database.DB.Preload("Category").
-	Preload("Review").
-	Preload("Review.User").
-	Take(&Product, id)
-	return Product
+		Preload("Review").
+		Preload("Review.User").
+		Take(&product, id)
+	return product
 }
 
 // create Product
-func CreateProduct(product models.Product) models.Product {
+func CreateProduct(product Product) Product {
 	database.DB.Create(&product)
 	database.DB.Preload("Category").Take(&product, product.ID)
-	return Product
+	return product
 }
 
 // update category
-func UpdateProduct(id string, product_request models.Product) models.Product {
-	database.DB.Take(&Product, id)
-	Product.Name = product_request.Name
-	Product.Description = product_request.Description
-	Product.Price = product_request.Price
-	Product.Stock = product_request.Stock
-	Product.CategoryID = product_request.CategoryID
-	database.DB.Save(&Product)
-	database.DB.Preload("Category").Take(&Product, Product.ID)
-	return Product
+func UpdateProduct(id uint, product_request Product) Product {
+	database.DB.Take(&product, id)
+	product.Name = product_request.Name
+	product.Description = product_request.Description
+	product.Price = product_request.Price
+	product.Stock = product_request.Stock
+	product.CategoryID = product_request.CategoryID
+	database.DB.Save(&product)
+	database.DB.Preload("Category").Take(&product, product.ID)
+	return product
 }
 
 // delete product
-func DeleteProduct(id string) error {
-	if err := database.DB.Take(&Product, id).Error; err != nil {
+func DeleteProduct(id uint) error {
+	if err := database.DB.Take(&product, id).Error; err != nil {
 		return err
 	}
-	database.DB.Delete(&Product)
+	database.DB.Delete(&product)
 	return nil
 }
