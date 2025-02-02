@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"api/models"
 	"api/service"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
 )
+
+type Review = service.Review 		//declare type models Review
 
 /*
 HANDLER Create Review
@@ -14,7 +15,7 @@ func CreateReview(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
 
 	//parse body to json
-	var review models.Review
+	var review Review
 	if err := c.Bind().Body(&review); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),

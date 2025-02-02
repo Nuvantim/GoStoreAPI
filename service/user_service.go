@@ -7,9 +7,15 @@ import (
 	"errors"
 )
 
+type ( // declare type models User & UserTemps
+	User  = models.User
+	UserTemp  = models.UserTemp
+	UserInfo = models.UserInfo
+)
+
 func CheckEmail(email string) bool {
-	var user models.User
-	var usertemp models.UserTemp
+	var user User
+	var usertemp UserTemp
 
 	// Check User
 	result := database.DB.Where("email = ?", email).Find(&user)
@@ -26,7 +32,7 @@ func CheckEmail(email string) bool {
 	return false
 }
 
-func RegisterAccount(users models.UserTemp) string {
+func RegisterAccount(users UserTemp) string {
 	// hashing password
 	hashPassword := utils.HashBycrypt(users.Password)
 
@@ -37,7 +43,7 @@ func RegisterAccount(users models.UserTemp) string {
 	utils.SendOTP(users.Email, otp)
 
 	// Create UserTemp
-	usertemp := models.UserTemp{
+	usertemp := UserTemp{
 		Otp:      otp,
 		Name:     users.Name,
 		Email:    users.Email,
@@ -49,9 +55,9 @@ func RegisterAccount(users models.UserTemp) string {
 	return "Success Register, Please Check Your Email"
 }
 
-func FindAccount(id uint) (models.User, models.UserInfo) {
-	var user models.User
-	var info models.UserInfo
+func FindAccount(id uint) (User, UserInfo) {
+	var user User
+	var info UserInfo
 
 	// Get data by ID
 	database.DB.Take(&user, id)
@@ -63,10 +69,10 @@ func FindAccount(id uint) (models.User, models.UserInfo) {
 	return user, info
 }
 
-func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (models.User, models.UserInfo, error) {
+func UpdateAccount(users User, user_info UserInfo, user_id uint) (User, UserInfo, error) {
 	// Declare variable
-	var user models.User
-	var userInfo models.UserInfo
+	var user User
+	var userInfo UserInfo
 
 	// Get user data by id
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
@@ -108,7 +114,7 @@ func UpdateAccount(users models.User, user_info models.UserInfo, user_id uint) (
 }
 
 func DeleteAccount(user_id uint) error {
-	var user models.User
+	var user User
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
 		return err
 	}

@@ -7,26 +7,30 @@ import (
 	"gorm.io/gorm"
 )
 
+type( //declare type models Order & OrderItems
+	Order = models.Order
+	OrderItem = models.OrderItem
+)
 /*
 SERVICE ORDER
 */
-func GetOrder(id uint) []models.Order {
-	var order []models.Order
+func GetOrder(id uint) []Order {
+	var order []Order
 	database.DB.Where("user_id = ?", id).Find(&order)
 	return order
 }
 
-func FindOrder(id uuid.UUID) models.Order {
-	var order models.Order
+func FindOrder(id uuid.UUID) Order {
+	var order Order
 	database.DB.Preload("OrderItems.Product", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id", "name", "price", "stock")
 	}).Take(&order, "id = ?", id)
 	return order
 }
 
-func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) models.Order {
+func CreateOrder(id_user, totalItem, totalPrice uint, cartData []Cart) Order {
 	// Create Order
-	order := models.Order{
+	order := Order{
 		UserID:     id_user,
 		TotalPrice: totalPrice,
 		TotalItem:  totalItem,
@@ -34,11 +38,11 @@ func CreateOrder(id_user, totalItem, totalPrice uint, cartData []models.Cart) mo
 	database.DB.Create(&order)
 
 	// Create Order Item
-	var orderItems []models.OrderItem
+	var orderItems []OrderItem
 
 	// Menyiapkan data untuk batch insert
 	for _, cart := range cartData {
-		orderItems = append(orderItems, models.OrderItem{
+		orderItems = append(orderItems, OrderItem{
 			OrderID:   order.ID,
 			ProductID: cart.ProductID,
 			Quantity:  cart.Quantity,
@@ -58,13 +62,13 @@ func DeleteOrder(id uuid.UUID) error {
 	tx := database.DB.Begin()
 
 	// Hapus OrderItem berdasarkan OrderID
-	if err := tx.Where("order_id = ?", id).Delete(&models.OrderItem{}).Error; err != nil {
+	if err := tx.Where("order_id = ?", id).Delete(&OrderItem{}).Error; err != nil {
 		tx.Rollback() // cancel transaction if error
 		return err
 	}
 
 	// Delete Order by ID
-	if err := tx.Delete(&models.Order{}, id).Error; err != nil {
+	if err := tx.Delete(&Order{}, id).Error; err != nil {
 		tx.Rollback() // cancel transaction if error
 		return err
 	}

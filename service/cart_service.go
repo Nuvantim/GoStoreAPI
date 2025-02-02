@@ -7,26 +7,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type Cart models.Cart // declare type models Cart 
-var cart Cart // declare variabel Cart
+type Cart = models.Cart 		// declare type models Cart
 
 func GetCart(id uint) []Cart {
-	var carts []Cart
+	var cart []Cart
 	database.DB.Where("user_id = ?", id).
 		Preload("Product", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "name", "price", "stock", "category_id")
 		}).
 		Preload("Product.Category").
-		Find(&carts)
-	return carts
+		Find(&cart)
+	return cart
 }
 
 func FindCart(id uint) Cart {
-	var cart Cart
+	var cart Cart         		// declare variabel Cart
 	database.DB.Where("id = ?", id).
-	Preload("Product", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name", "price", "stock", "category_id")
-	}).Preload("Product.Category").Take(&cart)
+		Preload("Product", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "name", "price", "stock", "category_id")
+		}).Preload("Product.Category").Take(&cart)
 	return cart
 }
 
@@ -42,6 +41,7 @@ func CreateCart(cart_data Cart, id_user, cost uint) Cart {
 }
 
 func UpdateCart(cart_update Cart, cost uint) Cart {
+	var cart Cart         		// declare variabel Cart
 	//Get cart by ID
 	database.DB.Take(&cart, cart_update.ID)
 
@@ -56,6 +56,7 @@ func UpdateCart(cart_update Cart, cost uint) Cart {
 }
 
 func DeleteCart(input interface{}) error {
+	var cart Cart         		// declare variabel Cart
 	switch v := input.(type) {
 	case uint:
 		return database.DB.Where("id = ?", v).Delete(&cart).Error
@@ -68,11 +69,11 @@ func DeleteCart(input interface{}) error {
 	}
 }
 
-func TransferCart(cart_id []uint) []models.Cart{
-	var carts []models.Cart
+func TransferCart(cart_id []uint) []Cart {
+	var carts []Cart
 	result := database.DB.Where("id IN ?", cart_id).Limit(1).Find(&carts)
 	if result.RowsAffected == 0 {
-		return nil // Mengembalikan nil jika tidak ada data
+		return nil // return nil if data empty
 	}
 
 	database.DB.Where("id IN ?", cart_id).Find(&carts)

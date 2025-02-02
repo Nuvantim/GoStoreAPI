@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var product service.Product //declare variabel Product
+type Product = service.Product 			//declare type models Product
 
 func GetProduct(c fiber.Ctx) error {
 	products := service.GetAllProduct()
@@ -21,6 +21,7 @@ func FindProduct(c fiber.Ctx) error {
 }
 
 func CreateProduct(c fiber.Ctx) error {
+	var product Product         		//declare variabel Product
 	if err := c.Bind().Body(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -36,7 +37,7 @@ func CreateProduct(c fiber.Ctx) error {
 	ctg := service.FindCategory(product.CategoryID)
 	if ctg.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"Message": "Category not found",
+			"message": "Category not found",
 		})
 	}
 
@@ -45,7 +46,8 @@ func CreateProduct(c fiber.Ctx) error {
 }
 
 func UpdateProduct(c fiber.Ctx) error {
-	id,_ := strconv.Atoi(c.Params("id"))
+	id, _ := strconv.Atoi(c.Params("id")) 	// get Params ID
+	var product Product         			//declare variabel Product
 	if err := c.Bind().Body(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -60,7 +62,7 @@ func UpdateProduct(c fiber.Ctx) error {
 }
 
 func DeleteProduct(c fiber.Ctx) error {
-	id,_ := strconv.Atoi(c.Params("id"))
+	id, _ := strconv.Atoi(c.Params("id"))
 	if err := service.DeleteProduct(uint(id)); err != nil {
 		return c.Status(500).SendString("Failed Delete Product")
 	}

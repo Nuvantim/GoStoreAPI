@@ -3,24 +3,25 @@ package service
 import (
 	"api/database"
 	"api/models"
+	"gorm.io/gorm"
 )
 
-type Product  models.Product // declare type models Product
-var product Product //declare variabel Product
+type Product = models.Product 		// declare type models Product
 
 // get category
 func GetAllProduct() []Product {
-	var products []Product
-	database.DB.Select("id", "name", "price", "stock", "category_id").Preload("Category").Find(&products)
-	return products
+	var product []Product
+	database.DB.Select("id", "name", "price", "stock", "category_id").Preload("Category").Find(&product)
+	return product
 }
 
 // get Product from id
 func FindProduct(id uint) Product {
+	var product Product 			//declare variabel Product
 	database.DB.Preload("Category").
-		Preload("Review").
-		Preload("Review.User").
-		Take(&product, id)
+	Preload("Review").
+	Preload("Review.User").
+	Take(&product, id)
 	return product
 }
 
@@ -33,6 +34,7 @@ func CreateProduct(product Product) Product {
 
 // update category
 func UpdateProduct(id uint, product_request Product) Product {
+	var product Product         	//declare variabel Product
 	database.DB.Take(&product, id)
 	product.Name = product_request.Name
 	product.Description = product_request.Description
@@ -46,6 +48,7 @@ func UpdateProduct(id uint, product_request Product) Product {
 
 // delete product
 func DeleteProduct(id uint) error {
+	var product Product         	//declare variabel Product
 	if err := database.DB.Take(&product, id).Error; err != nil {
 		return err
 	}

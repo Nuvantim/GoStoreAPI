@@ -5,18 +5,18 @@ import (
 	"api/models"
 )
 
-type Category models.Category // declare type model Category
-var category Category // declare variabel Category
+type Category = models.Category // declare type model Category
 
 // get category
 func GetAllCategory() []Category {
-	var categorys []Category
-	database.DB.Find(&categorys)
-	return categorys
+	var category []Category // declare variabel Category
+	database.DB.Find(&category)
+	return category
 }
 
 // get category from id
 func FindCategory(id uint) Category {
+	var category Category // declare variabel Category
 	database.DB.Find(&category, id)
 	return category
 }
@@ -29,6 +29,7 @@ func CreateCategory(category Category) Category {
 
 // update category
 func UpdateCategory(id uint, category_request Category) Category {
+	var category Category // declare variabel Category
 	database.DB.Take(&category, id)
 	category.Name = category_request.Name
 	database.DB.Save(&category)
@@ -37,6 +38,7 @@ func UpdateCategory(id uint, category_request Category) Category {
 
 // delete category
 func DeleteCategory(id uint) error {
+	var category Category // declare variabel Category
 	if err := database.DB.Take(&category, id).Error; err != nil {
 		return err
 	}

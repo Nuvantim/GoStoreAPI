@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var category service.Category //declare variabel Category
+type Category = service.Category //declare type model Category
 /*
 HANDLER GET CATEGORY
 */
@@ -20,7 +20,7 @@ func GetCategory(c fiber.Ctx) error {
 HANDLER FIND CATEGORY
 */
 func FindCategory(c fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
+	id, _ := strconv.Atoi(c.Params("id")) // get params ID
 	category := service.FindCategory(uint(id))
 	return c.Status(200).JSON(category)
 }
@@ -29,6 +29,7 @@ func FindCategory(c fiber.Ctx) error {
 HANDLER CREATE CATEGORY
 */
 func CreateCategory(c fiber.Ctx) error {
+	var category Category // declare variabel Category
 	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -46,7 +47,9 @@ func CreateCategory(c fiber.Ctx) error {
 HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
+	id, _ := strconv.Atoi(c.Params("id")) // get params ID
+	var category Category                 // declare variabel Category
+
 	if err := c.Bind().Body(&category); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}

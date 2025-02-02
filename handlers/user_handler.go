@@ -7,7 +7,13 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-type UserRequest struct {
+type ( // declare type models User & UserTemps
+	User  = models.User
+	UserTemp  = models.UserTemp
+	UserInfo = models.UserInfo
+)
+
+type UserRequest struct {	//struct update Request
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"omitempty,min=8"`
@@ -22,9 +28,8 @@ type UserRequest struct {
 /*
 Handler Get Profile
 */
-func GetProfile(c fiber.Ctx) error {
-	// Get UserID from locals variable
-	userID := c.Locals("user_id").(uint)
+func GetProfile(c fiber.Ctx) error { 
+	userID := c.Locals("user_id").(uint)	// Get UserID from locals variable
 	if userID == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
@@ -42,7 +47,7 @@ func GetProfile(c fiber.Ctx) error {
 Handler Register User
 */
 func RegisterAccount(c fiber.Ctx) error {
-	var users models.UserTemp
+	var users UserTemp
 	if err := c.Bind().Body(&users); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
@@ -87,14 +92,14 @@ func UpdateAccount(c fiber.Ctx) error {
 	}
 
 	//parsing user model
-	user := models.User{
+	user := User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
 	//parsing user_info model
-	user_info := models.UserInfo{
+	user_info := UserInfo{
 		Age:      req.Age,
 		Phone:    req.Phone,
 		District: req.District,
