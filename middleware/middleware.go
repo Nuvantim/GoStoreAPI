@@ -8,7 +8,7 @@ import (
 func Setup() fiber.Handler {
 
 	return func(c fiber.Ctx) error {
-		// JWT Middelware 
+		// JWT Middelware
 		return AuthAndRefreshMiddleware(c)
 	}
 }

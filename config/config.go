@@ -24,11 +24,15 @@ func FiberConfig() fiber.Config {
 // MiddlewareSetup menyiapkan semua middleware keamanan
 func MiddlewareConfig(app *fiber.App) {
 
+	// Url API
+	// url := os.Getenv("URL")
+
 	// Rate Limiting
 	app.Use(limiter.New(limiter.Config{
 		Max:        20,
 		Expiration: 30 * time.Second,
 	}))
+
 	// Logger
 	app.Use(logger.New(logger.Config{
 		Format:     "${time} | ${status} | ${latency} | ${ip} | ${method} | ${path}\n",
@@ -48,4 +52,11 @@ func MiddlewareConfig(app *fiber.App) {
 
 	// CORS Configuration
 	app.Use(cors.New())
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins: URL,
+	// 	AllowMethods : "GET","POST","PUT","DELETE",
+	// 	AllowHeaders : "Content-Type, Authorization",
+	// 	AllowCredentials : false,
+	// 	MaxAge : 3600,
+	// }))
 }

@@ -8,8 +8,8 @@ import (
 )
 
 type ( // declare type models User & UserTemps
-	User  = models.User
-	UserTemp  = models.UserTemp
+	User     = models.User
+	UserTemp = models.UserTemp
 	UserInfo = models.UserInfo
 )
 

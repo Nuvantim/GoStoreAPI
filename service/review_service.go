@@ -4,7 +4,8 @@ import (
 	"api/database"
 	"api/models"
 )
-type Review = models.Review  //declare type models Review
+
+type Review = models.Review //declare type models Review
 
 func CreateReview(review_data Review) Product {
 	review := Review{

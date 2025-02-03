@@ -6,13 +6,13 @@ import (
 	"strconv"
 )
 
-type Cart = service.Cart 					// declare type models Cart
+type Cart = service.Cart // declare type models Cart
 
 /*
 HANDLER GET CART
 */
 func GetCart(c fiber.Ctx) error {
-	id := c.Locals("user_id").(uint)		// get user id      					
+	id := c.Locals("user_id").(uint) // get user id
 	cart := service.GetCart(id)
 	return c.Status(200).JSON(cart)
 }
@@ -21,10 +21,12 @@ func GetCart(c fiber.Ctx) error {
 HANDLER FIND CART
 */
 func FindCart(c fiber.Ctx) error {
-	// get user id
+	// get user id & cart id
 	user_id := c.Locals("user_id").(uint)
 	id, _ := strconv.Atoi(c.Params("id"))
-	cart := service.FindCart(uint(id))
+
+	// service Find a Cart
+	cart, _:= service.FindCart(uint(id))
 
 	// check cart exist
 	if cart.ID == 0 {
@@ -46,8 +48,8 @@ func FindCart(c fiber.Ctx) error {
 HANDLER CREATE CART
 */
 func CreateCart(c fiber.Ctx) error {
-	var cart Cart         					// declare variabel Cart
-	id_user := c.Locals("user_id").(uint) 	// get user id
+	var cart Cart                         // declare variabel Cart
+	id_user := c.Locals("user_id").(uint) // get user id
 
 	// Bind body request ke struct cart
 	if err := c.Bind().Body(&cart); err != nil {
@@ -81,8 +83,8 @@ func CreateCart(c fiber.Ctx) error {
 HANDLER UPDATE CART
 */
 func UpdateCart(c fiber.Ctx) error {
-	var cart Cart         					// declare variabel Cart
-	user_id := c.Locals("user_id").(uint)	// get user id
+	var cart Cart                         // declare variabel Cart
+	user_id := c.Locals("user_id").(uint) // get user id
 
 	// Bind body request ke struct cart
 	if err := c.Bind().Body(&cart); err != nil {
@@ -92,7 +94,7 @@ func UpdateCart(c fiber.Ctx) error {
 	}
 
 	// Find cart
-	carts := service.FindCart(cart.ID)
+	carts,_ := service.FindCart(cart.ID)
 
 	// check cart user
 	if carts.UserID != user_id {
@@ -137,7 +139,7 @@ func DeleteCart(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
 
 	// Find Cart
-	carts := service.FindCart(uint(id))
+	carts,_ := service.FindCart(uint(id))
 	if carts.UserID != user_id {
 		return c.Status(403).JSON(fiber.Map{
 			"message": "Forbidden",

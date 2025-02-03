@@ -7,10 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type( //declare type models Order & OrderItems
-	Order = models.Order
+type ( //declare type models Order & OrderItems
+	Order     = models.Order
 	OrderItem = models.OrderItem
 )
+
 /*
 SERVICE ORDER
 */

@@ -8,12 +8,12 @@ import (
 )
 
 type ( // declare type models User & UserTemps
-	User  = models.User
-	UserTemp  = models.UserTemp
+	User     = models.User
+	UserTemp = models.UserTemp
 	UserInfo = models.UserInfo
 )
 
-type UserRequest struct {	//struct update Request
+type UserRequest struct { //struct update Request
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"omitempty,min=8"`
@@ -28,8 +28,8 @@ type UserRequest struct {	//struct update Request
 /*
 Handler Get Profile
 */
-func GetProfile(c fiber.Ctx) error { 
-	userID := c.Locals("user_id").(uint)	// Get UserID from locals variable
+func GetProfile(c fiber.Ctx) error {
+	userID := c.Locals("user_id").(uint) // Get UserID from locals variable
 	if userID == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}

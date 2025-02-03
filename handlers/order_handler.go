@@ -56,8 +56,8 @@ HANDLER CREATE ORDER
 func CreateOrder(c fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint) // get id user
 
-	var totalPrice uint 		//declare variabel totalPrice
-	var totalItem uint 			//declare variabel totalItem
+	var totalPrice uint //declare variabel totalPrice
+	var totalItem uint  //declare variabel totalItem
 
 	// Bind body request ke struct request
 	if err := c.Bind().Body(&request); err != nil {
@@ -67,7 +67,7 @@ func CreateOrder(c fiber.Ctx) error {
 	}
 
 	//get all cart
-	cart := service.TransferCart(request.CartID)
+	_,cart := service.FindCart(request.CartID)
 	//check cart
 	if cart == nil {
 		return c.Status(404).JSON(fiber.Map{

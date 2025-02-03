@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Cart = models.Cart 		// declare type models Cart
+type Cart = models.Cart // declare type models Cart
 
 func GetCart(id uint) []Cart {
 	var cart []Cart
@@ -20,13 +20,29 @@ func GetCart(id uint) []Cart {
 	return cart
 }
 
-func FindCart(id uint) Cart {
-	var cart Cart         		// declare variabel Cart
-	database.DB.Where("id = ?", id).
-		Preload("Product", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "name", "price", "stock", "category_id")
-		}).Preload("Product.Category").Take(&cart)
-	return cart
+
+func FindCart(id interface{}) (Cart, []Cart) {
+	var ( // declare variabel Cart
+		cart  Cart
+		carts []Cart
+	)
+	switch CartID := id.(type) {
+
+	case uint: //single id
+		database.DB.Where("id = ?", CartID).
+			Preload("Product", func(db *gorm.DB) *gorm.DB {
+				return db.Select("id", "name", "price", "stock", "category_id")
+			}).Preload("Product.Category").Take(&cart)
+		return cart, carts
+
+	case []uint: //multiple id
+		database.DB.Where("id IN ?", CartID).Find(&carts)
+		return cart, carts
+	default:
+		return cart, carts
+
+	}
+
 }
 
 func CreateCart(cart_data Cart, id_user, cost uint) Cart {
@@ -36,12 +52,16 @@ func CreateCart(cart_data Cart, id_user, cost uint) Cart {
 		Total_Cost: cost,
 	}
 	database.DB.Create(&cart)
-	carts := FindCart(cart.ID)
-	return carts
+	// return cart data
+	database.DB.Where("id = ?", cart.ID).
+	Preload("Product", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name", "price", "stock", "category_id")
+	}).Preload("Product.Category").Take(&cart)
+	return cart
 }
 
 func UpdateCart(cart_update Cart, cost uint) Cart {
-	var cart Cart         		// declare variabel Cart
+	var cart Cart // declare variabel Cart
 	//Get cart by ID
 	database.DB.Take(&cart, cart_update.ID)
 
@@ -51,12 +71,15 @@ func UpdateCart(cart_update Cart, cost uint) Cart {
 	database.DB.Save(&cart)
 
 	// return data
-	carts := FindCart(cart.ID)
-	return carts
+	database.DB.Where("id = ?", cart.ID).
+	Preload("Product", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name", "price", "stock", "category_id")
+	}).Preload("Product.Category").Take(&cart)
+	return cart
 }
 
 func DeleteCart(input interface{}) error {
-	var cart Cart         		// declare variabel Cart
+	var cart Cart // declare variabel Cart
 	switch v := input.(type) {
 	case uint:
 		return database.DB.Where("id = ?", v).Delete(&cart).Error
@@ -67,15 +90,4 @@ func DeleteCart(input interface{}) error {
 	default:
 		return errors.New("invalid input type")
 	}
-}
-
-func TransferCart(cart_id []uint) []Cart {
-	var carts []Cart
-	result := database.DB.Where("id IN ?", cart_id).Limit(1).Find(&carts)
-	if result.RowsAffected == 0 {
-		return nil // return nil if data empty
-	}
-
-	database.DB.Where("id IN ?", cart_id).Find(&carts)
-	return carts
 }
