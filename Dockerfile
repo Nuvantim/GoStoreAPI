@@ -4,7 +4,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Copy binary file terlebih dahulu karena jarang berubah
-COPY bin/main ./
+COPY ../bin/main ./
 
 # Copy environment file
 COPY .env ./

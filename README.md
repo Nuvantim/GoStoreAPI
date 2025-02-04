@@ -46,7 +46,7 @@ go mod tidy
 
 ### Development Mode
 ```bash
-go run cli/main.go
+go run cmd/main.go
 ```
 
 ## Deployment :rocket:
