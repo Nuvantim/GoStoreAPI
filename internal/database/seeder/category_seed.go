@@ -2,7 +2,7 @@ package seeder
 
 import (
 	"api/internal/database"
-	"api/internal/delivery/models"
+	"api/internal/domain/models"
 	"log"
 )
 

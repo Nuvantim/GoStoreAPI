@@ -2,7 +2,7 @@ package service
 
 import (
 	"api/internal/database"
-	"api/internal/delivery/models"
+	"api/internal/domain/models"
 )
 
 type Category = models.Category // declare type model Category

@@ -2,7 +2,7 @@ package service
 
 import (
 	"api/internal/database"
-	"api/internal/delivery/models"
+	"api/internal/domain/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )

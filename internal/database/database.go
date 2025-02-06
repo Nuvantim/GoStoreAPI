@@ -1,7 +1,7 @@
 package database
 
 import (
-	"api/internal/delivery/models"
+	"api/internal/domain/models"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 	"log"

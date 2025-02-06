@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"api/internal/delivery/models"
-	"api/internal/delivery/service"
+	"api/internal/domain/models"
+	"api/internal/domain/service"
 	"api/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
