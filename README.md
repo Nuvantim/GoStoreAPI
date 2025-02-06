@@ -34,6 +34,13 @@ DB_USER=root
 DB_PASSWORD=
 DB_NAME=api_store
 DB_PORT=3306
+
+MAIL_MAILER=smtp.xxx.com
+MAIL_PORT=25
+MAIL_USERNAME=user@mail.com
+MAIL_PASSWORD=password123
+MAIL_FROM_ADDRESS="person@mail.com"
+
 PORT=8080
 ```
 
@@ -63,6 +70,13 @@ DB_USER=postgres
 DB_PASSWORD=your_database_password
 DB_NAME=api_store
 DB_PORT=5432
+
+MAIL_MAILER=smtp.xxx.com
+MAIL_PORT=25
+MAIL_USERNAME=user@mail.com
+MAIL_PASSWORD=password123
+MAIL_FROM_ADDRESS="person@mail.com"
+
 PORT=7373
 ```
 ## 2. Compile project

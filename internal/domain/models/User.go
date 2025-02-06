@@ -7,14 +7,14 @@ import (
 type User struct {
 	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"not null" validate:"required"`
-	Email     string    `json:"email" gorm:"unique;not null" validate:"required,email"`
+	Email     string    `json:"email,omitempty" gorm:"unique;not null" validate:"required,email"`
 	Password  string    `json:"-" gorm:"not null"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
+	CreatedAt time.Time `json:"-" gorm:"autoCreateTime"`
 }
 
 type UserInfo struct {
-	ID        uint      `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	UserID    uint      `json:"user_id"`
+	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
+	UserID    uint      `json:"-"`
 	Age       uint      `json:"age"`
 	Phone     uint      `json:"phone"`
 	District  string    `json:"district"`

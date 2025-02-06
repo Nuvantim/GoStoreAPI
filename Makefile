@@ -50,7 +50,7 @@ build: check-tools $(BIN_DIR)
 	CGO_ENABLED=$(CGO_ENABLED) \
 	GOOS=$(GOOS) \
 	GOARCH=$(GOARCH) \
-	$(GO) build \
+	$(GO) build -x -v \
 		-trimpath \
 		-ldflags="$(LDFLAGS)" \
 		-o $(BIN_DIR)/$(BINARY) \

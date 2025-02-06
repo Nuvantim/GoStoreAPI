@@ -68,6 +68,7 @@ func CreateOrder(c *fiber.Ctx) error {
 
 	//get all cart
 	_,cart := service.FindCart(request.CartID)
+	
 	//check cart
 	if cart == nil {
 		return c.Status(404).JSON(fiber.Map{

@@ -21,7 +21,9 @@ var otp struct {
 Home Handler
 */
 func Home(c *fiber.Ctx) error {
-	return c.Status(200).SendString("Welcome To GoStoreAPI")
+	html := `<h2>Welcome To GoStoreAPI</h2>
+			<p>Plese visit <a href="https://apistore.apidog.io">API Documentations</a> </p>`
+	return c.Type("html").SendString(html)
 }
 
 /*

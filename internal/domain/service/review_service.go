@@ -16,8 +16,7 @@ func CreateReview(review_data Review) Product {
 	}
 	database.DB.Create(&review)
 
-	var product Product
-	database.DB.Preload("Review").Preload("User").Take(&product, review.ProductID)
+	product := FindProduct(review_data.ProductID)
 
 	return product
 }

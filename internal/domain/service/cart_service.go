@@ -33,19 +33,19 @@ func FindCart(id interface{}) (Cart, []Cart) {
 			Preload("Product", func(db *gorm.DB) *gorm.DB {
 				return db.Select("id", "name", "price", "stock", "category_id")
 			}).Preload("Product.Category").Take(&cart)
-		return cart, carts
 
 	case []uint: //multiple id
 		database.DB.Where("id IN ?", CartID).Find(&carts)
-		return cart, carts
+
 	default:
 		return cart, carts
 
 	}
+	return cart, carts
 
 }
 
-func CreateCart(cart_data Cart, id_user, cost uint) Cart {
+func CreateCart(cart_data Cart, id_user, cost uint) (Cart) {
 	cart := Cart{
 		UserID:     id_user,
 		ProductID:  cart_data.ProductID,
@@ -53,11 +53,8 @@ func CreateCart(cart_data Cart, id_user, cost uint) Cart {
 	}
 	database.DB.Create(&cart)
 	// return cart data
-	database.DB.Where("id = ?", cart.ID).
-	Preload("Product", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name", "price", "stock", "category_id")
-	}).Preload("Product.Category").Take(&cart)
-	return cart
+	carts,_:= FindCart(cart.ID)
+	return carts
 }
 
 func UpdateCart(cart_update Cart, cost uint) Cart {
@@ -70,12 +67,9 @@ func UpdateCart(cart_update Cart, cost uint) Cart {
 	cart.Total_Cost = cost
 	database.DB.Save(&cart)
 
-	// return data
-	database.DB.Where("id = ?", cart.ID).
-	Preload("Product", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name", "price", "stock", "category_id")
-	}).Preload("Product.Category").Take(&cart)
-	return cart
+	// return cart data
+	carts,_:= FindCart(cart.ID)
+	return carts
 }
 
 func DeleteCart(input interface{}) error {
