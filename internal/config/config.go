@@ -19,7 +19,7 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Kalveir Project",
-		Prefork : false,
+		Prefork:       false,
 	}
 }
 
@@ -55,10 +55,10 @@ func MiddlewareConfig(app *fiber.App) {
 	// CORS Configuration
 	// app.Use(cors.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: url,
-		AllowMethods : "GET,POST,PUT,DELETE",
-		AllowHeaders : "Content-Type, Authorization",
-		AllowCredentials : false,
-		MaxAge : 3600,
+		AllowOrigins:     url,
+		AllowMethods:     "GET,POST,PUT,DELETE",
+		AllowHeaders:     "Content-Type, Authorization",
+		AllowCredentials: false,
+		MaxAge:           3600,
 	}))
 }

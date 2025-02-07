@@ -46,7 +46,7 @@ func CreateProduct(c *fiber.Ctx) error {
 
 func UpdateProduct(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id") // get Params ID
-	var product Product                   //declare variabel Product
+	var product Product        //declare variabel Product
 	if err := c.BodyParser(&product); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}

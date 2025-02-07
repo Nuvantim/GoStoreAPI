@@ -20,7 +20,6 @@ func GetCart(id uint) []Cart {
 	return cart
 }
 
-
 func FindCart(id interface{}) (Cart, []Cart) {
 	var ( // declare variabel Cart
 		cart  Cart
@@ -45,7 +44,7 @@ func FindCart(id interface{}) (Cart, []Cart) {
 
 }
 
-func CreateCart(cart_data Cart, id_user, cost uint) (Cart) {
+func CreateCart(cart_data Cart, id_user, cost uint) Cart {
 	cart := Cart{
 		UserID:     id_user,
 		ProductID:  cart_data.ProductID,
@@ -53,7 +52,7 @@ func CreateCart(cart_data Cart, id_user, cost uint) (Cart) {
 	}
 	database.DB.Create(&cart)
 	// return cart data
-	carts,_:= FindCart(cart.ID)
+	carts, _ := FindCart(cart.ID)
 	return carts
 }
 
@@ -68,7 +67,7 @@ func UpdateCart(cart_update Cart, cost uint) Cart {
 	database.DB.Save(&cart)
 
 	// return cart data
-	carts,_:= FindCart(cart.ID)
+	carts, _ := FindCart(cart.ID)
 	return carts
 }
 

@@ -67,8 +67,8 @@ func CreateOrder(c *fiber.Ctx) error {
 	}
 
 	//get all cart
-	_,cart := service.FindCart(request.CartID)
-	
+	_, cart := service.FindCart(request.CartID)
+
 	//check cart
 	if cart == nil {
 		return c.Status(404).JSON(fiber.Map{
@@ -86,7 +86,6 @@ func CreateOrder(c *fiber.Ctx) error {
 		}
 		// sum total price
 		totalPrice += cart.Total_Cost
-
 	}
 	// sum total item
 	totalItem = uint(len(cart))

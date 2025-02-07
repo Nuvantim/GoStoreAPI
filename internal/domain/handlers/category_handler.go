@@ -47,7 +47,7 @@ HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id") // get params ID
-	var category Category                 // declare variabel Category
+	var category Category      // declare variabel Category
 
 	if err := c.BodyParser(&category); err != nil {
 		return c.Status(400).JSON(err.Error())

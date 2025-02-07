@@ -19,11 +19,11 @@ func GetAllProduct() []Product {
 func FindProduct(id uint) Product {
 	var product Product //declare variabel Product
 	database.DB.Preload("Category").
-	Preload("Review").
-	Preload("Review.User", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "name") // Only select needed User fields
-	}).
-	First(&product, id)
+		Preload("Review").
+		Preload("Review.User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "name") // Only select needed User fields
+		}).
+		First(&product, id)
 	return product
 }
 

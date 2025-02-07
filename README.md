@@ -25,6 +25,9 @@ nano .env
 
 ### 3. Environment Variables
 ```
+APP_NAME=STORE_API
+URL=example.com
+
 API_KEY=your_secure_api_key
 REFRESH_KEY=your_secure_refresh_key
 
@@ -61,6 +64,9 @@ For the deployment process using [Docker](https://www.docker.com/), make sure do
 ### 1. Environment Variables
 The database configuration is adjusted in the file [docker-compose.yml](https://github.com/Kalveir/GoStoreAPI/blob/main/docker-compose.yml)
 ```
+APP_NAME=STORE_API
+URL=example.com
+
 API_KEY=your_secure_api_key
 REFRESH_KEY=your_secure_refresh_key
 

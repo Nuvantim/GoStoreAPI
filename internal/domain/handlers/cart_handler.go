@@ -25,7 +25,7 @@ func FindCart(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
 
 	// service Find a Cart
-	cart, _:= service.FindCart(uint(id))
+	cart, _ := service.FindCart(uint(id))
 
 	// check cart exist
 	if cart.ID == 0 {
@@ -93,7 +93,7 @@ func UpdateCart(c *fiber.Ctx) error {
 	}
 
 	// Find cart
-	carts,_ := service.FindCart(cart.ID)
+	carts, _ := service.FindCart(cart.ID)
 
 	// check cart user
 	if carts.UserID != user_id {
@@ -138,7 +138,7 @@ func DeleteCart(c *fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint)
 
 	// Find Cart
-	carts,_ := service.FindCart(uint(id))
+	carts, _ := service.FindCart(uint(id))
 	if carts.UserID != user_id {
 		return c.Status(403).JSON(fiber.Map{
 			"message": "Forbidden",
