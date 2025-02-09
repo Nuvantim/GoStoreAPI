@@ -4,6 +4,7 @@ Go-Store-API is a simple Golang-based API for managing online product orders. Bu
 ## Prerequisites
 - Go (version 1.20+)
 - MySQL / Postgres
+- Docker
 
 ## Installation :cd:
 
