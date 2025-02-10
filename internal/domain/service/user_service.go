@@ -13,23 +13,18 @@ type ( // declare type models User & UserTemps
 	UserInfo = models.UserInfo
 )
 
-func CheckEmail(email string) bool {
+func CheckEmail(email string) (uint, uint) {
+	// declare variabel models
 	var user User
 	var usertemp UserTemp
+	// declare count variabel
+	var countUser, countUserTemp int64
 
-	// Check User
-	result := database.DB.Where("email = ?", email).Find(&user)
-	if result.RowsAffected > 0 {
-		return true
-	}
-
-	// Check UserTemp
-	resultTemp := database.DB.Where("email = ?", email).Find(&usertemp)
-	if resultTemp.RowsAffected > 0 {
-		return true
-	}
-
-	return false
+	database.DB.Model(&user).Where("email = ?",email).Count(&countUser)
+	database.DB.Model(&usertemp).Where("email = ?",email).Count(&countUserTemp)
+	
+	return uint(countUser), uint(countUserTemp)
+	
 }
 
 func RegisterAccount(users UserTemp) string {

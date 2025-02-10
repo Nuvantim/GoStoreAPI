@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: go-app
+    pull_policy: never
     container_name: golang-app
     restart: always
     ports:
@@ -13,12 +14,13 @@ services:
     depends_on:
       - db
     networks:
-      - golang-network
+      - kalveir-network
   db:
     image: postgres
     container_name: golang-db
     restart: always
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: SuperPassword123
       POSTGRES_DB: api_store
     ports:
@@ -26,7 +28,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - golang-network
+      - kalveir-network
 
 volumes:
   postgres-data:
