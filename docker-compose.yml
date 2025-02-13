@@ -3,9 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: go-app
+    image: my-app
     pull_policy: never
-    container_name: golang-app
+    container_name: myapp
     restart: always
     ports:
       - "7373:7373"
@@ -17,7 +17,7 @@ services:
       - kalveir-network
   db:
     image: postgres
-    container_name: golang-db
+    container_name: mydb
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -33,5 +33,5 @@ services:
 volumes:
   postgres-data:
 networks:
-  golang-network:
+  kalveir-network:
     driver: bridge
