@@ -4,75 +4,86 @@ import (
 	"api/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"os"
+	"log"
 	"strings"
 )
 
-var (
-	jwtSecret     = []byte(os.Getenv("API_KEY"))
-	refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
-)
-
+// AuthAndRefreshMiddleware verifikasi token JWT menggunakan RS512
 func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
+	var tokenString string
 	authHeader := c.Get("Authorization")
-	tokenString := ""
+	authCookie := c.Cookies("refresh_token")
 
-	// Retrieve the token from the Authorization header or cookies
+	// Ambil token dari header Authorization
 	if strings.HasPrefix(authHeader, "Bearer ") {
 		tokenString = strings.TrimPrefix(authHeader, "Bearer ")
-	} else {
-		tokenString = c.Cookies("access_token")
 	}
 
-	// Try to validate the access token
+	// Validasi access token
 	if tokenString != "" {
 		token, err := jwt.ParseWithClaims(tokenString, &utils.Claims{}, func(token *jwt.Token) (interface{}, error) {
-			return jwtSecret, nil
+			// Pastikan metode signing adalah RS512
+			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+				return nil, jwt.ErrSignatureInvalid
+			}
+			return utils.PublicKey, nil
 		})
 
-		// If the access token is valid, set user context and proceed
+		// Jika access token valid, set user context dan lanjutkan
 		if err == nil && token.Valid {
 			if claims, ok := token.Claims.(*utils.Claims); ok {
 				c.Locals("user_id", claims.UserID)
 				c.Locals("email", claims.Email)
+				c.Locals("roles", claims.Roles)
+				c.Set("Authorization", authHeader)
 				return c.Next()
 			}
-		}
-	}
+		} else {
+			// Jika access token tidak valid, coba refresh token
+			if authHeader != "" && authCookie != "" {
+				refreshToken, err := jwt.ParseWithClaims(authCookie, &utils.RefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
+					// Pastikan metode signing adalah RS512
+					if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+						return nil, jwt.ErrSignatureInvalid
+					}
+					return utils.PublicKey, nil
+				})
 
-	// If access token validation fails, try to refresh it using the refresh token
-	refreshToken := c.Cookies("refresh_token")
-	if refreshToken != "" {
-		token, err := jwt.ParseWithClaims(refreshToken, &utils.RefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
-			return refreshSecret, nil
-		})
+				if err == nil && refreshToken.Valid {
+					if claims, ok := refreshToken.Claims.(*utils.RefreshClaims); ok {
+						newAccessToken, err := utils.AutoRefreshToken(claims.UserID)
+						if err == nil {
+							// Validasi token baru
+							token, err := jwt.ParseWithClaims(newAccessToken, &utils.Claims{}, func(token *jwt.Token) (interface{}, error) {
+								if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+									return nil, jwt.ErrSignatureInvalid
+								}
+								return utils.PublicKey, nil
+							})
 
-		// If the refresh token is valid, generate a new access token
-		if err == nil && token.Valid {
-			if claims, ok := token.Claims.(*utils.RefreshClaims); ok {
-				newAccessToken, err := utils.CreateToken(claims.UserID, claims.Email)
-				if err == nil {
-					// Set the new access token in cookies
-					c.Cookie(&fiber.Cookie{
-						Name:     "access_token",
-						Value:    newAccessToken,
-						HTTPOnly: true,
-						Secure:   true,
-						SameSite: "Strict",
-						Path:     "/",
-					})
-
-					// Set user context and proceed
-					c.Locals("user_id", claims.UserID)
-					c.Locals("email", claims.Email)
-
-					return c.Next()
+							if err == nil && token.Valid {
+								if claims, ok := token.Claims.(*utils.Claims); ok {
+									c.Locals("user_id", claims.UserID)
+									c.Locals("email", claims.Email)
+									c.Locals("roles", claims.Roles)
+									c.Set("Authorization", "Bearer "+newAccessToken)
+									return c.Next()
+								}
+							} else {
+								log.Printf("Error validating new access token: %v", err)
+							}
+						} else {
+							log.Printf("Error refreshing access token: %v", err)
+						}
+					}
+				} else {
+					log.Printf("Refresh token invalid: %v", err)
 				}
 			}
 		}
 	}
 
-	// If both tokens are invalid, return an unauthorized response
+	// Jika kedua token tidak valid, kembalikan response unauthorized
 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"message": "Authentication required",
 	})

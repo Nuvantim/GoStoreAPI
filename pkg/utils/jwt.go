@@ -1,80 +1,147 @@
 package utils
 
 import (
+	"api/internal/database"
+	"api/internal/domain/models"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
+	"log"
 	"os"
 	"time"
 )
 
-// get api key from .env
-var jwtSecret = []byte(os.Getenv("API_KEY"))
-var refreshSecret = []byte(os.Getenv("REFRESH_KEY"))
+var (
+	PrivateKey *rsa.PrivateKey
+	PublicKey  *rsa.PublicKey
+)
 
-// Claims untuk Access Token
+// Claims mendefinisikan struktur untuk token JWT
 type Claims struct {
-	UserID uint   `json:"user_id"`
-	Email  string `json:"email"`
+	UserID uint          `json:"user_id"`
+	Email  string        `json:"email"`
+	Roles  []models.Role `json:"roles,omitempty"`
 	jwt.RegisteredClaims
 }
 
-// Claims untuk Refresh Token
+// RefreshClaims mendefinisikan struktur untuk refresh token
 type RefreshClaims struct {
 	UserID uint   `json:"user_id"`
 	Email  string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-// Buat Access Token
-func CreateToken(userID uint, email string) (string, error) {
+// loadKey membaca dan memproses file kunci RSA
+func loadKey(filename string, isPrivate bool) (interface{}, error) {
+	keyBytes, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	block, rest := pem.Decode(keyBytes)
+	if block == nil || (isPrivate && block.Type != "RSA PRIVATE KEY") || (!isPrivate && block.Type != "RSA PUBLIC KEY") {
+		return nil, errors.New("invalid key format")
+	}
+
+	if len(rest) > 0 {
+		return nil, errors.New("extra data found after key")
+	}
+
+	if isPrivate {
+		return x509.ParsePKCS1PrivateKey(block.Bytes)
+	}
+
+	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	rsaPubKey, ok := pub.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.New("invalid type for RSA public key")
+	}
+
+	return rsaPubKey, nil
+}
+
+// LoadPrivateKey memuat kunci privat dari file
+func LoadPrivateKey() (*rsa.PrivateKey, error) {
+	key, err := loadKey("private.pem", true)
+	if err != nil {
+		return nil, err
+	}
+	return key.(*rsa.PrivateKey), nil
+}
+
+// LoadPublicKey memuat kunci publik dari file
+func LoadPublicKey() (*rsa.PublicKey, error) {
+	key, err := loadKey("public.pem", false)
+	if err != nil {
+		return nil, err
+	}
+	return key.(*rsa.PublicKey), nil
+}
+
+func init() {
+	var err error
+	PrivateKey, err = LoadPrivateKey()
+	if err != nil {
+		log.Fatalf("Error loading private key: %v", err)
+	}
+	PublicKey, err = LoadPublicKey()
+	if err != nil {
+		log.Fatalf("Error loading public key: %v", err)
+	}
+}
+
+// CreateToken membuat access token
+func CreateToken(userID uint, email string, roles []models.Role) (string, error) {
+	if PrivateKey == nil {
+		return "", errors.New("private key is nil")
+	}
+
+	now := time.Now()
 	claims := Claims{
 		UserID: userID,
 		Email:  email,
+		Roles:  roles,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)), // Access token berlaku 2 jam
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(time.Hour * 1)),
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS512, claims)
+	return token.SignedString(PrivateKey)
 }
 
-// Buat Refresh Token
+// CreateRefreshToken membuat refresh token
 func CreateRefreshToken(userID uint, email string) (string, error) {
+	if PrivateKey == nil {
+		return "", errors.New("private key is nil")
+	}
+
+	now := time.Now()
 	claims := RefreshClaims{
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // Refresh token berlaku 30 hari
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(24 * time.Hour)),
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(refreshSecret)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS512, claims)
+	return token.SignedString(PrivateKey)
 }
 
-// Fungsi untuk memperbarui access token menggunakan refresh token
-func RefreshAccessToken(refreshToken string) (string, error) {
-	// Parse refresh token
-	token, err := jwt.ParseWithClaims(refreshToken, &RefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
-	})
-
-	if err != nil || !token.Valid {
-		return "", errors.New("invalid refresh token")
-	}
-
-	// Ambil klaim dari refresh token
-	claims, ok := token.Claims.(*RefreshClaims)
-	if !ok {
-		return "", errors.New("invalid claims")
-	}
-
-	// Buat access token baru
-	newAccessToken, err := CreateToken(claims.UserID, claims.Email)
-	if err != nil {
+// AutoRefreshToken memperbarui token secara otomatis
+func AutoRefreshToken(userID uint) (string, error) {
+	var user models.User
+	if err := database.DB.Preload("Roles").Preload("Roles.Permissions").Take(&user, userID).Error; err != nil {
 		return "", err
 	}
-
-	return newAccessToken, nil
+	return CreateToken(user.ID, user.Email, user.Roles)
 }

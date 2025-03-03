@@ -65,6 +65,8 @@ func Setup() {
 		&models.Cart{},
 		&models.UserInfo{},
 		&models.Review{},
+		&models.Permissions{},
+		&models.Role{},
 	)
 	if err != nil {
 		log.Fatal("AutoMigrate failed: ", err)

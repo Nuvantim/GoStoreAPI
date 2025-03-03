@@ -30,21 +30,6 @@ func Home(c *fiber.Ctx) error {
 LOGIN HANDLER
 */
 func Login(c *fiber.Ctx) error {
-	// Ambil refresh token dari header jika ada
-	refreshToken := c.Cookies("refresh_token")
-	if refreshToken != "" {
-		// Jika ada refresh token, periksa dan buat access token baru
-		newAccessToken, err := utils.RefreshAccessToken(refreshToken)
-		if err != nil {
-			return c.Status(401).JSON(fiber.Map{"error": err.Error()})
-		}
-
-		// Kirim access token baru
-		return c.JSON(fiber.Map{
-			"access_token": newAccessToken,
-		})
-	}
-
 	// Bind data
 	if err := c.BodyParser(&login); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})

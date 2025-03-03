@@ -13,7 +13,7 @@ import (
 func Login(email, password string) (string, string, error) {
 	// Find User in Database
 	var user models.User
-	err := database.DB.Where("email = ?", email).Take(&user).Error
+	err := database.DB.Where("email = ?", email).Preload("Roles").Preload("Roles.Permissions").Take(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", "", errors.New("user not found")
 	} else if err != nil {
@@ -27,7 +27,7 @@ func Login(email, password string) (string, string, error) {
 	}
 
 	// Create access token and refresh token
-	accessToken, err := utils.CreateToken(user.ID, user.Email)
+	accessToken, err := utils.CreateToken(user.ID, user.Email, user.Roles)
 	if err != nil {
 		return "", "", err
 	}

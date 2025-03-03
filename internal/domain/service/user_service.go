@@ -20,11 +20,11 @@ func CheckEmail(email string) (uint, uint) {
 	// declare count variabel
 	var countUser, countUserTemp int64
 
-	database.DB.Model(&user).Where("email = ?",email).Count(&countUser)
-	database.DB.Model(&usertemp).Where("email = ?",email).Count(&countUserTemp)
-	
+	database.DB.Model(&user).Where("email = ?", email).Count(&countUser)
+	database.DB.Model(&usertemp).Where("email = ?", email).Count(&countUserTemp)
+
 	return uint(countUser), uint(countUserTemp)
-	
+
 }
 
 func RegisterAccount(users UserTemp) string {

@@ -51,7 +51,7 @@ func SetupAPI() {
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
 
-	go func(){
+	go func() {
 		app.Listen(":" + os.Getenv("PORT"))
 	}()
 

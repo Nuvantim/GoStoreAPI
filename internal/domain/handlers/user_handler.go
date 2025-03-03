@@ -60,13 +60,12 @@ func RegisterAccount(c *fiber.Ctx) error {
 	}
 
 	//check email
-	email_user,email_usertemp := service.CheckEmail(users.Email)
+	email_user, email_usertemp := service.CheckEmail(users.Email)
 	if email_user > 0 || email_usertemp > 0 {
 		return c.Status(409).JSON(fiber.Map{
-			"message":"Email already exist",
+			"message": "Email already exist",
 		})
 	}
-	
 
 	register := service.RegisterAccount(users)
 	return c.Status(200).JSON(fiber.Map{
@@ -93,10 +92,10 @@ func UpdateAccount(c *fiber.Ctx) error {
 	}
 
 	// check email
-	user_email,_ := service.CheckEmail(req.Email)
+	user_email, _ := service.CheckEmail(req.Email)
 	if user_email > 0 {
 		return c.Status(409).JSON(fiber.Map{
-			"message":"Email is already exist in another user",
+			"message": "Email is already exist in another user",
 		})
 	}
 

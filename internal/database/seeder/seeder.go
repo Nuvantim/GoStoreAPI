@@ -10,6 +10,9 @@ func SeederSetup() {
 	// seeding user data
 	seed_User()
 
+	// seeding access data
+	seed_Access()
+
 	// seeding category data
 	seed_Category()
 
