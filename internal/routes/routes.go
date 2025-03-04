@@ -10,8 +10,9 @@ func Setup(app *fiber.App) {
 
 	//auth Route
 	app.Get("/", handler.Home)
+	app.Post("/send/otp", handler.SendOTP)
 	app.Post("/account/register", handler.RegisterAccount)
-	app.Post("/otp/verify", handler.OtpVerify)
+	app.Post("/update/password", handler.UpdatePassword)
 	app.Post("/login", handler.Login)
 
 	//protected

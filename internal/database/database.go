@@ -57,7 +57,7 @@ func Setup() {
 	// AutoMigrate for models that need database schema changes
 	err = db.AutoMigrate(
 		&models.User{},
-		&models.UserTemp{},
+		&models.Token{},
 		&models.Product{},
 		&models.Category{},
 		&models.Order{},
@@ -65,7 +65,7 @@ func Setup() {
 		&models.Cart{},
 		&models.UserInfo{},
 		&models.Review{},
-		&models.Permissions{},
+		&models.Permission{},
 		&models.Role{},
 	)
 	if err != nil {

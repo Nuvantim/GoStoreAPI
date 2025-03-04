@@ -25,10 +25,8 @@ type UserInfo struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
-type UserTemp struct {
-	ID       uint   `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	Otp      string `json:"otp" gorm:"not null"`
-	Name     string `json:"name" gorm:"not null" validate:"required"`
-	Email    string `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password string `json:"password" gorm:"not null" validate:"required,min=8"`
+type Token struct {
+	ID    uint   `json:"id" gorm:"PrimaryKey;autoIncrement"`
+	Otp   string `json:"otp" gorm:"not null"`
+	Email string `json:"email" gorm:"unique;not null" validate:"required,email"`
 }

@@ -7,47 +7,44 @@ import (
 	"errors"
 )
 
-type ( // declare type models User & UserTemps
+type ( // declare type models User & UserInfo
 	User     = models.User
-	UserTemp = models.UserTemp
 	UserInfo = models.UserInfo
 )
 
-func CheckEmail(email string) (uint, uint) {
+func CheckEmail(email string) uint {
 	// declare variabel models
 	var user User
-	var usertemp UserTemp
 	// declare count variabel
-	var countUser, countUserTemp int64
+	var countUser int64
 
 	database.DB.Model(&user).Where("email = ?", email).Count(&countUser)
-	database.DB.Model(&usertemp).Where("email = ?", email).Count(&countUserTemp)
 
-	return uint(countUser), uint(countUserTemp)
-
+	return uint(countUser)
 }
 
-func RegisterAccount(users UserTemp) string {
-	// hashing password
-	hashPassword := utils.HashBycrypt(users.Password)
-
-	// create Otp
-	otp := utils.GenerateOTP()
-
-	// Send OTP
-	utils.SendOTP(users.Email, otp)
-
-	// Create UserTemp
-	usertemp := UserTemp{
-		Otp:      otp,
-		Name:     users.Name,
-		Email:    users.Email,
-		Password: string(hashPassword),
+func RegisterAccount(name, email, password string) (string, error) {
+	// hash password
+	hash := utils.HashBycrypt(password)
+	// Create data user
+	user := User{
+		Name:     name,
+		Email:    email,
+		Password: string(hash),
 	}
-	// Simpan user ke database
-	database.DB.Create(&usertemp)
+	if err := database.DB.Create(&user).Error; err != nil {
+		return "", err
+	}
 
-	return "Success Register, Please Check Your Email"
+	// create data user info
+	userInfo := UserInfo{
+		UserID: user.ID,
+	}
+	if err := database.DB.Create(&userInfo).Error; err != nil {
+		return "", err
+	}
+
+	return "Your account successfuly registered", nil
 }
 
 func FindAccount(id uint) (User, UserInfo) {

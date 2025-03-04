@@ -27,8 +27,8 @@ func seed_Access() {
 		log.Println(err)
 	}
 	if countRole == 0 {
-		service.CreateRole("admin",[]uint{})
-		service.CreateRole("crew",[]uint{1,2})
+		service.CreateRole("admin", []uint{})
+		service.CreateRole("crew", []uint{1, 2})
 
 		// assign role to client
 		service.UpdateClient(1, []uint{1, 2})

@@ -7,13 +7,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ( // declare type models User & UserTemps
+type ( // declare type models User & UserInfo
 	User     = models.User
-	UserTemp = models.UserTemp
 	UserInfo = models.UserInfo
 )
 
-type UserRequest struct { //struct update Request
+type userUpdate struct { //struct update Request
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"omitempty,min=8"`
@@ -23,6 +22,13 @@ type UserRequest struct { //struct update Request
 	City     string `json:"city"`
 	State    string `json:"state"`
 	Country  string `json:"country"`
+}
+
+type userRegister struct {
+	Otp      string `json:"token" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 /*
@@ -47,41 +53,11 @@ func GetProfile(c *fiber.Ctx) error {
 Handler Register User
 */
 func RegisterAccount(c *fiber.Ctx) error {
-	var users UserTemp
-	if err := c.BodyParser(&users); err != nil {
-		return c.Status(400).JSON(err.Error())
-	}
+	var req userRegister
 
-	// validate data
-	if err := utils.Validator(users); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	//check email
-	email_user, email_usertemp := service.CheckEmail(users.Email)
-	if email_user > 0 || email_usertemp > 0 {
-		return c.Status(409).JSON(fiber.Map{
-			"message": "Email already exist",
-		})
-	}
-
-	register := service.RegisterAccount(users)
-	return c.Status(200).JSON(fiber.Map{
-		"message": register,
-	})
-}
-
-/*
-Handler Update User
-*/
-func UpdateAccount(c *fiber.Ctx) error {
-	var req UserRequest
-	user_id := c.Locals("user_id").(uint)
-
+	// bind body data
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
 	}
 
 	// validate data
@@ -92,11 +68,60 @@ func UpdateAccount(c *fiber.Ctx) error {
 	}
 
 	// check email
-	user_email, _ := service.CheckEmail(req.Email)
+	user_email := service.CheckEmail(req.Email)
 	if user_email > 0 {
 		return c.Status(409).JSON(fiber.Map{
 			"message": "Email is already exist in another user",
 		})
+	}
+
+	// validate otp
+	val := service.ValidateOTP(req.Otp)
+	if val.ID == 0 {
+		return c.Status(404).JSON(fiber.Map{"message": "OTP not found"})
+	}
+
+	if val.Email != req.Email {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "OTP is prohibited"})
+	}
+
+	// service register
+	register, err := service.RegisterAccount(req.Name, req.Email, req.Password)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": err})
+	}
+	service.DeleteOTP(req.Otp)
+	return c.Status(200).JSON(fiber.Map{"message": register})
+
+}
+
+/*
+Handler Update User
+*/
+func UpdateAccount(c *fiber.Ctx) error {
+	var req userUpdate
+	user_id := c.Locals("user_id").(uint)
+	user_email := c.Locals("email")
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
+	}
+
+	// validate data
+	if err := utils.Validator(req); err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	// check email
+	if req.Email != user_email {
+		user_email := service.CheckEmail(req.Email)
+		if user_email > 0 {
+			return c.Status(409).JSON(fiber.Map{
+				"message": "Email is already exist in another user",
+			})
+		}
 	}
 
 	//parsing user model

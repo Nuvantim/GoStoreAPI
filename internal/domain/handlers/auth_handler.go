@@ -14,7 +14,7 @@ var login struct {
 
 // struct otp
 var otp struct {
-	Code string `json:"code"`
+	Email string `json:"email"`
 }
 
 /*
@@ -32,7 +32,7 @@ LOGIN HANDLER
 func Login(c *fiber.Ctx) error {
 	// Bind data
 	if err := c.BodyParser(&login); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
 	}
 
 	// validate data
@@ -95,15 +95,24 @@ func Logout(c *fiber.Ctx) error {
 }
 
 /*
-vERIFY OTP HANDLER
+Send OTP HANDLER
 */
-func OtpVerify(c *fiber.Ctx) error {
+func SendOTP(c *fiber.Ctx) error {
 	// bind body
 	if err := c.BodyParser(&otp); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(fiber.Map{"error": "invalid Body Request"})
 	}
-	verify := service.OtpVerify(otp.Code)
+	send, err := service.SendOTP(otp.Email)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": err,
+		})
+	}
 
-	return c.Status(200).JSON(fiber.Map{"message": verify})
+	return c.Status(200).JSON(fiber.Map{"message": send})
 
+}
+
+func UpdatePassword(c *fiber.Ctx) error {
+	return nil
 }
