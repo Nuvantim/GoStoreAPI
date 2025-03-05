@@ -17,6 +17,12 @@ var otp struct {
 	Email string `json:"email"`
 }
 
+// struct update password
+var password struct {
+	Otp      string `json:"otp" validate:"required"`
+	Password string `json:"password" validate:"required,min=8"`
+}
+
 /*
 Home Handler
 */
@@ -114,5 +120,26 @@ func SendOTP(c *fiber.Ctx) error {
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
-	return nil
+	// bind body
+	if err := c.BodyParser(&password); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid Body Request"})
+	}
+
+	// validate data
+	if err := utils.Validator(password); err != nil {
+		return c.Status(422).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	update, err := service.UpdatePassword(password.Otp, password.Password)
+	if err != nil{
+		return c.Status(400).JSON(fiber.Map{
+			"error" : err,
+		})
+	}
+	service.DeleteOTP(password.Otp)
+	return c.Status(200).JSON(fiber.Map{
+		"message" : update,
+	})
 }

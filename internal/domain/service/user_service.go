@@ -57,6 +57,9 @@ func FindAccount(id uint) (User, UserInfo) {
 	// Ambil data user_info berdasarkan user_id
 	database.DB.Where("user_id = ?", user.ID).Take(&info)
 
+	// hide user id
+	user.ID = 0
+
 	// Kembalikan data
 	return user, info
 }

@@ -56,9 +56,28 @@ func SendOTP(email string) (string, error) {
 
 }
 
-func ValidateOTP(otp string) models.Token {
+func UpdatePassword(otp, password string) (string,error){
 	var token models.Token
-	database.DB.Where("otp = ?", otp).Take(&token)
+	// find otp
+	err := database.DB.Where("otp = ?",otp).Take(&token).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "",errors.New("otp not found")
+	}
+	hash := utils.HashBycrypt(password)
+
+	// find user by email
+	var user models.User
+	database.DB.Where("email = ?",token.Email).Take(&user)
+	user.Password = string(hash)
+	database.DB.Save(&user)
+	return "Update password success",nil
+
+
+}
+
+func ValidateOTP(otp, email string) models.Token {
+	var token models.Token
+	database.DB.Where("email = ?",email).Where("otp = ?", otp).Take(&token)
 	return token
 }
 
@@ -70,3 +89,5 @@ func DeleteOTP(otp string) error {
 	database.DB.Delete(&token)
 	return nil
 }
+
+
