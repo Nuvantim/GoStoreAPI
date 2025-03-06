@@ -28,9 +28,6 @@ nano .env
 APP_NAME=STORE_API
 URL=example.com
 
-API_KEY=your_secure_api_key
-REFRESH_KEY=your_secure_refresh_key
-
 DB_DRIVER=mysql
 DB_HOST=localhost
 DB_USER=root
@@ -50,6 +47,11 @@ PORT=8080
 ### 4. Install Dependencies
 ```bash
 go mod tidy
+
+```
+### 4. Create an RSA key
+```bash
+
 ```
 
 ## Running the Application ⚙️
@@ -66,9 +68,6 @@ The database configuration is adjusted in the file [docker-compose.yml](https://
 ```
 APP_NAME=STORE_API
 URL=example.com
-
-API_KEY=your_secure_api_key
-REFRESH_KEY=your_secure_refresh_key
 
 DB_DRIVER=pgsql
 DB_HOST=golang-db

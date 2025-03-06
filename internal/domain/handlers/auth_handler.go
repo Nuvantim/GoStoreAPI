@@ -14,12 +14,12 @@ var login struct {
 
 // struct otp
 var otp struct {
-	Email string `json:"email"`
+	Email string `json:"email" validate:"email,required"`
 }
 
 // struct update password
 var password struct {
-	Otp      string `json:"otp" validate:"required"`
+	Otp      uint   `json:"otp" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
 }
 
@@ -111,7 +111,7 @@ func SendOTP(c *fiber.Ctx) error {
 	send, err := service.SendOTP(otp.Email)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": err,
+			"error": err.Error,
 		})
 	}
 
@@ -133,13 +133,13 @@ func UpdatePassword(c *fiber.Ctx) error {
 	}
 
 	update, err := service.UpdatePassword(password.Otp, password.Password)
-	if err != nil{
-		return c.Status(400).JSON(fiber.Map{
-			"error" : err,
+	if err != nil {
+		return c.Status(404).JSON(fiber.Map{
+			"messsage": err.Error(),
 		})
 	}
 	service.DeleteOTP(password.Otp)
 	return c.Status(200).JSON(fiber.Map{
-		"message" : update,
+		"message": update,
 	})
 }

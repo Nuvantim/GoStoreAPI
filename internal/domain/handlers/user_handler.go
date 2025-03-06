@@ -25,7 +25,7 @@ type userUpdate struct { //struct update Request
 }
 
 type userRegister struct {
-	Otp      string `json:"otp" validate:"required"`
+	Otp      uint   `json:"otp" validate:"required"`
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
@@ -76,7 +76,7 @@ func RegisterAccount(c *fiber.Ctx) error {
 	}
 
 	// validate otp
-	val := service.ValidateOTP(req.Otp,req.Email)
+	val := service.ValidateOTP(req.Otp, req.Email)
 	if val.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{"message": "OTP not found"})
 	}

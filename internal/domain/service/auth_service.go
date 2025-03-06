@@ -51,40 +51,43 @@ func SendOTP(email string) (string, error) {
 		return "", err
 	}
 
+	if error := utils.SendOTP(email, otp); error != nil {
+		return "", error
+	}
+
 	// send OTP
 	return "otp success send", nil
 
 }
 
-func UpdatePassword(otp, password string) (string,error){
+func UpdatePassword(otp uint, password string) (string, error) {
 	var token models.Token
 	// find otp
-	err := database.DB.Where("otp = ?",otp).Take(&token).Error
+	err := database.DB.Where("otp = ?", otp).Take(&token).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "",errors.New("otp not found")
+		return "", errors.New("Otp code not found")
 	}
 	hash := utils.HashBycrypt(password)
 
 	// find user by email
 	var user models.User
-	err := database.DB.Where("email = ?",token.Email).Take(&user).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "",errors.New("user not found")
+	error := database.DB.Where("email = ?", token.Email).Take(&user).Error
+	if errors.Is(error, gorm.ErrRecordNotFound) {
+		return "", errors.New("User not found")
 	}
 	user.Password = string(hash)
 	database.DB.Save(&user)
-	return "Update password success",nil
-
+	return "Update password success", nil
 
 }
 
-func ValidateOTP(otp, email string) models.Token {
+func ValidateOTP(otp uint, email string) models.Token {
 	var token models.Token
-	database.DB.Where("email = ?",email).Where("otp = ?", otp).Take(&token)
+	database.DB.Where("email = ?", email).Where("otp = ?", otp).Take(&token)
 	return token
 }
 
-func DeleteOTP(otp string) error {
+func DeleteOTP(otp uint) error {
 	var token models.Token
 	if err := database.DB.Where("otp = ?", otp).Take(&token).Error; err != nil {
 		return err
@@ -92,5 +95,3 @@ func DeleteOTP(otp string) error {
 	database.DB.Delete(&token)
 	return nil
 }
-
-
