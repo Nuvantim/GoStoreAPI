@@ -67,7 +67,10 @@ func UpdatePassword(otp, password string) (string,error){
 
 	// find user by email
 	var user models.User
-	database.DB.Where("email = ?",token.Email).Take(&user)
+	err := database.DB.Where("email = ?",token.Email).Take(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "",errors.New("user not found")
+	}
 	user.Password = string(hash)
 	database.DB.Save(&user)
 	return "Update password success",nil
