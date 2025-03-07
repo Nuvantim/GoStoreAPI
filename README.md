@@ -95,9 +95,9 @@ make build
 ```
 ## 3. Run Docker Compose
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
 ## 4. Check Logs App
 ```bash
-docker logs golang-app
+docker logs myapp
 ```
