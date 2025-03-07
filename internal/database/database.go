@@ -50,6 +50,7 @@ func Setup() {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(30 * time.Minute)
+	sqlDB.SetConnMaxIdleTime(2 * time.Minute)
 
 	// Perform AutoMigrate only for necessary models (or in development environment)
 	log.Println("Connected...")
