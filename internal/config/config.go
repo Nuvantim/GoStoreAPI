@@ -44,7 +44,9 @@ func MiddlewareConfig(app *fiber.App) {
 	// app.Use(logger.New())
 
 	//Helmet
-	app.Use(helmet.New())
+	app.Use(helmet.New(helmet.Config{
+		ContentSecurityPolicy: "frame-ancestors 'self' "+url+";",
+	}))
 
 	//Idempotency
 	app.Use(idempotency.New())
@@ -58,7 +60,7 @@ func MiddlewareConfig(app *fiber.App) {
 		AllowOrigins:     url,
 		AllowMethods:     "GET,POST,PUT,DELETE",
 		AllowHeaders:     "Content-Type, Authorization",
-		AllowCredentials: false,
+		AllowCredentials: true,
 		MaxAge:           3600,
 	}))
 }
