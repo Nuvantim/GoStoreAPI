@@ -99,7 +99,7 @@ func SendOTP(targetEmail string, otp uint) error {
 </html>
 
     `
-	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", otp, 1)
+	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", string(otp), 1)
 	m.SetBody("text/html", htmlBody)
 
 	// Create dialer
