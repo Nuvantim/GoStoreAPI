@@ -27,7 +27,7 @@ func GenerateOTP() uint {
 	return uint(otp)
 }
 
-func SendOTP(targetEmail string, otp uint) error {
+func SendOTP(targetEmail,otp string) error {
 	// environment variables
 	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
