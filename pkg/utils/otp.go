@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func GenerateOTP() string {
+func GenerateOTP() uint {
 	charset := []byte("0123456789")
 	code := make([]byte, 7)
 
@@ -18,7 +18,7 @@ func GenerateOTP() string {
 		code[i] = charset[n.Int64()]
 	}
 
-	return string(code)
+	return uint(code)
 }
 
 func SendOTP(targetEmail, otp string) error {
