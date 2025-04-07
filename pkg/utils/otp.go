@@ -10,7 +10,7 @@ import (
 )
 
 func GenerateOTP() uint {
-	charset := []byte("0123456789")
+	charset := []byte("123456789")
 	code := make([]byte, 7)
 
 	for i := range code {
@@ -18,7 +18,13 @@ func GenerateOTP() uint {
 		code[i] = charset[n.Int64()]
 	}
 
-	return uint(code)
+	otpStr := string(code)
+	otpUint, err := strconv.ParseUint(otpStr, 10, 32)
+	if err != nil {
+		return 0
+	}
+
+	return uint(otpUint)
 }
 
 func SendOTP(targetEmail, otp string) error {
