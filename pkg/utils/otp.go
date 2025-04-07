@@ -27,7 +27,7 @@ func GenerateOTP() uint {
 	return uint(otp)
 }
 
-func SendOTP(targetEmail,otp string) error {
+func SendOTP(targetEmail string, otp uint) error {
 	// environment variables
 	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
@@ -35,7 +35,10 @@ func SendOTP(targetEmail,otp string) error {
 	mailUsername := os.Getenv("MAIL_USERNAME")
 	mailPassword := os.Getenv("MAIL_PASSWORD")
 	mailAddress := os.Getenv("MAIL_FROM_ADDRESS")
-
+	
+        // convert otp to string
+	code, _ := strconv.FormatUint(uint64(otp), 10)
+	
 	// Create new message
 	m := gomail.NewMessage()
 	m.SetHeader("From", AppName+" <"+mailAddress+">")
@@ -99,7 +102,7 @@ func SendOTP(targetEmail,otp string) error {
 </html>
 
     `
-	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", string(otp), 1)
+	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", code, 1)
 	m.SetBody("text/html", htmlBody)
 
 	// Create dialer
