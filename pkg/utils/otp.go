@@ -19,15 +19,15 @@ func GenerateOTP() uint {
 	}
 
 	otpStr := string(code)
-	otpUint, err := strconv.ParseUint(otpStr, 10, 32)
+	otp, err := strconv.ParseUint(otpStr, 10, 32)
 	if err != nil {
 		return 0
 	}
 
-	return uint(otpUint)
+	return uint(otp)
 }
 
-func SendOTP(targetEmail, otp string) error {
+func SendOTP(targetEmail string, otp uint) error {
 	// environment variables
 	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
