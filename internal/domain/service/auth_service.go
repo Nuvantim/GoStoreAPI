@@ -41,7 +41,7 @@ func Login(email, password string) (string, string, error) {
 }
 
 func SendOTP(email string) (string, error) {
-	otp := utils.GenerateOTP()
+	otp, code := utils.GenerateOTP()
 
 	token := models.Token{
 		Otp:   otp,
@@ -51,7 +51,7 @@ func SendOTP(email string) (string, error) {
 		return "", err
 	}
 
-	if error := utils.SendOTP(email, otp); error != nil {
+	if error := utils.SendOTP(email, code); error != nil {
 		return "", error
 	}
 

@@ -5,11 +5,10 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"time"
 	// "github.com/gofiber/fiber/v2/middleware/csrf"
-	"github.com/gofiber/fiber/v2/middleware/helmet"
+	// "github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/idempotency"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"os"
 )
 
 // FiberConfig berisi konfigurasi Fiber yang aman
@@ -26,9 +25,6 @@ func FiberConfig() fiber.Config {
 // MiddlewareSetup menyiapkan semua middleware keamanan
 func MiddlewareConfig(app *fiber.App) {
 
-	// Url API
-	url := os.Getenv("URL")
-
 	// Rate Limiting
 	app.Use(limiter.New(limiter.Config{
 		Max:        20,
@@ -44,9 +40,9 @@ func MiddlewareConfig(app *fiber.App) {
 	// app.Use(logger.New())
 
 	//Helmet
-	app.Use(helmet.New(helmet.Config{
-		ContentSecurityPolicy: "frame-ancestors 'self' "+url+";",
-	}))
+	// app.Use(helmet.New(helmet.Config{
+	// 	ContentSecurityPolicy: "frame-ancestors 'self' "+url+";",
+	// }))
 
 	//Idempotency
 	app.Use(idempotency.New())
@@ -55,12 +51,9 @@ func MiddlewareConfig(app *fiber.App) {
 	// app.Use(csrf.New())
 
 	// CORS Configuration
-	// app.Use(cors.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     url,
-		AllowMethods:     "GET,POST,PUT,DELETE",
-		AllowHeaders:     "Content-Type, Authorization",
-		AllowCredentials: true,
-		MaxAge:           3600,
+		AllowMethods: "GET,POST,PUT,DELETE",
+		AllowHeaders: "Content-Type, Authorization",
+		MaxAge:       3600,
 	}))
 }

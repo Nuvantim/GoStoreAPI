@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func GenerateOTP() uint {
+func GenerateOTP() (uint, string) {
 	charset := []byte("123456789")
 	code := make([]byte, 7)
 
@@ -19,15 +19,12 @@ func GenerateOTP() uint {
 	}
 
 	otpStr := string(code)
-	otp, err := strconv.ParseUint(otpStr, 10, 32)
-	if err != nil {
-		return 0
-	}
+	otp, _ := strconv.ParseUint(otpStr, 10, 32)
 
-	return uint(otp)
+	return uint(otp), otpStr
 }
 
-func SendOTP(targetEmail string, otp uint) error {
+func SendOTP(targetEmail, otp string) error {
 	// environment variables
 	AppName := os.Getenv("APP_NAME")
 	mailSMTP := os.Getenv("MAIL_MAILER")
@@ -35,10 +32,7 @@ func SendOTP(targetEmail string, otp uint) error {
 	mailUsername := os.Getenv("MAIL_USERNAME")
 	mailPassword := os.Getenv("MAIL_PASSWORD")
 	mailAddress := os.Getenv("MAIL_FROM_ADDRESS")
-	
-        // convert otp to string
-	code, _ := strconv.FormatUint(uint64(otp), 10)
-	
+
 	// Create new message
 	m := gomail.NewMessage()
 	m.SetHeader("From", AppName+" <"+mailAddress+">")
@@ -102,7 +96,7 @@ func SendOTP(targetEmail string, otp uint) error {
 </html>
 
     `
-	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", code, 1)
+	htmlBody := strings.Replace(htmlTemplate, "{{OTP}}", otp, 1)
 	m.SetBody("text/html", htmlBody)
 
 	// Create dialer
