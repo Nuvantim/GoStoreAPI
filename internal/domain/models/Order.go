@@ -8,21 +8,21 @@ import (
 
 type Order struct {
 	ID         uuid.UUID   `json:"id" gorm:"primaryKey;type:char(36);not null;unique"`
-	UserID     uint        `json:"-" gorm:"not null"`
-	TotalPrice uint        `json:"total_price" gorm:"not null"`
-	TotalItem  uint        `json:"total_item" gorm:"not null"`
+	UserID     uint64        `json:"-" gorm:"not null"`
+	TotalPrice uint64        `json:"total_price" gorm:"not null"`
+	TotalItem  uint64        `json:"total_item" gorm:"not null"`
 	Status     string      `json:"status" gorm:"default:'pending'"`
 	OrderItems []OrderItem `json:"order_items,omitempty" gorm:"foreignKey:OrderID"`
 	CreatedAt  *time.Time  `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type OrderItem struct {
-	ID        uint      `json:"-" gorm:"primaryKey;autoIncrement"`
+	ID        uint64      `json:"-" gorm:"primaryKey;autoIncrement"`
 	OrderID   uuid.UUID `json:"order_id" gorm:"not null;type:char(36);references:ID"`
-	ProductID uint      `json:"product_id" gorm:"not null"`
+	ProductID uint64      `json:"product_id" gorm:"not null"`
 	Product   Product   `json:"product,omitempty"`
-	Quantity  uint      `json:"quantity" gorm:"not null"`
-	TotalCost uint      `json:"total_cost" gorm:"not null"`
+	Quantity  uint64      `json:"quantity" gorm:"not null"`
+	TotalCost uint64      `json:"total_cost" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 

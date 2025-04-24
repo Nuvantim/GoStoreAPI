@@ -10,13 +10,13 @@ func GetClient() []User {
 	return user
 }
 
-func FindClient(id uint) User {
+func FindClient(id uint64) User {
 	var user User
 	database.DB.Preload("Roles").Preload("Roles.Permissions").Take(&user, id)
 	return user
 }
 
-func UpdateClient(userID uint, roleID []uint) User {
+func UpdateClient(userID uint64, roleID []uint64) User {
 	var user User
 	// Find Client
 	database.DB.Take(&user, userID)
@@ -33,7 +33,7 @@ func UpdateClient(userID uint, roleID []uint) User {
 
 }
 
-func RemoveClient(id uint) error {
+func RemoveClient(id uint64) error {
 	var user User
 	// Find Client
 	if err := database.DB.Take(&user, id).Error; err != nil {

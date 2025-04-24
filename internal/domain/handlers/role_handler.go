@@ -9,7 +9,7 @@ import (
 // struct request role
 type role_permission struct {
 	Name         string `json:"name" validate:"required"`
-	PermissionID []uint `json:"permission_id"`
+	PermissionID []uint64 `json:"permission_id"`
 }
 
 type Role = service.Role //declare type role models
@@ -32,7 +32,7 @@ HANDLER FIND ROLE
 */
 func FindRole(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	role := service.FindRole(uint(id))
+	role := service.FindRole(uint64(id))
 	if role.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"message": "Role is not found",
@@ -82,7 +82,7 @@ func UpdateRole(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	role := service.UpdateRole(uint(id), req.Name, req.PermissionID)
+	role := service.UpdateRole(uint64(id), req.Name, req.PermissionID)
 	return c.Status(200).JSON(role)
 }
 
@@ -91,7 +91,7 @@ HANDLER DELETE ROLE
 */
 func DeleteRole(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	if err := service.DeleteRole(uint(id)); err != nil {
+	if err := service.DeleteRole(uint64(id)); err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": err,
 		})

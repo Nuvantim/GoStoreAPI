@@ -15,7 +15,7 @@ func GetProduct(c *fiber.Ctx) error {
 
 func FindProduct(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	product := service.FindProduct(uint(id))
+	product := service.FindProduct(uint64(id))
 	return c.Status(200).JSON(product)
 }
 
@@ -56,13 +56,13 @@ func UpdateProduct(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	products := service.UpdateProduct(uint(id), product)
+	products := service.UpdateProduct(uint64(id), product)
 	return c.Status(200).JSON(products)
 }
 
 func DeleteProduct(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	if err := service.DeleteProduct(uint(id)); err != nil {
+	if err := service.DeleteProduct(uint64(id)); err != nil {
 		return c.Status(500).SendString("Failed Delete Product")
 	}
 

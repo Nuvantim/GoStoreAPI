@@ -19,7 +19,7 @@ var otp struct {
 
 // struct update password
 var password struct {
-	Otp      uint   `json:"otp" validate:"required"`
+	Otp      uint64   `json:"otp" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
 }
 

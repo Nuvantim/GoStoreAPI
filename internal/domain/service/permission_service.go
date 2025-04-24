@@ -18,12 +18,12 @@ func CreatePermission(permission Permission) Permission {
 	database.DB.Create(&permission)
 	return permission
 }
-func FindPermission(id uint) Permission {
+func FindPermission(id uint64) Permission {
 	var permission Permission
 	database.DB.Take(&permission, id)
 	return permission
 }
-func UpdatePermission(id uint, permissions Permission) Permission {
+func UpdatePermission(id uint64, permissions Permission) Permission {
 	var permission Permission
 	// get data permission
 	database.DB.Take(&permission, id)
@@ -33,7 +33,7 @@ func UpdatePermission(id uint, permissions Permission) Permission {
 	database.DB.Save(&permission)
 	return permission
 }
-func DeletePermission(id uint) (string, error) {
+func DeletePermission(id uint64) (string, error) {
 	var permission Permission
 	if err := database.DB.Take(&permission, id).Error; err != nil {
 		return "", err

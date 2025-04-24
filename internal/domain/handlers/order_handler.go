@@ -8,7 +8,7 @@ import (
 
 // struct Request
 var request struct {
-	CartID []uint `json:"cart_id" validate:"required"`
+	CartID []uint64 `json:"cart_id" validate:"required"`
 }
 
 /*
@@ -16,7 +16,7 @@ HANDLER GET ORDER
 */
 func GetOrder(c *fiber.Ctx) error {
 	// get user id
-	id := c.Locals("user_id").(uint)
+	id := c.Locals("user_id").(uint64)
 
 	// connect to service
 	cart := service.GetOrder(id)
@@ -27,7 +27,7 @@ func GetOrder(c *fiber.Ctx) error {
 HANDLER FIND ORDER
 */
 func FindOrder(c *fiber.Ctx) error {
-	user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint64)
 	id_order := c.Params("id")
 	id, _ := uuid.Parse(id_order)
 
@@ -54,10 +54,10 @@ func FindOrder(c *fiber.Ctx) error {
 HANDLER CREATE ORDER
 */
 func CreateOrder(c *fiber.Ctx) error {
-	user_id := c.Locals("user_id").(uint) // get id user
+	user_id := c.Locals("user_id").(uint64) // get id user
 
-	var totalPrice uint //declare variabel totalPrice
-	var totalItem uint  //declare variabel totalItem
+	var totalPrice uint64 //declare variabel totalPrice
+	var totalItem uint64  //declare variabel totalItem
 
 	// Bind body request ke struct request
 	if err := c.BodyParser(&request); err != nil {
@@ -88,10 +88,10 @@ func CreateOrder(c *fiber.Ctx) error {
 		totalPrice += cart.Total_Cost
 	}
 	// sum total item
-	totalItem = uint(len(cart))
+	totalItem = uint64(len(cart))
 
 	//connect service
-	order := service.CreateOrder(uint(user_id), totalItem, totalPrice, cart)
+	order := service.CreateOrder(uint64(user_id), totalItem, totalPrice, cart)
 
 	// remove cart after create order
 	service.DeleteCart(request.CartID)

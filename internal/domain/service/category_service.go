@@ -15,7 +15,7 @@ func GetAllCategory() []Category {
 }
 
 // get category from id
-func FindCategory(id uint) Category {
+func FindCategory(id uint64) Category {
 	var category Category // declare variabel Category
 	database.DB.Find(&category, id)
 	return category
@@ -28,7 +28,7 @@ func CreateCategory(category Category) Category {
 }
 
 // update category
-func UpdateCategory(id uint, category_request Category) Category {
+func UpdateCategory(id uint64, category_request Category) Category {
 	var category Category // declare variabel Category
 	database.DB.Take(&category, id)
 	category.Name = category_request.Name
@@ -37,7 +37,7 @@ func UpdateCategory(id uint, category_request Category) Category {
 }
 
 // delete category
-func DeleteCategory(id uint) error {
+func DeleteCategory(id uint64) error {
 	var category Category // declare variabel Category
 	if err := database.DB.Take(&category, id).Error; err != nil {
 		return err

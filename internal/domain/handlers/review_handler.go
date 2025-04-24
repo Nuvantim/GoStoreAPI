@@ -11,7 +11,7 @@ type Review = service.Review //declare type models Review
 HANDLER Create Review
 */
 func CreateReview(c *fiber.Ctx) error {
-	user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint64)
 
 	//parse body to json
 	var review Review
@@ -50,10 +50,10 @@ HANDLER DELETE REVIEW
 */
 func DeleteReview(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint64)
 
 	//check review
-	review := service.FindReview(uint(id))
+	review := service.FindReview(uint64(id))
 	switch {
 	case review.ID == 0:
 		return c.Status(404).JSON(fiber.Map{
@@ -66,7 +66,7 @@ func DeleteReview(c *fiber.Ctx) error {
 	}
 
 	//connect to service
-	service.DeleteReview(uint(id))
+	service.DeleteReview(uint64(id))
 	return c.Status(200).JSON(fiber.Map{
 		"message": "sucess",
 	})

@@ -20,7 +20,7 @@ var (
 
 // Claims mendefinisikan struktur untuk token JWT
 type Claims struct {
-	UserID uint          `json:"user_id"`
+	UserID uint64          `json:"user_id"`
 	Email  string        `json:"email"`
 	Roles  []models.Role `json:"roles,omitempty"`
 	jwt.RegisteredClaims
@@ -28,7 +28,7 @@ type Claims struct {
 
 // RefreshClaims mendefinisikan struktur untuk refresh token
 type RefreshClaims struct {
-	UserID uint   `json:"user_id"`
+	UserID uint64   `json:"user_id"`
 	Email  string `json:"email"`
 	jwt.RegisteredClaims
 }
@@ -97,7 +97,7 @@ func init() {
 }
 
 // CreateToken membuat access token
-func CreateToken(userID uint, email string, roles []models.Role) (string, error) {
+func CreateToken(userID uint64, email string, roles []models.Role) (string, error) {
 	if PrivateKey == nil {
 		return "", errors.New("private key is nil")
 	}
@@ -118,7 +118,7 @@ func CreateToken(userID uint, email string, roles []models.Role) (string, error)
 }
 
 // CreateRefreshToken membuat refresh token
-func CreateRefreshToken(userID uint, email string) (string, error) {
+func CreateRefreshToken(userID uint64, email string) (string, error) {
 	if PrivateKey == nil {
 		return "", errors.New("private key is nil")
 	}
@@ -138,7 +138,7 @@ func CreateRefreshToken(userID uint, email string) (string, error) {
 }
 
 // AutoRefreshToken memperbarui token secara otomatis
-func AutoRefreshToken(userID uint) (string, error) {
+func AutoRefreshToken(userID uint64) (string, error) {
 	var user models.User
 	if err := database.DB.Preload("Roles").Preload("Roles.Permissions").Take(&user, userID).Error; err != nil {
 		return "", err

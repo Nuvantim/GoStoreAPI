@@ -21,19 +21,19 @@ func CreateReview(review_data Review) Product {
 	return product
 }
 
-func FindReview(user_id uint) Review {
+func FindReview(user_id uint64) Review {
 	var review Review
 	database.DB.Take(&review, user_id)
 	return review
 }
 
-func FindUserReview(user_id, product_id uint) Review {
+func FindUserReview(user_id, product_id uint64) Review {
 	var review Review
 	database.DB.Where("user_id = ?", user_id).Where("product_id = ?", product_id).Take(&review)
 	return review
 }
 
-func DeleteReview(ID uint) error {
+func DeleteReview(ID uint64) error {
 	var review Review
 	if err := database.DB.Take(&review, ID).Error; err != nil {
 		return err

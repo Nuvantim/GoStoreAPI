@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id,omitempty" gorm:"PrimaryKey;autoIncrement"`
+	ID        uint64      `json:"id,omitempty" gorm:"PrimaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"not null" validate:"required"`
 	Email     string    `json:"email,omitempty" gorm:"unique;not null" validate:"required,email"`
 	Password  string    `json:"-" gorm:"not null"`
@@ -14,10 +14,10 @@ type User struct {
 }
 
 type UserInfo struct {
-	ID        uint      `json:"-" gorm:"PrimaryKey;autoIncrement"`
-	UserID    uint      `json:"-"`
-	Age       uint      `json:"age"`
-	Phone     uint      `json:"phone"`
+	ID        uint64      `json:"-" gorm:"PrimaryKey;autoIncrement"`
+	UserID    uint64      `json:"-"`
+	Age       uint64      `json:"age"`
+	Phone     uint64      `json:"phone"`
 	District  string    `json:"district"`
 	City      string    `json:"city"`
 	State     string    `json:"state"`
@@ -26,7 +26,7 @@ type UserInfo struct {
 }
 
 type Token struct {
-	ID    uint   `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	Otp   uint   `json:"otp" gorm:"not null"`
+	ID    uint64   `json:"id" gorm:"PrimaryKey;autoIncrement"`
+	Otp   uint64   `json:"otp" gorm:"not null"`
 	Email string `json:"email" gorm:"not null"`
 }

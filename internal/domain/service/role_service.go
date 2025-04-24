@@ -15,7 +15,7 @@ func GetRole() []Role {
 	database.DB.Find(&role)
 	return role
 }
-func CreateRole(name string, permissionID []uint) Role {
+func CreateRole(name string, permissionID []uint64) Role {
 	var permissions []Permission
 	database.DB.Where("id IN ?", permissionID).Find(&permissions)
 	role := Role{
@@ -27,12 +27,12 @@ func CreateRole(name string, permissionID []uint) Role {
 	return roles
 
 }
-func FindRole(id uint) Role {
+func FindRole(id uint64) Role {
 	var role Role
 	database.DB.Preload("Permissions").Take(&role, id)
 	return role
 }
-func UpdateRole(id uint, name string, permissionID []uint) Role {
+func UpdateRole(id uint64, name string, permissionID []uint64) Role {
 	var role Role
 	database.DB.Take(&role, id)
 
@@ -47,7 +47,7 @@ func UpdateRole(id uint, name string, permissionID []uint) Role {
 	return roles
 }
 
-func DeleteRole(id uint) error {
+func DeleteRole(id uint64) error {
 	var role Role
 	if err := database.DB.Take(&role, id).Error; err != nil {
 		return err

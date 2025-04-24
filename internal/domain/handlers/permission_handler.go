@@ -28,7 +28,7 @@ HANDLER Find Permission
 */
 func FindPermission(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	permission := service.FindPermission(uint(id))
+	permission := service.FindPermission(uint64(id))
 	if permission.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"message": "Permission Not Found",
@@ -66,7 +66,7 @@ func UpdatePermission(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
 
 	// check permission
-	check_permission := service.FindPermission(uint(id))
+	check_permission := service.FindPermission(uint64(id))
 	if check_permission.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"message": "Permission Not Found",
@@ -85,7 +85,7 @@ func UpdatePermission(c *fiber.Ctx) error {
 		})
 	}
 
-	permissions := service.UpdatePermission(uint(id), permission)
+	permissions := service.UpdatePermission(uint64(id), permission)
 	return c.Status(200).JSON(permissions)
 
 }
@@ -95,7 +95,7 @@ HANDLER Delete Permission
 */
 func DeletePermission(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	permission, err := service.DeletePermission(uint(id))
+	permission, err := service.DeletePermission(uint64(id))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Failed delete permission",

@@ -7,7 +7,7 @@ import (
 )
 
 type UserRole struct {
-	RoleID []uint `json:"role_id" validate:"required"`
+	RoleID []uint64 `json:"role_id" validate:"required"`
 }
 
 /*
@@ -23,7 +23,7 @@ Find Client
 */
 func FindClient(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	client := service.FindClient(uint(id))
+	client := service.FindClient(uint64(id))
 	// check client
 	if client.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
@@ -55,7 +55,7 @@ func UpdateClient(c *fiber.Ctx) error {
 		})
 	}
 
-	client := service.UpdateClient(uint(id), req.RoleID)
+	client := service.UpdateClient(uint64(id), req.RoleID)
 	return c.Status(200).JSON(client)
 }
 
@@ -64,7 +64,7 @@ Remove Client
 */
 func RemoveClient(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	client := service.FindClient(uint(id))
+	client := service.FindClient(uint64(id))
 	// check client
 	if client.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
@@ -72,7 +72,7 @@ func RemoveClient(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := service.RemoveClient(uint(id)); err != nil {
+	if err := service.RemoveClient(uint64(id)); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Failed delete client",
 			"error":   err.Error(),

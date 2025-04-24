@@ -9,7 +9,7 @@ import (
 
 type Cart = models.Cart // declare type models Cart
 
-func GetCart(id uint) []Cart {
+func GetCart(id uint64) []Cart {
 	var cart []Cart
 	database.DB.Where("user_id = ?", id).
 		Preload("Product", func(db *gorm.DB) *gorm.DB {
@@ -27,13 +27,13 @@ func FindCart(id interface{}) (Cart, []Cart) {
 	)
 	switch CartID := id.(type) {
 
-	case uint: //single id
+	case uint64: //single id
 		database.DB.Where("id = ?", CartID).
 			Preload("Product", func(db *gorm.DB) *gorm.DB {
 				return db.Select("id", "name", "price", "stock", "category_id")
 			}).Preload("Product.Category").Take(&cart)
 
-	case []uint: //multiple id
+	case []uint64: //multiple id
 		database.DB.Where("id IN ?", CartID).Find(&carts)
 
 	default:
@@ -44,7 +44,7 @@ func FindCart(id interface{}) (Cart, []Cart) {
 
 }
 
-func CreateCart(cart_data Cart, id_user, cost uint) Cart {
+func CreateCart(cart_data Cart, id_user, cost uint64) Cart {
 	cart := Cart{
 		UserID:     id_user,
 		ProductID:  cart_data.ProductID,
@@ -56,7 +56,7 @@ func CreateCart(cart_data Cart, id_user, cost uint) Cart {
 	return carts
 }
 
-func UpdateCart(cart_update Cart, cost uint) Cart {
+func UpdateCart(cart_update Cart, cost uint64) Cart {
 	var cart Cart // declare variabel Cart
 	//Get cart by ID
 	database.DB.Take(&cart, cart_update.ID)
@@ -74,10 +74,10 @@ func UpdateCart(cart_update Cart, cost uint) Cart {
 func DeleteCart(input interface{}) error {
 	var cart Cart // declare variabel Cart
 	switch v := input.(type) {
-	case uint:
+	case uint64:
 		return database.DB.Where("id = ?", v).Delete(&cart).Error
 
-	case []uint:
+	case []uint64:
 		return database.DB.Where("id IN ?", v).Delete(&cart).Error
 
 	default:

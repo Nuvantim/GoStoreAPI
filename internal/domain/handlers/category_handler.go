@@ -20,7 +20,7 @@ HANDLER FIND CATEGORY
 */
 func FindCategory(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id") // get params ID
-	category := service.FindCategory(uint(id))
+	category := service.FindCategory(uint64(id))
 	return c.Status(200).JSON(category)
 }
 
@@ -58,7 +58,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	category_update := service.UpdateCategory(uint(id), category)
+	category_update := service.UpdateCategory(uint64(id), category)
 	return c.Status(200).JSON(category_update)
 }
 
@@ -67,7 +67,7 @@ HANDLER DELETE CATEGORY
 */
 func DeleteCategory(c *fiber.Ctx) error {
 	id, _ := c.ParamsInt("id")
-	if err := service.DeleteCategory(uint(id)); err != nil {
+	if err := service.DeleteCategory(uint64(id)); err != nil {
 		return c.Status(500).SendString("Failed Delete Category")
 	}
 	return c.Status(200).JSON(fiber.Map{

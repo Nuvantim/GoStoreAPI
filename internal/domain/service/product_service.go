@@ -16,7 +16,7 @@ func GetAllProduct() []Product {
 }
 
 // get Product from id
-func FindProduct(id uint) Product {
+func FindProduct(id uint64) Product {
 	var product Product //declare variabel Product
 	database.DB.Preload("Category").
 		Preload("Review").
@@ -35,7 +35,7 @@ func CreateProduct(product Product) Product {
 }
 
 // update category
-func UpdateProduct(id uint, product_request Product) Product {
+func UpdateProduct(id uint64, product_request Product) Product {
 	var product Product //declare variabel Product
 	database.DB.Take(&product, id)
 	product.Name = product_request.Name
@@ -49,7 +49,7 @@ func UpdateProduct(id uint, product_request Product) Product {
 }
 
 // delete product
-func DeleteProduct(id uint) error {
+func DeleteProduct(id uint64) error {
 	var product Product //declare variabel Product
 	if err := database.DB.Take(&product, id).Error; err != nil {
 		return err

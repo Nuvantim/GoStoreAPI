@@ -16,8 +16,8 @@ type userUpdate struct { //struct update Request
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"omitempty,min=8"`
-	Age      uint   `json:"age"`
-	Phone    uint   `json:"phone"`
+	Age      uint64   `json:"age"`
+	Phone    uint64   `json:"phone"`
 	District string `json:"district"`
 	City     string `json:"city"`
 	State    string `json:"state"`
@@ -25,7 +25,7 @@ type userUpdate struct { //struct update Request
 }
 
 type userRegister struct {
-	Otp      uint   `json:"otp" validate:"required"`
+	Otp      uint64   `json:"otp" validate:"required"`
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
@@ -35,7 +35,7 @@ type userRegister struct {
 Handler Get Profile
 */
 func GetProfile(c *fiber.Ctx) error {
-	userID := c.Locals("user_id").(uint) // Get UserID from locals variable
+	userID := c.Locals("user_id").(uint64) // Get UserID from locals variable
 	if userID == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
 	}
@@ -96,7 +96,7 @@ Handler Update User
 */
 func UpdateAccount(c *fiber.Ctx) error {
 	var req userUpdate
-	user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint64)
 	user_email := c.Locals("email")
 
 	if err := c.BodyParser(&req); err != nil {
@@ -153,7 +153,7 @@ func UpdateAccount(c *fiber.Ctx) error {
 Handler Delete User
 */
 func DeleteAccount(c *fiber.Ctx) error {
-	user_id := c.Locals("user_id").(uint)
+	user_id := c.Locals("user_id").(uint64)
 	if err := service.DeleteAccount(user_id); err != nil {
 		return c.Status(500).SendString("Failed Delete User")
 	}

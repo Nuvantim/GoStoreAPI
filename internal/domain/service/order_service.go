@@ -15,7 +15,7 @@ type ( //declare type models Order & OrderItems
 /*
 SERVICE ORDER
 */
-func GetOrder(id uint) []Order {
+func GetOrder(id uint64) []Order {
 	var order []Order
 	database.DB.Where("user_id = ?", id).Find(&order)
 	return order
@@ -29,7 +29,7 @@ func FindOrder(id uuid.UUID) Order {
 	return order
 }
 
-func CreateOrder(id_user, totalItem, totalPrice uint, cartData []Cart) Order {
+func CreateOrder(id_user, totalItem, totalPrice uint64, cartData []Cart) Order {
 	// Create Order
 	order := Order{
 		UserID:     id_user,

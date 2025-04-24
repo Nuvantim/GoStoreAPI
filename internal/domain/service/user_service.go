@@ -12,7 +12,7 @@ type ( // declare type models User & UserInfo
 	UserInfo = models.UserInfo
 )
 
-func CheckEmail(email string) uint {
+func CheckEmail(email string) uint64 {
 	// declare variabel models
 	var user User
 	// declare count variabel
@@ -20,7 +20,7 @@ func CheckEmail(email string) uint {
 
 	database.DB.Model(&user).Where("email = ?", email).Count(&countUser)
 
-	return uint(countUser)
+	return uint64(countUser)
 }
 
 func RegisterAccount(name, email, password string) (string, error) {
@@ -47,7 +47,7 @@ func RegisterAccount(name, email, password string) (string, error) {
 	return "Your account successfuly registered", nil
 }
 
-func FindAccount(id uint) (User, UserInfo) {
+func FindAccount(id uint64) (User, UserInfo) {
 	var user User
 	var info UserInfo
 
@@ -64,7 +64,7 @@ func FindAccount(id uint) (User, UserInfo) {
 	return user, info
 }
 
-func UpdateAccount(users User, user_info UserInfo, user_id uint) (User, UserInfo, error) {
+func UpdateAccount(users User, user_info UserInfo, user_id uint64) (User, UserInfo, error) {
 	// Declare variable
 	var user User
 	var userInfo UserInfo
@@ -108,7 +108,7 @@ func UpdateAccount(users User, user_info UserInfo, user_id uint) (User, UserInfo
 	return users, userInfo, nil
 }
 
-func DeleteAccount(user_id uint) error {
+func DeleteAccount(user_id uint64) error {
 	var user User
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
 		return err

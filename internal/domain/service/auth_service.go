@@ -60,7 +60,7 @@ func SendOTP(email string) (string, error) {
 
 }
 
-func UpdatePassword(otp uint, password string) (string, error) {
+func UpdatePassword(otp uint64, password string) (string, error) {
 	var token models.Token
 	// find otp
 	err := database.DB.Where("otp = ?", otp).Take(&token).Error
@@ -81,13 +81,13 @@ func UpdatePassword(otp uint, password string) (string, error) {
 
 }
 
-func ValidateOTP(otp uint, email string) models.Token {
+func ValidateOTP(otp uint64, email string) models.Token {
 	var token models.Token
 	database.DB.Where("email = ?", email).Where("otp = ?", otp).Take(&token)
 	return token
 }
 
-func DeleteOTP(otp uint) error {
+func DeleteOTP(otp uint64) error {
 	var token models.Token
 	if err := database.DB.Where("otp = ?", otp).Take(&token).Error; err != nil {
 		return err
