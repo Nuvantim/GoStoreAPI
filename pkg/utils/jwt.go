@@ -20,7 +20,7 @@ var (
 
 // Claims mendefinisikan struktur untuk token JWT
 type Claims struct {
-	UserID uint64          `json:"user_id"`
+	UserID uint64        `json:"user_id"`
 	Email  string        `json:"email"`
 	Roles  []models.Role `json:"roles,omitempty"`
 	jwt.RegisteredClaims
@@ -28,7 +28,7 @@ type Claims struct {
 
 // RefreshClaims mendefinisikan struktur untuk refresh token
 type RefreshClaims struct {
-	UserID uint64   `json:"user_id"`
+	UserID uint64 `json:"user_id"`
 	Email  string `json:"email"`
 	jwt.RegisteredClaims
 }

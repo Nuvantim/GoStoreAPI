@@ -5,8 +5,8 @@ import (
 )
 
 type Payment struct {
-	ID            uint64      `gorm:"primaryKey"`
-	OrderID       uint64      `gorm:"not null"`
+	ID            uint64    `gorm:"primaryKey"`
+	OrderID       uint64    `gorm:"not null"`
 	Order         Order     `gorm:"foreignKey:OrderID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Amount        float64   `gorm:"not null"`
 	PaymentDate   time.Time `gorm:"default:CURRENT_TIMESTAMP"`

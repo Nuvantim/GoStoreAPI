@@ -16,8 +16,8 @@ type userUpdate struct { //struct update Request
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"omitempty,min=8"`
-	Age      uint64   `json:"age"`
-	Phone    uint64   `json:"phone"`
+	Age      uint64 `json:"age"`
+	Phone    uint64 `json:"phone"`
 	District string `json:"district"`
 	City     string `json:"city"`
 	State    string `json:"state"`
@@ -25,7 +25,7 @@ type userUpdate struct { //struct update Request
 }
 
 type userRegister struct {
-	Otp      uint64   `json:"otp" validate:"required"`
+	Otp      uint64 `json:"otp" validate:"required"`
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`

@@ -9,16 +9,19 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/idempotency"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/template/html/v2"
 )
 
 // FiberConfig berisi konfigurasi Fiber yang aman
 func FiberConfig() fiber.Config {
+	engine := html.New("views", ".html")
 	return fiber.Config{
 		AppName:       "fiber-api",
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Kalveir Project",
 		Prefork:       false,
+		Views: engine,
 	}
 }
 

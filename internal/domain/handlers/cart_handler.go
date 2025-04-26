@@ -47,7 +47,7 @@ func FindCart(c *fiber.Ctx) error {
 HANDLER CREATE CART
 */
 func CreateCart(c *fiber.Ctx) error {
-	var cart Cart                         // declare variabel Cart
+	var cart Cart                           // declare variabel Cart
 	id_user := c.Locals("user_id").(uint64) // get user id
 
 	// Bind body request ke struct cart
@@ -82,7 +82,7 @@ func CreateCart(c *fiber.Ctx) error {
 HANDLER UPDATE CART
 */
 func UpdateCart(c *fiber.Ctx) error {
-	var cart Cart                         // declare variabel Cart
+	var cart Cart                           // declare variabel Cart
 	user_id := c.Locals("user_id").(uint64) // get user id
 
 	// Bind body request ke struct cart

@@ -19,7 +19,7 @@ var otp struct {
 
 // struct update password
 var password struct {
-	Otp      uint64   `json:"otp" validate:"required"`
+	Otp      uint64 `json:"otp" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
 }
 
@@ -27,18 +27,7 @@ var password struct {
 Home Handler
 */
 func Home(c *fiber.Ctx) error {
-	tmpl, err := template.ParseFS(homeHTML, "views/home.html")
-		if err != nil {
-			return c.Status(500).SendString("Template parsing error: " + err.Error())
-		}
-
-		// Render ke buffer
-		buf := new(bytes.Buffer)
-		if err := tmpl.Execute(buf, nil); err != nil {
-			return c.Status(500).SendString("Template execution error: " + err.Error())
-		}
-
-		return c.Type("html").SendString(buf.String())
+	return c.Render("home", fiber.Map{})
 }
 
 /*

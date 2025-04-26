@@ -8,7 +8,7 @@ import (
 
 // struct request role
 type role_permission struct {
-	Name         string `json:"name" validate:"required"`
+	Name         string   `json:"name" validate:"required"`
 	PermissionID []uint64 `json:"permission_id"`
 }
 
