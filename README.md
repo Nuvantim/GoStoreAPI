@@ -75,7 +75,7 @@ APP_NAME=STORE_API
 URL=example.com
 
 DB_DRIVER=pgsql
-DB_HOST=golang-db
+DB_HOST=mydb
 DB_USER=postgres
 DB_PASSWORD=your_database_password
 DB_NAME=api_store
