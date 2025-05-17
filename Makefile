@@ -1,60 +1,32 @@
-# Binary output directory
-BIN_DIR = bin
-# Binary name
-BINARY = main
-# Source file
-SRC = cmd/main.go
+SHELL := /bin/bash
+BINARY_NAME := bin/api
+MAIN_FILE := cmd/main.go
 
-# Build flags
-GO = go
-GOOS = linux
-GOARCH = amd64
-GO111MODULE = on
-CGO_ENABLED = 0
-LDFLAGS = -s -w
+# ANSI color codes
+GREEN  := \033[1;32m
+RED    := \033[1;31m
+YELLOW := \033[1;33m
+BLUE   := \033[1;34m
+RESET  := \033[0m
 
-# Check required tools
-REQUIRED_TOOLS := go
-
-.PHONY: check-tools
-check-tools:
-	@echo "Checking required tools..."
-	@for tool in $(REQUIRED_TOOLS); do \
-		if ! command -v $$tool >/dev/null 2>&1; then \
-			echo "ERROR: $$tool is not installed"; \
-			exit 1; \
-		else \
-			echo "✓ $$tool found: `which $$tool`"; \
-		fi \
-	done
-
-# Ensure bin directory exists
-$(BIN_DIR):
-	@mkdir -p $(BIN_DIR)
-
-# Clean build artifacts
-.PHONY: clean
-clean:
-	@rm -rf $(BIN_DIR)
-	@echo "Clean complete"
-
-# Build the application
 .PHONY: build
-build: check-tools $(BIN_DIR)
-	@START_TIME=$$(date +%s); \
-	GO111MODULE=$(GO111MODULE) \
-	CGO_ENABLED=$(CGO_ENABLED) \
-	GOOS=$(GOOS) \
-	GOARCH=$(GOARCH) \
-	$(GO) build -trimpath \
-		-ldflags="$(LDFLAGS)" \
-		-o $(BIN_DIR)/$(BINARY) \
-		$(SRC); \
-	END_TIME=$$(date +%s); \
-	BUILD_TIME=$$((END_TIME - START_TIME)); \
-	echo "Build complete: $(BIN_DIR)/$(BINARY)"; \
-	echo "Binary size: $$(du -h $(BIN_DIR)/$(BINARY) | cut -f1)"; \
-	echo "Compilation time: $$BUILD_TIME seconds"
 
-# Default target
-.DEFAULT_GOAL := build
+build:
+	@echo -e "$(BLUE)🔍 Checking if 'go' command is available...$(RESET)"
+	@command -v go >/dev/null 2>&1 || { echo -e "$(RED)❌ Go is not installed. Please install Go first.$(RESET)"; exit 1; }
+
+	@echo -e "$(YELLOW)🚀 Starting Go build process...$(RESET)"
+	@START=$$(date +%s); \
+	GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o $(BINARY_NAME) $(MAIN_FILE); \
+	END=$$(date +%s); \
+	DURATION=$$((END - START)); \
+	if [ -f "$(BINARY_NAME)" ]; then \
+		SIZE_MB=$$(echo "scale=2; $$(stat -c%s $(BINARY_NAME)) / 1024 / 1024" | bc); \
+		echo -e "$(GREEN)✅ Build completed successfully!$(RESET)"; \
+		echo -e "$(BLUE)📦 Output file:$(RESET)   $(BINARY_NAME)"; \
+		echo -e "$(BLUE)📏 File size:$(RESET)     $${SIZE_MB} MB"; \
+		echo -e "$(BLUE)⏱️  Build time:$(RESET)     $${DURATION} seconds"; \
+	else \
+		echo -e "$(RED)❌ Build failed. Output file not found.$(RESET)"; \
+		exit 1; \
+	fi
