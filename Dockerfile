@@ -10,4 +10,4 @@ COPY . .
 RUN chmod +x /app/bin/api
 
 # Jalankan aplikasi
-CMD ["./bin/api"]
+CMD ["sh", "-c", "./bin/api"]
