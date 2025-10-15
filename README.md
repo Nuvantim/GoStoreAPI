@@ -69,7 +69,7 @@ go run cmd/main.go
 ## Deployment :rocket:
 For the deployment process using [Docker](https://www.docker.com/), make sure docker is installed on your server
 ### 1. Environment Variables
-The database configuration is adjusted in the file [docker-compose.yml](https://github.com/Kalveir/GoStoreAPI/blob/main/docker-compose.yml)
+The database configuration is adjusted in the file [docker-compose.yml](https://github.com/Nuvantim/GoStoreAPI/blob/main/docker-compose.yml)
 ```
 APP_NAME=STORE_API
 URL=example.com
