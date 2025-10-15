@@ -1,4 +1,4 @@
-# GoStoreAPI
+# GoStoreAPI 🛍️🛒
 ## Descriptions
 GoStoreAPI is a RESTful API designed to power e-commerce platforms or store management systems. It provides structured endpoints to handle core operations such as product management, categories, transactions, user authentication, and other essential features for online stores or inventory-based applications.
 ## Prerequisites
