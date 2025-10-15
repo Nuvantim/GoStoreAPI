@@ -10,7 +10,7 @@ GoStoreAPI is a RESTful API designed to power e-commerce platforms or store mana
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/Kalveir/GoStoreAPI.git
+git clone https://github.com/Nuvantim/GoStoreAPI.git
 cd GoStoreAPI
 ```
 
