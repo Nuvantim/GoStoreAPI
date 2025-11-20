@@ -2,26 +2,11 @@ package handler
 
 import (
 	"api/internal/domain/service"
-	"api/pkg/utils"
+	"api/pkg/utils/responses"
+	"api/pkg/utils/validates"
+
 	"github.com/gofiber/fiber/v2"
 )
-
-// struct login
-var login struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=8"`
-}
-
-// struct otp
-var otp struct {
-	Email string `json:"email" validate:"email,required"`
-}
-
-// struct update password
-var password struct {
-	Otp      uint64 `json:"otp" validate:"required"`
-	Password string `json:"password" validate:"required,min=8"`
-}
 
 /*
 Home Handler
@@ -34,37 +19,46 @@ func Home(c *fiber.Ctx) error {
 LOGIN HANDLER
 */
 func Login(c *fiber.Ctx) error {
-	// Bind data
-	if err := c.BodyParser(&login); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
+	// declare variable struct
+	var loginRequest = struct {
+		Email    string `json:"email" validate:"required,email"`
+		Password string `json:"password" validate:"required,min=8"`
+	}{}
+
+	// Parser Body JSON data
+	if err := c.BodyParser(&loginRequest); err != nil {
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 
 	// validate data
-	if err := utils.Validator(login); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+	if err := validate.BodyStructs(loginRequest); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
 	}
-	// Panggil service untuk login
-	accessToken, refreshToken, err := service.Login(login.Email, login.Password)
+	// start service
+	accessToken, refreshToken, err := service.Login(loginRequest.Email, loginRequest.Password)
 	if err != nil {
-		return c.Status(401).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(401).JSON(response.Error("failed auth login", err.Error()))
 	}
 
+	// set cookies
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken,
 		HTTPOnly: true,
-		Secure:   true, // Set to true in production
+		Secure:   true,
 		SameSite: "Strict",
 		Path:     "/",
 	})
 
-	// Kirim access token dan refresh token
-	return c.JSON(fiber.Map{
-		"message":      "Login Success!",
-		"access_token": accessToken,
-	})
+	// struct access token
+	var loginResponse = struct {
+		AccessToken string `json:"access_token"`
+	}{
+		AccessToken: accessToken,
+	}
+
+	// response data
+	return c.Status(200).JSON(response.Pass("success auth login login", loginResponse))
 }
 
 /*
@@ -76,10 +70,10 @@ func Logout(c *fiber.Ctx) error {
 		Name:     "access_token",
 		Value:    "",
 		HTTPOnly: true,
-		Secure:   true, // Set to true in production
+		Secure:   true,
 		SameSite: "Strict",
 		Path:     "/",
-		MaxAge:   -1, // Delete cookie
+		MaxAge:   -1,
 	})
 
 	// Clear the refresh token cookie
@@ -87,57 +81,70 @@ func Logout(c *fiber.Ctx) error {
 		Name:     "refresh_token",
 		Value:    "",
 		HTTPOnly: true,
-		Secure:   true, // Set to true in production
+		Secure:   true,
 		SameSite: "Strict",
 		Path:     "/",
 		MaxAge:   -1, // Delete cookie
 	})
 
-	return c.JSON(fiber.Map{
-		"message": "Logout successful",
-	})
+	// response
+	return c.Status(200).JSON(response.Pass("success logout", struct{}{}))
 }
 
 /*
 Send OTP HANDLER
 */
 func SendOTP(c *fiber.Ctx) error {
-	// bind body
+	// declare variable struct
+	var otp = struct {
+		Email string `json:"email" validate:"email,required"`
+	}{}
+
+	// parser body json
 	if err := c.BodyParser(&otp); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid Body Request"})
-	}
-	send, err := service.SendOTP(otp.Email)
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": err.Error,
-		})
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 
-	return c.Status(200).JSON(fiber.Map{"message": send})
+	//validate data
+	if err := validate.BodyStructs(otp); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+	}
+
+	// start service
+	send, err := service.SendOTP(otp.Email)
+	if err != nil {
+		return c.Status(500).JSON(response.Error("failed send otp", err.Error()))
+	}
+
+	// response data
+	return c.Status(200).JSON(response.Pass(send, struct{}{}))
 
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
-	// bind body
+	// declare variable struct
+	var password = struct {
+		Otp      uint64 `json:"otp" validate:"required"`
+		Password string `json:"password" validate:"required,min=8"`
+	}{}
+
+	// parser json body data
 	if err := c.BodyParser(&password); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid Body Request"})
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 
 	// validate data
-	if err := utils.Validator(password); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+	if err := validate.BodyStructs(password); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
 	}
 
+	// start service
 	update, err := service.UpdatePassword(password.Otp, password.Password)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{
-			"messsage": err.Error(),
-		})
+		return c.Status(500).JSON(response.Error("failed update password", err.Error()))
 	}
-	service.DeleteOTP(password.Otp)
-	return c.Status(200).JSON(fiber.Map{
-		"message": update,
-	})
+
+	// response data
+	return c.Status(200).JSON(response.Pass(update, struct{}{}))
 }
+

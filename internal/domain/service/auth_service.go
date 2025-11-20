@@ -3,8 +3,9 @@ package service
 import (
 	"api/internal/database"
 	"api/internal/domain/models"
-	"api/pkg/utils"
+	"api/pkg/guard"
 	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -27,12 +28,12 @@ func Login(email, password string) (string, string, error) {
 	}
 
 	// Create access token and refresh token
-	accessToken, err := utils.CreateToken(user.ID, user.Email, user.Roles)
+	accessToken, err := guard.CreateToken(user.ID, user.Email, user.Roles)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := utils.CreateRefreshToken(user.ID, user.Email)
+	refreshToken, err := guard.CreateRefreshToken(user.ID, user.Email)
 	if err != nil {
 		return "", "", err
 	}
@@ -41,7 +42,7 @@ func Login(email, password string) (string, string, error) {
 }
 
 func SendOTP(email string) (string, error) {
-	otp, code := utils.GenerateOTP()
+	otp, _ := guard.GenerateOTP()
 
 	token := models.Token{
 		Otp:   otp,
@@ -51,9 +52,11 @@ func SendOTP(email string) (string, error) {
 		return "", err
 	}
 
-	if error := utils.SendOTP(email, code); error != nil {
-		return "", error
-	}
+	fmt.Println(token.Otp)
+
+	// if error := guard.SendOTP(email, code); error != nil {
+	// 	return "", error
+	// }
 
 	// send OTP
 	return "otp success send", nil
@@ -67,7 +70,7 @@ func UpdatePassword(otp uint64, password string) (string, error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errors.New("Otp code not found")
 	}
-	hash := utils.HashBycrypt(password)
+	hash := guard.HashBycrypt(password)
 
 	// find user by email
 	var user models.User

@@ -3,8 +3,10 @@ package handler
 import (
 	"api/internal/domain/models"
 	"api/internal/domain/service"
-	"api/pkg/utils"
+	"api/pkg/guard"
 	"github.com/gofiber/fiber/v2"
+    "api/pkg/utils/responses"
+    "api/pkg/utils/validates"
 )
 
 type ( // declare type models User & UserInfo
@@ -37,16 +39,21 @@ Handler Get Profile
 func GetProfile(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint64) // Get UserID from locals variable
 	if userID == 0 {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Unauthorized"})
+		return c.Status(401).JSON(response.Error("failed get user id", "unauthorized"))
 	}
 
 	// Query user profile by id
 	user, info := service.FindAccount(userID)
+    
+    data := struct{
+        users User `json:"user"`
+        user_info UserInfo `json:"user_info"`
+    }{
+        account :user,
+        user_info: info,
+    }
 
-	return c.Status(200).JSON(fiber.Map{
-		"user":      user,
-		"user_info": info,
-	})
+	return c.Status(200).JSON(response.Pass("success get profile", data))
 }
 
 /*
@@ -57,25 +64,22 @@ func RegisterAccount(c *fiber.Ctx) error {
 
 	// bind body data
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 
 	// validate data
-	if err := utils.Validator(req); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	if err := validate.BodyStructs(req);err != nil{
+        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+    }
 
 	// check email
 	user_email := service.CheckEmail(req.Email)
 	if user_email > 0 {
-		return c.Status(409).JSON(fiber.Map{
-			"message": "Email is already exist in another user",
-		})
+		return c.Status(409).JSON(response.Error("failed register account", "email already exist"))
 	}
 
-	// validate otp
+	// ini dihapus 
+    // validate otp 
 	val := service.ValidateOTP(req.Otp, req.Email)
 	if val.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{"message": "OTP not found"})
@@ -84,10 +88,11 @@ func RegisterAccount(c *fiber.Ctx) error {
 	// service register
 	register, err := service.RegisterAccount(req.Name, req.Email, req.Password)
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(response.Error("failed register account", err.Error()))
 	}
+    //ini dihapus
 	service.DeleteOTP(req.Otp)
-	return c.Status(200).JSON(fiber.Map{"message": register})
+	return c.Status(200).JSON(response.Pass("success register account", register))
 
 }
 
@@ -100,23 +105,19 @@ func UpdateAccount(c *fiber.Ctx) error {
 	user_email := c.Locals("email")
 
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid Body Request"})
+		return c.Status(400).JSON(response.Erorr("failed parser json", err.Error()))
 	}
 
 	// validate data
-	if err := utils.Validator(req); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	if err := validate.BodyStructs(req);err != nil{
+        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+    }
 
 	// check email
 	if req.Email != user_email {
 		user_email := service.CheckEmail(req.Email)
 		if user_email > 0 {
-			return c.Status(409).JSON(fiber.Map{
-				"message": "Email is already exist in another user",
-			})
+			return c.Status(409).JSON(response.Error("failed update account", "email already exists"))
 		}
 	}
 
@@ -138,15 +139,18 @@ func UpdateAccount(c *fiber.Ctx) error {
 	}
 	users, userInfo, error := service.UpdateAccount(user, user_info, user_id)
 	if error != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": error,
-		})
+		return c.Status(400).JSON(response.Error("failed update account", error.Error()))
 	}
 	// Make return interface
-	return c.Status(200).JSON(fiber.Map{
-		"user":      users,
-		"user_info": userInfo,
-	})
+    data := struct{
+        users User `json:"user"`
+        user_info UserInfo `json:"user_info"`
+    }{
+        account :users,
+        user_info: userInfo,
+    }
+    
+	return c.Status(200).JSON(response.Pass("success update account", data))
 }
 
 /*
@@ -155,9 +159,8 @@ Handler Delete User
 func DeleteAccount(c *fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint64)
 	if err := service.DeleteAccount(user_id); err != nil {
-		return c.Status(500).SendString("Failed Delete User")
+		return c.Status(500).JSON(response.Error("failed delete account", err.Error()))
 	}
-	return c.Status(201).JSON(fiber.Map{
-		"message": "User Delete Succesfuly",
-	})
+    
+	return c.Status(201).JSON(response.Pass("account deleted", struct{}{}))
 }

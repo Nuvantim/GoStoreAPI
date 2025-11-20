@@ -1,4 +1,4 @@
-package utils
+package guard
 
 import (
 	"api/internal/database"
@@ -35,22 +35,26 @@ type RefreshClaims struct {
 
 // loadKey membaca dan memproses file kunci RSA
 func loadKey(filename string, isPrivate bool) (interface{}, error) {
+
 	keyBytes, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	block, rest := pem.Decode(keyBytes)
-	if block == nil || (isPrivate && block.Type != "RSA PRIVATE KEY") || (!isPrivate && block.Type != "RSA PUBLIC KEY") {
-		return nil, errors.New("invalid key format")
-	}
-
-	if len(rest) > 0 {
-		return nil, errors.New("extra data found after key")
+	block, _ := pem.Decode(keyBytes)
+	if block == nil {
+		return nil, errors.New("failed to decode PEM block containing the key")
 	}
 
 	if isPrivate {
+		if block.Type != "RSA PRIVATE KEY" {
+			return nil, errors.New("invalid private key format")
+		}
 		return x509.ParsePKCS1PrivateKey(block.Bytes)
+	}
+
+	if block.Type != "PUBLIC KEY" {
+		return nil, errors.New("invalid public key format")
 	}
 
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
@@ -60,7 +64,7 @@ func loadKey(filename string, isPrivate bool) (interface{}, error) {
 
 	rsaPubKey, ok := pub.(*rsa.PublicKey)
 	if !ok {
-		return nil, errors.New("invalid type for RSA public key")
+		return nil, errors.New("parsed public key is not an RSA key")
 	}
 
 	return rsaPubKey, nil
@@ -88,11 +92,11 @@ func init() {
 	var err error
 	PrivateKey, err = LoadPrivateKey()
 	if err != nil {
-		log.Fatalf("Error loading private key: %v", err)
+		log.Fatalf("error loading private key: %v", err)
 	}
 	PublicKey, err = LoadPublicKey()
 	if err != nil {
-		log.Fatalf("Error loading public key: %v", err)
+		log.Fatalf("error loading public key: %v", err)
 	}
 }
 
@@ -102,7 +106,7 @@ func CreateToken(userID uint64, email string, roles []models.Role) (string, erro
 		return "", errors.New("private key is nil")
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	claims := Claims{
 		UserID: userID,
 		Email:  email,
@@ -113,7 +117,7 @@ func CreateToken(userID uint64, email string, roles []models.Role) (string, erro
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodRS512, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(PrivateKey)
 }
 
@@ -123,7 +127,7 @@ func CreateRefreshToken(userID uint64, email string) (string, error) {
 		return "", errors.New("private key is nil")
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	claims := RefreshClaims{
 		UserID: userID,
 		Email:  email,
@@ -133,7 +137,7 @@ func CreateRefreshToken(userID uint64, email string) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodRS512, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(PrivateKey)
 }
 

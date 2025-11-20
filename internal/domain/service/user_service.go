@@ -3,7 +3,7 @@ package service
 import (
 	"api/internal/database"
 	"api/internal/domain/models"
-	"api/pkg/utils"
+	"api/pkg/guard"
 	"errors"
 )
 
@@ -25,7 +25,7 @@ func CheckEmail(email string) uint64 {
 
 func RegisterAccount(name, email, password string) (string, error) {
 	// hash password
-	hash := utils.HashBycrypt(password)
+	hash := guard.HashBycrypt(password)
 	// Create data user
 	user := User{
 		Name:     name,
@@ -78,7 +78,7 @@ func UpdateAccount(users User, user_info UserInfo, user_id uint64) (User, UserIn
 	user.Name = users.Name
 	user.Email = users.Email
 	if users.Password != "" {
-		hash := utils.HashBycrypt(users.Password)
+		hash := guard.HashBycrypt(users.Password)
 		user.Password = string(hash)
 	}
 

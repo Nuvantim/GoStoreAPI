@@ -6,10 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Setup(app *fiber.App) {
+func Setup(apps *fiber.App) {
+	apps.Get("/", handler.Home)
+	app := apps.Group("/api")
 
 	//auth Route
-	app.Get("/", handler.Home)
 	app.Post("/send/otp", handler.SendOTP)
 	app.Post("/account/register", handler.RegisterAccount)
 	app.Post("/update/password", handler.UpdatePassword)
@@ -47,7 +48,6 @@ func Setup(app *fiber.App) {
 	app.Delete("/account/delete", handler.DeleteAccount)
 	app.Post("/logout", handler.Logout)
 
-	// Category Route
 	// Category Route
 	app.Get("/category", handler.GetCategory)
 	app.Get("/category/:id", handler.FindCategory)

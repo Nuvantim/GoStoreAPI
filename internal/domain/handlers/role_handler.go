@@ -2,7 +2,7 @@ package handler
 
 import (
 	"api/internal/domain/service"
-	"api/pkg/utils"
+	"api/pkg/guard"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,25 +20,24 @@ HANDLER GET ROLE
 func GetRole(c *fiber.Ctx) error {
 	role := service.GetRole()
 	if role == nil {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Role is Empty",
-		})
+		return c.Status(404).JSON(response.Error("failed get role", "role is empty"))
 	}
-	return c.Status(200).JSON(role)
+	return c.Status(200).JSON(response.Pass("success get role", role))
 }
 
 /*
 HANDLER FIND ROLE
 */
 func FindRole(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
+    if err != nil{
+        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+    }
 	role := service.FindRole(uint64(id))
 	if role.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Role is not found",
-		})
+		return c.Status(404).JSON(response.Error("failed find role", "role not found"))
 	}
-	return c.Status(200).JSON(role)
+	return c.Status(200).JSON(response.Pass("success find role", role))
 }
 
 /*
@@ -49,18 +48,14 @@ func CreateRole(c *fiber.Ctx) error {
 
 	// bind body request
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"message": "Invalid body request",
-		})
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 	// validate data
-	if err := utils.Validator(req); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	if err := validate.BodyStructs(req);err != nil{
+        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+    }
 	role := service.CreateRole(req.Name, req.PermissionID)
-	return c.Status(200).JSON(role)
+	return c.Status(200).JSON(response.Pass("success create role", role))
 
 }
 
@@ -69,34 +64,32 @@ HANDLER UPDATE ROLE
 */
 func UpdateRole(c *fiber.Ctx) error {
 	var req role_permission
-	id, _ := c.ParamsInt("id")
+    id, err := c.ParamsInt("id")
+    if err != nil{
+        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+    }
 	// bind body request
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"message": "Invalid Body Request",
-		})
+		return c.Status(400).JSON(response.Error("failed parser json",err.Error()))
 	}
 	// validate data
-	if err := utils.Validator(req); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	if err := validate.BodyStructs(req);err != nil{
+        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+    }
 	role := service.UpdateRole(uint64(id), req.Name, req.PermissionID)
-	return c.Status(200).JSON(role)
+	return c.Status(200).JSON(response.Pass("success update role", role))
 }
 
 /*
 HANDLER DELETE ROLE
 */
 func DeleteRole(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
+    if err != nil{
+        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+    }
 	if err := service.DeleteRole(uint64(id)); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": err,
-		})
+		return c.Status(500).JSON(response.Error("failed delete role", err.Error()))
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "Success delete role",
-	})
+	return c.Status(200).JSON(response.Pass("role deleted", struct{}{}))
 }

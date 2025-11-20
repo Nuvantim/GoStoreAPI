@@ -3,7 +3,7 @@ package seeder
 import (
 	"api/internal/database"
 	"api/internal/domain/models"
-	"api/pkg/utils"
+	"api/pkg/guard"
 	"log"
 )
 
@@ -13,7 +13,7 @@ func seed_User() {
 		log.Println(err)
 	}
 	if count == 0 {
-		password := utils.HashBycrypt("12345678")
+		password := guard.HashBycrypt("12345678")
 		user := models.User{
 			Name:     "Yoga",
 			Email:    "yoga@gmail.com",

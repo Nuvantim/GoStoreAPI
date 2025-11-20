@@ -2,7 +2,9 @@ package handler
 
 import (
 	"api/internal/domain/service"
-	"api/pkg/utils"
+	"api/pkg/utils/responses"
+	"api/pkg/utils/validates"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,71 +16,85 @@ type UserRole struct {
 Get Client
 */
 func GetClient(c *fiber.Ctx) error {
+	// start service
 	client := service.GetClient()
-	return c.Status(200).JSON(client)
+
+	// return response data
+	return c.Status(200).JSON(response.Pass("success get client", client))
 }
 
 /*
 Find Client
 */
 func FindClient(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	// get id
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
+
+	// start service
 	client := service.FindClient(uint64(id))
+
 	// check client
 	if client.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Client not found",
-		})
+		return c.Status(404).JSON(response.Error("failed find client", err.Error()))
 	}
-	return c.Status(200).JSON(client)
 
+	// return response data
+	return c.Status(200).JSON(response.Pass("success find client", client))
 }
 
 /*
 Update Client
 */
 func UpdateClient(c *fiber.Ctx) error {
-	var req UserRole
-	id, _ := c.ParamsInt("id")
-	// bind body request
+	var req UserRole // declare variable strucf
+
+	// get id
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
+
+	// parser json
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Invalid Body Request",
-			"error":   err.Error(),
-		})
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 
 	// validate data
-	if err := utils.Validator(req); err != nil {
-		return c.Status(422).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+	if err := validate.BodyStructs(req); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
 	}
 
+	// start service
 	client := service.UpdateClient(uint64(id), req.RoleID)
-	return c.Status(200).JSON(client)
+
+	// response data
+	return c.Status(200).JSON(response.Pass("success update client", client))
 }
 
 /*
 Remove Client
 */
 func RemoveClient(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	// get id
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
 	client := service.FindClient(uint64(id))
+
 	// check client
 	if client.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"message": "Client not found",
-		})
+		return c.Status(404).JSON(response.Error("failed find client", "client not found"))
 	}
 
+	// start service
 	if err := service.RemoveClient(uint64(id)); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Failed delete client",
-			"error":   err.Error(),
-		})
+		return c.Status(500).JSON(response.Error("failed remove client", err.Error()))
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "Success remove client",
-	})
+
+	// return response
+	return c.Status(200).JSON(response.Pass("client removed", struct{}{}))
 }
