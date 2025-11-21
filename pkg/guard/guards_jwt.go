@@ -33,6 +33,20 @@ type RefreshClaims struct {
 	jwt.RegisteredClaims
 }
 
+func CheckRSA() {
+	privateKey, err := LoadPrivateKey()
+	if err != nil {
+		log.Fatalf("Failed to load private key: %v", err)
+	}
+	PrivateKey = privateKey
+
+	publicKey, err := LoadPublicKey()
+	if err != nil {
+		log.Fatalf("Failed to load public key: %v", err)
+	}
+	PublicKey = publicKey
+}
+
 // loadKey membaca dan memproses file kunci RSA
 func loadKey(filename string, isPrivate bool) (interface{}, error) {
 
@@ -72,7 +86,7 @@ func loadKey(filename string, isPrivate bool) (interface{}, error) {
 
 // LoadPrivateKey memuat kunci privat dari file
 func LoadPrivateKey() (*rsa.PrivateKey, error) {
-	key, err := loadKey("private.pem", true)
+	key, err := loadKey(RSAKeyPath+"/private.pem", true)
 	if err != nil {
 		return nil, err
 	}
@@ -81,23 +95,11 @@ func LoadPrivateKey() (*rsa.PrivateKey, error) {
 
 // LoadPublicKey memuat kunci publik dari file
 func LoadPublicKey() (*rsa.PublicKey, error) {
-	key, err := loadKey("public.pem", false)
+	key, err := loadKey(RSAKeyPath+"/public.pem", false)
 	if err != nil {
 		return nil, err
 	}
 	return key.(*rsa.PublicKey), nil
-}
-
-func init() {
-	var err error
-	PrivateKey, err = LoadPrivateKey()
-	if err != nil {
-		log.Fatalf("error loading private key: %v", err)
-	}
-	PublicKey, err = LoadPublicKey()
-	if err != nil {
-		log.Fatalf("error loading public key: %v", err)
-	}
 }
 
 // CreateToken membuat access token

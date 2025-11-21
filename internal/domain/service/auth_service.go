@@ -4,8 +4,10 @@ import (
 	"api/internal/database"
 	"api/internal/domain/models"
 	"api/pkg/guard"
+	rds "api/redis"
 	"errors"
 	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -42,59 +44,44 @@ func Login(email, password string) (string, string, error) {
 }
 
 func SendOTP(email string) (string, error) {
-	otp, _ := guard.GenerateOTP()
+	otp, code := guard.GenerateOTP()
 
 	token := models.Token{
 		Otp:   otp,
 		Email: email,
 	}
-	if err := database.DB.Create(&token).Error; err != nil {
-		return "", err
+
+	// set otp to redis
+	rds.SetData(fmt.Sprintf("verify:%d", token.Otp), token)
+
+	if error := guard.SendOTP(email, code); error != nil {
+		return "", error
 	}
-
-	fmt.Println(token.Otp)
-
-	// if error := guard.SendOTP(email, code); error != nil {
-	// 	return "", error
-	// }
 
 	// send OTP
 	return "otp success send", nil
 
 }
 
-func UpdatePassword(otp uint64, password string) (string, error) {
-	var token models.Token
-	// find otp
-	err := database.DB.Where("otp = ?", otp).Take(&token).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errors.New("Otp code not found")
-	}
+func UpdatePassword(email, password string) (string, error) {
 	hash := guard.HashBycrypt(password)
 
 	// find user by email
 	var user models.User
-	error := database.DB.Where("email = ?", token.Email).Take(&user).Error
+	error := database.DB.Where("email = ?", email).Take(&user).Error
 	if errors.Is(error, gorm.ErrRecordNotFound) {
-		return "", errors.New("User not found")
+		return "", errors.New("user not found")
 	}
 	user.Password = string(hash)
 	database.DB.Save(&user)
-	return "Update password success", nil
+	return "update password success", nil
 
 }
 
-func ValidateOTP(otp uint64, email string) models.Token {
-	var token models.Token
-	database.DB.Where("email = ?", email).Where("otp = ?", otp).Take(&token)
-	return token
-}
-
-func DeleteOTP(otp uint64) error {
-	var token models.Token
-	if err := database.DB.Where("otp = ?", otp).Take(&token).Error; err != nil {
-		return err
+func ValidateOTP(otp uint64) (*models.Token, error) {
+	data, err := rds.GetData[models.Token](fmt.Sprintf("verify:%d", otp))
+	if err != nil {
+		return nil, fmt.Errorf("failed get otp: ", err)
 	}
-	database.DB.Delete(&token)
-	return nil
+	return data, nil
 }

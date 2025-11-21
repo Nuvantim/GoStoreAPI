@@ -5,6 +5,7 @@ import (
 	"api/internal/database"
 	"api/internal/database/seeder"
 	"api/internal/routes"
+	rds "api/redis"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,6 +15,9 @@ func SetupAPI() *fiber.App {
 
 	// run database seeder
 	seeder.SeederSetup()
+
+	// run redis
+	rds.InitRedis()
 
 	// start fiber configuration
 	app := fiber.New(config.FiberConfig())

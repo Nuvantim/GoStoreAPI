@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-
-	"api/config"
 )
 
 var RDS *redis.Client
@@ -27,15 +26,15 @@ func InitRedis() {
 	// Disable log
 	redis.SetLogger(noopLogger{})
 	once.Do(func() {
-		rdsConfig, err := config.GetRedisConfig()
-		if err != nil {
-			log.Fatalf("Failed to get database config: %v", err)
-		}
+		// Get Redis Environment
+		var host string = os.Getenv("REDIS_HOST")
+		var port string = os.Getenv("REDIS_PORT")
+		var password string = os.Getenv("REDIS_PASSWORD")
 
-		// Initialization Redia Connection
+		// Initialization Redis Connection
 		rdb := redis.NewClient(&redis.Options{
-			Addr:            fmt.Sprintf("%s:%d", rdsConfig.Host, rdsConfig.Port),
-			Password:        rdsConfig.Password,
+			Addr:            fmt.Sprintf("%s:%s", host, port),
+			Password:        password,
 			DB:              0,
 			ReadBufferSize:  1024 * 1024,
 			WriteBufferSize: 1024 * 1024,

@@ -1,11 +1,11 @@
 package config
 
 import (
+	"context"
 	"log"
 	"os/signal"
 	"syscall"
 	"time"
-	"context"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -13,7 +13,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
-	
 	// "github.com/gofiber/fiber/v2/middleware/csrf"
 	// "github.com/gofiber/fiber/v2/middleware/helmet"
 )

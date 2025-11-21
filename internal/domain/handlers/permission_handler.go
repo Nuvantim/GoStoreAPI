@@ -2,10 +2,9 @@ package handler
 
 import (
 	"api/internal/domain/service"
-	"api/pkg/guard"
+	"api/pkg/utils/responses"
+	"api/pkg/utils/validates"
 	"github.com/gofiber/fiber/v2"
-    "api/pkg/utils/responses"
-    "api/pkg/utils/validates"
 )
 
 type (
@@ -45,12 +44,12 @@ func CreatePermission(c *fiber.Ctx) error {
 		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 	// validate data
-	if err := validate.BodyStructs(permission); err != nil{
-        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
-    }
-    
+	if err := validate.BodyStructs(permission); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+	}
+
 	permissions := service.CreatePermission(permission)
-	return c.Status(200).JSON(response.Pass("success create permission", permission))
+	return c.Status(200).JSON(response.Pass("success create permission", permissions))
 }
 
 /*
@@ -59,9 +58,9 @@ HANDLER Update Permission
 func UpdatePermission(c *fiber.Ctx) error {
 	var permission Permission
 	id, err := c.ParamsInt("id")
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
-    }
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
 
 	// check permission
 	check_permission := service.FindPermission(uint64(id))
@@ -73,9 +72,9 @@ func UpdatePermission(c *fiber.Ctx) error {
 		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 	// validate data
-	if err := validate.BodyStructs(permission); err != nil{
-        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
-    }
+	if err := validate.BodyStructs(permission); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+	}
 
 	permissions := service.UpdatePermission(uint64(id), permission)
 	return c.Status(200).JSON(response.Pass("success update permission", permissions))
@@ -87,13 +86,13 @@ HANDLER Delete Permission
 */
 func DeletePermission(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-    if err != nil{
-        return c.Status(400).JSON("failed get id", err.Error())
-    }
+	if err != nil {
+		return c.Status(400).JSON("failed get id", err.Error())
+	}
 	permission, err := service.DeletePermission(uint64(id))
 	if err != nil {
 		return c.Status(500).JSON(response.Error("failed delete permission", err.Error()))
 	}
-	return c.Status(200).JSON(response.Pass("permission deleted", struct{}{}))
+	return c.Status(200).JSON(response.Pass(permission, struct{}{}))
 
 }

@@ -33,11 +33,12 @@ func UpdatePermission(id uint64, permissions Permission) Permission {
 	database.DB.Save(&permission)
 	return permission
 }
+
 func DeletePermission(id uint64) (string, error) {
 	var permission Permission
 	if err := database.DB.Take(&permission, id).Error; err != nil {
 		return "", err
 	}
 	database.DB.Delete(&permission)
-	return "Permission success deleted", nil
+	return "permission deleted", nil
 }

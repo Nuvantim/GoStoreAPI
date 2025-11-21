@@ -138,8 +138,14 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
 	}
 
+	// validate otp
+	data, err := service.ValidateOTP(password.Otp)
+	if err != nil {
+		return c.Status(404).JSON(response.Error("failed validate otp", err.Error()))
+	}
+
 	// start service
-	update, err := service.UpdatePassword(password.Otp, password.Password)
+	update, err := service.UpdatePassword(data.Email, password.Password)
 	if err != nil {
 		return c.Status(500).JSON(response.Error("failed update password", err.Error()))
 	}
@@ -147,4 +153,3 @@ func UpdatePassword(c *fiber.Ctx) error {
 	// response data
 	return c.Status(200).JSON(response.Pass(update, struct{}{}))
 }
-

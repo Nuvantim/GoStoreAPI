@@ -2,10 +2,9 @@ package handler
 
 import (
 	"api/internal/domain/service"
+	"api/pkg/utils/responses"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-    "api/pkg/utils/responses"
-    "api/pkg/utils/validates"
 )
 
 // struct Request
@@ -32,9 +31,9 @@ func FindOrder(c *fiber.Ctx) error {
 	user_id := c.Locals("user_id").(uint64)
 	id_order := c.Params("id")
 	id, err := uuid.Parse(id_order)
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get uuid", err.Error()))
-    }
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get uuid", err.Error()))
+	}
 
 	// connect service
 	order := service.FindOrder(id)
@@ -101,9 +100,9 @@ func DeleteOrder(c *fiber.Ctx) error {
 	// get endpoint id & user_id
 	id_order := c.Params("id")
 	id, err := uuid.Parse(id_order)
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get uuid", err.Eror()))
-    }
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get uuid", err.Error()))
+	}
 	user_id := c.Locals("user_id")
 
 	// find Order

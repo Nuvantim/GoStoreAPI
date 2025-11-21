@@ -26,7 +26,6 @@ type UserInfo struct {
 }
 
 type Token struct {
-	ID    uint64 `json:"id" gorm:"PrimaryKey;autoIncrement"`
-	Otp   uint64 `json:"otp" gorm:"not null"`
-	Email string `json:"email" gorm:"not null"`
+	Otp   uint64 `json:"otp"`
+	Email string `json:"email"`
 }

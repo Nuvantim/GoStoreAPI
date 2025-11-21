@@ -2,7 +2,8 @@ package handler
 
 import (
 	"api/internal/domain/service"
-	"api/pkg/guard"
+	"api/pkg/utils/responses"
+	"api/pkg/utils/validates"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -30,9 +31,9 @@ HANDLER FIND ROLE
 */
 func FindRole(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
-    }
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
 	role := service.FindRole(uint64(id))
 	if role.ID == 0 {
 		return c.Status(404).JSON(response.Error("failed find role", "role not found"))
@@ -51,9 +52,9 @@ func CreateRole(c *fiber.Ctx) error {
 		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 	// validate data
-	if err := validate.BodyStructs(req);err != nil{
-        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
-    }
+	if err := validate.BodyStructs(req); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+	}
 	role := service.CreateRole(req.Name, req.PermissionID)
 	return c.Status(200).JSON(response.Pass("success create role", role))
 
@@ -64,18 +65,18 @@ HANDLER UPDATE ROLE
 */
 func UpdateRole(c *fiber.Ctx) error {
 	var req role_permission
-    id, err := c.ParamsInt("id")
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
-    }
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
 	// bind body request
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(response.Error("failed parser json",err.Error()))
+		return c.Status(400).JSON(response.Error("failed parser json", err.Error()))
 	}
 	// validate data
-	if err := validate.BodyStructs(req);err != nil{
-        return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
-    }
+	if err := validate.BodyStructs(req); err != nil {
+		return c.Status(422).JSON(response.Error("failed validate data", err.Error()))
+	}
 	role := service.UpdateRole(uint64(id), req.Name, req.PermissionID)
 	return c.Status(200).JSON(response.Pass("success update role", role))
 }
@@ -85,9 +86,9 @@ HANDLER DELETE ROLE
 */
 func DeleteRole(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-    if err != nil{
-        return c.Status(400).JSON(response.Error("failed get id", err.Error()))
-    }
+	if err != nil {
+		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
+	}
 	if err := service.DeleteRole(uint64(id)); err != nil {
 		return c.Status(500).JSON(response.Error("failed delete role", err.Error()))
 	}

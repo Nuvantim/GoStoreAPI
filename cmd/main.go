@@ -1,16 +1,20 @@
 package main
 
 import (
-	"api/internal/server/http"
 	"api/internal/config"
+	"api/internal/server/http"
 	"api/pkg/guard"
+	rds "api/redis"
 
-	"os"
 	"log"
+	"os"
 )
 
 func main() {
+	// generate RSA
 	guard.GenRSA()
+	// Check RSA
+	guard.CheckRSA()
 	app := server.SetupAPI()
 
 	done := make(chan bool, 1)
@@ -24,4 +28,8 @@ func main() {
 	<-done
 
 	log.Println("Graceful shutdown complete.")
+
+	// close redis
+	rds.RedisClose()
+
 }
