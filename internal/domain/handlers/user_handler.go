@@ -45,11 +45,11 @@ func GetProfile(c *fiber.Ctx) error {
 	user, info := service.FindAccount(userID)
 
 	data := struct {
-		users     User     `json:"user"`
-		user_info UserInfo `json:"user_info"`
+		Users     models.User     `json:"user"`
+		User_info models.UserInfo `json:"user_info"`
 	}{
-		users:     user,
-		user_info: info,
+		Users:     user,
+		User_info: info,
 	}
 
 	return c.Status(200).JSON(response.Pass("success get profile", data))
@@ -145,11 +145,11 @@ func UpdateAccount(c *fiber.Ctx) error {
 	}
 	// Make return interface
 	data := struct {
-		users     User     `json:"user"`
-		user_info UserInfo `json:"user_info"`
+		Users     models.User     `json:"user"`
+		User_info models.UserInfo `json:"user_info"`
 	}{
-		users:     users,
-		user_info: userInfo,
+		Users:     users,
+		User_info: userInfo,
 	}
 
 	return c.Status(200).JSON(response.Pass("success update account", data))

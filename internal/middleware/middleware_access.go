@@ -19,7 +19,7 @@ func Role(requiredRole string) fiber.Handler {
 			}
 		}
 
-		if hasRole != true {
+		if !hasRole {
 			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 				"error": "Role Forbidden",
 			})

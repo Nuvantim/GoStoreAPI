@@ -25,7 +25,7 @@ func FindCart(c *fiber.Ctx) error {
 	// get user id & cart id
 	user_id := c.Locals("user_id").(uint64)
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 
@@ -129,7 +129,7 @@ HANDLER DELETE CART
 func DeleteCart(c *fiber.Ctx) error {
 	// Get id endpoint & user id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	user_id := c.Locals("user_id").(uint64)

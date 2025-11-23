@@ -81,7 +81,7 @@ func UpdatePassword(email, password string) (string, error) {
 func ValidateOTP(otp uint64) (*models.Token, error) {
 	data, err := rds.GetData[models.Token](fmt.Sprintf("verify:%d", otp))
 	if err != nil {
-		return nil, fmt.Errorf("failed get otp: ", err)
+		return nil, fmt.Errorf("failed get otp: %s", err)
 	}
 	return data, nil
 }

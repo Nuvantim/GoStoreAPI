@@ -23,7 +23,7 @@ func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
 	if tokenString != "" {
 		token, err := jwt.ParseWithClaims(tokenString, &guard.Claims{}, func(token *jwt.Token) (interface{}, error) {
 			// Pastikan metode signing adalah RS512
-			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS256" {
 				return nil, jwt.ErrSignatureInvalid
 			}
 			return guard.PublicKey, nil
@@ -43,7 +43,7 @@ func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
 			if authHeader != "" && authCookie != "" {
 				refreshToken, err := jwt.ParseWithClaims(authCookie, &guard.RefreshClaims{}, func(token *jwt.Token) (interface{}, error) {
 					// Pastikan metode signing adalah RS512
-					if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+					if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS256" {
 						return nil, jwt.ErrSignatureInvalid
 					}
 					return guard.PublicKey, nil
@@ -55,7 +55,7 @@ func AuthAndRefreshMiddleware(c *fiber.Ctx) error {
 						if err == nil {
 							// Validasi token baru
 							token, err := jwt.ParseWithClaims(newAccessToken, &guard.Claims{}, func(token *jwt.Token) (interface{}, error) {
-								if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS512" {
+								if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok || token.Method.Alg() != "RS256" {
 									return nil, jwt.ErrSignatureInvalid
 								}
 								return guard.PublicKey, nil

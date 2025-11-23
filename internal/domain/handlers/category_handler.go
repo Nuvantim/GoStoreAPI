@@ -9,6 +9,7 @@ import (
 )
 
 type Category = service.Category //declare type model Category
+
 /*
 HANDLER GET CATEGORY
 */
@@ -26,7 +27,7 @@ HANDLER FIND CATEGORY
 func FindCategory(c *fiber.Ctx) error {
 	// get id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 
@@ -64,7 +65,7 @@ HANDLER UPDATE CATEGORY
 */
 func UpdateCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id") // get params ID
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	var category Category // declare variabel Category
@@ -90,7 +91,7 @@ HANDLER DELETE CATEGORY
 func DeleteCategory(c *fiber.Ctx) error {
 	// get id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 

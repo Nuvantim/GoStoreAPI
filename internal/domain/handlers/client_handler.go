@@ -29,7 +29,7 @@ Find Client
 func FindClient(c *fiber.Ctx) error {
 	// get id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 
@@ -53,7 +53,7 @@ func UpdateClient(c *fiber.Ctx) error {
 
 	// get id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 
@@ -80,7 +80,7 @@ Remove Client
 func RemoveClient(c *fiber.Ctx) error {
 	// get id
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	client := service.FindClient(uint64(id))

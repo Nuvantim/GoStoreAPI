@@ -53,7 +53,7 @@ func Setup() {
 	sqlDB.SetConnMaxIdleTime(2 * time.Minute)
 
 	// Perform AutoMigrate only for necessary models (or in development environment)
-	log.Println("Connected...")
+	log.Println("Database connected...")
 
 	// AutoMigrate for models that need database schema changes
 	err = db.AutoMigrate(
