@@ -44,7 +44,7 @@ func RegisterAccount(name, email, password string) (string, error) {
 		return "", err
 	}
 
-	return "Your account successfuly registered", nil
+	return "your account successfuly registered", nil
 }
 
 func FindAccount(id uint64) (User, UserInfo) {
@@ -71,7 +71,7 @@ func UpdateAccount(users User, user_info UserInfo, user_id uint64) (User, UserIn
 
 	// Get user data by id
 	if err := database.DB.Take(&user, user_id).Error; err != nil {
-		return user, userInfo, errors.New("User not found")
+		return user, userInfo, errors.New("user not found")
 	}
 
 	// update user
@@ -84,12 +84,12 @@ func UpdateAccount(users User, user_info UserInfo, user_id uint64) (User, UserIn
 
 	// Simpan perubahan user
 	if err := database.DB.Save(&user).Error; err != nil {
-		return user, userInfo, errors.New("Failed to update user")
+		return user, userInfo, errors.New("failed to update user")
 	}
 
 	// Ambil data user_info berdasarkan user_id
 	if err := database.DB.Where("user_id = ?", user_id).Take(&userInfo).Error; err != nil {
-		return user, userInfo, errors.New("User info not found")
+		return user, userInfo, errors.New("user info not found")
 	}
 
 	// Update user_info
@@ -102,7 +102,7 @@ func UpdateAccount(users User, user_info UserInfo, user_id uint64) (User, UserIn
 
 	// Simpan perubahan user_info
 	if err := database.DB.Save(&userInfo).Error; err != nil {
-		return user, userInfo, errors.New("Failed to update user info")
+		return user, userInfo, errors.New("failed to update user info")
 	}
 
 	return users, userInfo, nil
