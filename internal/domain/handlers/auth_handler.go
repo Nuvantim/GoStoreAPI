@@ -58,7 +58,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// response data
-	return c.Status(200).JSON(response.Pass("success auth login login", loginResponse))
+	return c.Status(200).JSON(response.Pass("success login account", loginResponse))
 }
 
 /*
