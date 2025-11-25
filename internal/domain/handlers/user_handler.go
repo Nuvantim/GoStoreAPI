@@ -99,7 +99,7 @@ func RegisterAccount(c *fiber.Ctx) error {
 	}
 
 	// delete otp code
-	if err := rds.DelData(fmt.Sprintf("verify:%s", req.Otp)); err != nil {
+	if err := rds.DelData(fmt.Sprintf("verify:%d", req.Otp)); err != nil {
 		return c.Status(500).JSON(response.Error("failed delete otp", err.Error()))
 	}
 

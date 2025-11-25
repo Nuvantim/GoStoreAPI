@@ -66,6 +66,8 @@ func DeleteReview(c *fiber.Ctx) error {
 	}
 
 	//connect to service
-	service.DeleteReview(uint64(id))
+	if err := service.DeleteReview(uint64(id)); err != nil {
+	        return c.Status(500).JSON(response.Error("failed delete review",err.Error()))
+        }
 	return c.Status(200).JSON(response.Pass("review deleted", struct{}{}))
 }

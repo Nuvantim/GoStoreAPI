@@ -88,7 +88,9 @@ func CreateOrder(c *fiber.Ctx) error {
 	order := service.CreateOrder(uint64(user_id), totalItem, totalPrice, cart)
 
 	// remove cart after create order
-	service.DeleteCart(request.CartID)
+	if err := service.DeleteCart(request.CartID); err != nil{
+               return c.Status(500).JSON(response.Error("failed delete cart", err.Error()))
+        }
 
 	return c.Status(200).JSON(response.Pass("success create order", order))
 }
@@ -117,8 +119,11 @@ func DeleteOrder(c *fiber.Ctx) error {
 	if order.UserID != user_id {
 		return c.Status(403).JSON(response.Error("failed find order", "order forbidden"))
 	}
+
 	// connect service
-	service.DeleteOrder(id)
+	if err := service.DeleteOrder(id); err != nil{
+                return c.Status(500).JSON(response.Error("failed delete order", err.Error()))
+        }
 	return c.Status(200).JSON(response.Pass("order deleted", struct{}{}))
 
 }
