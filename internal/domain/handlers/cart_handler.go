@@ -140,6 +140,8 @@ func DeleteCart(c *fiber.Ctx) error {
 		return c.Status(403).JSON(response.Error("failed get cart", "cart data is forbidden"))
 	}
 	// Delete cart
-	service.DeleteCart(uint64(id))
+	if err := service.DeleteCart(uint64(id)); err != nil {
+		return c.Status(500).JSON(response.Error("failed delete cart", err.Error()))
+	}
 	return c.Status(200).JSON(response.Pass("cart deleted", struct{}{}))
 }

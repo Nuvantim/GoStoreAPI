@@ -52,7 +52,9 @@ func SendOTP(email string) (string, error) {
 	}
 
 	// set otp to redis
-	rds.SetData(fmt.Sprintf("verify:%d", token.Otp), token)
+	if err := rds.SetData(fmt.Sprintf("verify:%d", token.Otp), token); err != nil {
+		return "", err
+	}
 
 	if error := guard.SendOTP(email, code); error != nil {
 		return "", error

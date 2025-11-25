@@ -51,7 +51,7 @@ HANDLER DELETE REVIEW
 */
 func DeleteReview(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	user_id := c.Locals("user_id").(uint64)

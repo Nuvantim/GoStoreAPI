@@ -54,7 +54,9 @@ func DeleteRole(id uint64) error {
 	}
 
 	// Delete relation permission from pivot table
-	database.DB.Model(&role).Association("Permissions").Clear()
+	if err := database.DB.Model(&role).Association("Permissions").Clear(); err != nil {
+		return err
+	}
 
 	// Delete role from table
 	database.DB.Delete(&role)

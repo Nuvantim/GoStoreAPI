@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+
 	"api/internal/domain/models"
 	"api/internal/domain/service"
 	"api/pkg/utils/responses"
 	"api/pkg/utils/validates"
-	"github.com/gofiber/fiber/v2"
+	rds "api/redis"
 )
 
 type ( // declare type models User & UserInfo
@@ -92,6 +96,11 @@ func RegisterAccount(c *fiber.Ctx) error {
 	register, err := service.RegisterAccount(req.Name, req.Email, req.Password)
 	if err != nil {
 		return c.Status(400).JSON(response.Error("failed register account", err.Error()))
+	}
+
+	// delete otp code
+	if err := rds.DelData(fmt.Sprintf("verify:%s", req.Otp)); err != nil {
+		return c.Status(500).JSON(response.Error("failed delete otp", err.Error()))
 	}
 
 	return c.Status(200).JSON(response.Pass("success register account", register))

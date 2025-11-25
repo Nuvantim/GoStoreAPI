@@ -31,7 +31,7 @@ HANDLER FIND ROLE
 */
 func FindRole(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	role := service.FindRole(uint64(id))
@@ -66,7 +66,7 @@ HANDLER UPDATE ROLE
 func UpdateRole(c *fiber.Ctx) error {
 	var req role_permission
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	// bind body request
@@ -86,7 +86,7 @@ HANDLER DELETE ROLE
 */
 func DeleteRole(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	if err := service.DeleteRole(uint64(id)); err != nil {

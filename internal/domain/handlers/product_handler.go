@@ -16,7 +16,7 @@ func GetProduct(c *fiber.Ctx) error {
 
 func FindProduct(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	product := service.FindProduct(uint64(id))
@@ -49,7 +49,7 @@ func CreateProduct(c *fiber.Ctx) error {
 
 func UpdateProduct(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id") // get Params ID
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	var product Product //declare variabel Product
@@ -68,7 +68,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 
 func DeleteProduct(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	if err != nil {
+	if err != nil || id < 0 {
 		return c.Status(400).JSON(response.Error("failed get id", err.Error()))
 	}
 	if err := service.DeleteProduct(uint64(id)); err != nil {

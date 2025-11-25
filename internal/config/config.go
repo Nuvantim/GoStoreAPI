@@ -3,6 +3,8 @@ package config
 import (
 	"context"
 	"log"
+	"os"
+	"fmt"
 	"os/signal"
 	"syscall"
 	"time"
@@ -14,7 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
 	// "github.com/gofiber/fiber/v2/middleware/csrf"
-	// "github.com/gofiber/fiber/v2/middleware/helmet"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
 )
 
 func GracefulShutdown(app *fiber.App, done chan bool) {
@@ -45,11 +47,11 @@ func GracefulShutdown(app *fiber.App, done chan bool) {
 func FiberConfig() fiber.Config {
 	engine := html.New("views", ".html")
 	return fiber.Config{
-		AppName:       "fiber-api",
+		AppName:       "GoStoreAPI",
 		CaseSensitive: true,
 		StrictRouting: true,
-		ServerHeader:  "Kalveir Project",
-		Prefork:       false,
+		ServerHeader:  "Nuvantim Project",
+		Prefork:       true,
 		Views:         engine,
 	}
 }
@@ -69,12 +71,14 @@ func MiddlewareConfig(app *fiber.App) {
 		TimeFormat: "02-Jan-2006 15:04:05",
 		TimeZone:   "Asia/Jakarta",
 	}))
-	// app.Use(logger.New())
 
 	//Helmet
-	// app.Use(helmet.New(helmet.Config{
-	// 	ContentSecurityPolicy: "frame-ancestors 'self' "+url+";",
-	// }))
+	app.Use(helmet.New(helmet.Config{
+		ContentSecurityPolicy: "dafault-src 'self'; frame-ancestors 'self'",
+		HSTSMaxAge:            31536000,
+		HSTSPreloadEnabled:    true,
+		HSTSExcludeSubdomains: false,
+	}))
 
 	//Idempotency
 	app.Use(idempotency.New())
@@ -83,9 +87,14 @@ func MiddlewareConfig(app *fiber.App) {
 	// app.Use(csrf.New())
 
 	// CORS Configuration
+	var url string = os.Getenv("URL")
+	var port string = os.Getenv("PORT")
+
+	var origin = fmt.Sprintf("%s,http://localhost:%s, http://127.0.0.1:%s",url,port,port)
 	app.Use(cors.New(cors.Config{
+		AllowOrigins: origin,
 		AllowMethods: "GET,POST,PUT,DELETE",
-		AllowHeaders: "Content-Type, Authorization",
+		AllowHeaders: "Origin, Content-Type, Authorization, Accept",
 		MaxAge:       3600,
 	}))
 }
