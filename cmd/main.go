@@ -22,6 +22,7 @@ func main() {
 	go func() {
 		if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
 			log.Fatal("server error : ", err)
+			done <- true
 		}
 	}()
 
