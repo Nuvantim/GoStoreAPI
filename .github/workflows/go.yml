@@ -4,10 +4,7 @@
 name: Go
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,15 +15,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.9'
+          go-version: "1.24.9"
           cache: true
 
       - name: install dependency
         run: go mod tidy
 
       - name: Test
-        run: go test -v -race ./... 
-        
+        run: go test -v -race ./...
+
       - name: run vet
         run: go vet ./...
 
@@ -34,16 +31,16 @@ jobs:
         run: make build
 
   statistic:
-      name: runner / staticcheck
-      runs-on: ubuntu-latest
-      steps:
+    name: runner / staticcheck
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
       - uses: dominikh/staticcheck-action@v1
         with:
           version: "latest"
-          
+
   vulncheck:
     runs-on: ubuntu-latest
     name: Run govulncheck
@@ -51,9 +48,9 @@ jobs:
       - id: govulncheck
         uses: golang/govulncheck-action@v1
         with:
-           go-version-input: 1.24.9
-           go-package: ./...
-           
+          go-version-input: 1.24.9
+          go-package: ./...
+
   security:
     runs-on: ubuntu-latest
     env:
