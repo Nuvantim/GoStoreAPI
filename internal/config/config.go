@@ -2,9 +2,9 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
-	"fmt"
 	"os/signal"
 	"syscall"
 	"time"
@@ -43,7 +43,6 @@ func GracefulShutdown(app *fiber.App, done chan bool) {
 	done <- true
 }
 
-// FiberConfig berisi konfigurasi Fiber yang aman
 func FiberConfig() fiber.Config {
 	engine := html.New("views", ".html")
 	return fiber.Config{
@@ -51,18 +50,31 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Nuvantim Project",
-		Prefork:       true,
+		Prefork:       false,
 		Views:         engine,
 	}
 }
 
-// MiddlewareSetup menyiapkan semua middleware keamanan
 func MiddlewareConfig(app *fiber.App) {
+
+	var url string = os.Getenv("URL")
+	var port string = os.Getenv("PORT")
 
 	// Rate Limiting
 	app.Use(limiter.New(limiter.Config{
 		Max:        20,
 		Expiration: 30 * time.Second,
+	}))
+
+	// CORS Configuration
+	var origin = fmt.Sprintf("http://%s, https://%s, http://localhost:%s, http://127.0.0.1:%s", url, url, port, port)
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     origin,
+		AllowCredentials: true,
+		ExposeHeaders:    "Content-Length, X-Knowledge-Base",
+		AllowMethods:     "GET,POST,PUT,DELETE",
+		AllowHeaders:     "Origin, Content-Type, Authorization, Accept, Accept-Language, Content-Length",
+		MaxAge:           3600,
 	}))
 
 	// Logger
@@ -74,8 +86,9 @@ func MiddlewareConfig(app *fiber.App) {
 
 	//Helmet
 	app.Use(helmet.New(helmet.Config{
-		ContentSecurityPolicy: "dafault-src 'self'; frame-ancestors 'self'",
+		ContentSecurityPolicy: fmt.Sprintf("dafault-src 'self'; frame-ancestors 'none'; http://%s, https://%s", url, url),
 		HSTSMaxAge:            31536000,
+		XFrameOptions:         "DENY",
 		HSTSPreloadEnabled:    true,
 		HSTSExcludeSubdomains: false,
 	}))
@@ -86,15 +99,4 @@ func MiddlewareConfig(app *fiber.App) {
 	// CSRF Protection
 	// app.Use(csrf.New())
 
-	// CORS Configuration
-	var url string = os.Getenv("URL")
-	var port string = os.Getenv("PORT")
-
-	var origin = fmt.Sprintf("%s,http://localhost:%s, http://127.0.0.1:%s",url,port,port)
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: origin,
-		AllowMethods: "GET,POST,PUT,DELETE",
-		AllowHeaders: "Origin, Content-Type, Authorization, Accept",
-		MaxAge:       3600,
-	}))
 }
