@@ -76,3 +76,28 @@ func Setup() {
 	// Assign the DB object to the global variable
 	DB = db
 }
+
+func Close() {
+	// check DB
+	if DB == nil {
+		log.Println("database is nil, nothing to close")
+		return
+	}
+
+	// Get sqlDB
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Println("failed to get sql.DB : ", err)
+		return
+	}
+
+	// start close database connection
+	if err := sqlDB.Close(); err != nil {
+		log.Println("failed to close database connection : ", err)
+		return
+	}
+
+	// response database connection success closed
+	log.Println("Database connection closed...")
+
+}

@@ -19,28 +19,24 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 )
 
-func GracefulShutdown(app *fiber.App, done chan bool) {
-	// Create context that listens for the interrupt signal from the OS.
+func GracefulShutdown(app *fiber.App, done chan struct{}) {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	// Listen for the interrupt signal.
 	<-ctx.Done()
 
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
+	log.Println("Shutting down gracefully...")
 
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := app.ShutdownWithContext(ctx); err != nil {
+
+	if err := app.ShutdownWithContext(shutdownCtx); err != nil {
 		log.Printf("Server forced to shutdown with error: %v", err)
 	}
 
 	log.Println("Server exiting")
 
-	// Notify the main goroutine that the shutdown is complete
-	done <- true
+	done <- struct{}{}
 }
 
 func FiberConfig() fiber.Config {

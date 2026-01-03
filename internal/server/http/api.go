@@ -4,8 +4,8 @@ import (
 	"api/internal/config"
 	"api/internal/database"
 	"api/internal/database/seeder"
+	rds "api/internal/redis"
 	"api/internal/routes"
-	rds "api/redis"
 	"github.com/gofiber/fiber/v2"
 )
 

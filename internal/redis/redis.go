@@ -45,7 +45,7 @@ func InitRedis() {
 			log.Println("Failed connecting to redis:", err)
 			return
 		}
-		fmt.Println("Redis connected...")
+		log.Println("Redis connected...")
 
 		RDS = rdb
 	})

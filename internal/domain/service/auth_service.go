@@ -3,8 +3,8 @@ package service
 import (
 	"api/internal/database"
 	"api/internal/domain/models"
+	rds "api/internal/redis"
 	"api/pkg/guard"
-	rds "api/redis"
 	"errors"
 	"fmt"
 

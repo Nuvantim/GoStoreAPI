@@ -2,9 +2,10 @@ package main
 
 import (
 	"api/internal/config"
+	"api/internal/database"
+	rds "api/internal/redis"
 	"api/internal/server/http"
 	"api/pkg/guard"
-	rds "api/redis"
 
 	"log"
 	"os"
@@ -17,16 +18,19 @@ func main() {
 	guard.CheckRSA()
 	app := server.SetupAPI()
 
-	done := make(chan bool, 1)
+	done := make(chan struct{}, 1)
 
 	go func() {
 		if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
-			log.Fatal("server error : ", err)
-			done <- true
+			log.Printf("server error: %v", err)
+			select {
+			case done <- struct{}{}:
+			default:
+			}
 		}
 	}()
 
-	config.GracefulShutdown(app, done)
+	go config.GracefulShutdown(app, done)
 
 	<-done
 
@@ -34,5 +38,8 @@ func main() {
 
 	// close redis
 	rds.RedisClose()
+
+	// close database
+	database.Close()
 
 }

@@ -7,9 +7,9 @@ import (
 
 	"api/internal/domain/models"
 	"api/internal/domain/service"
+	rds "api/internal/redis"
 	"api/pkg/utils/responses"
 	"api/pkg/utils/validates"
-	rds "api/redis"
 )
 
 type ( // declare type models User & UserInfo
