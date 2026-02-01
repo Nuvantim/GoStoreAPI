@@ -82,7 +82,7 @@ func MiddlewareConfig(app *fiber.App) {
 
 	//Helmet
 	app.Use(helmet.New(helmet.Config{
-		ContentSecurityPolicy: fmt.Sprintf("dafault-src 'self'; frame-ancestors 'none'; http://%s, https://%s", url, url),
+		ContentSecurityPolicy: fmt.Sprintf("default-src 'self'; frame-ancestors 'none'; http://%s, https://%s", url, url),
 		HSTSMaxAge:            31536000,
 		XFrameOptions:         "DENY",
 		HSTSPreloadEnabled:    true,
