@@ -46,7 +46,7 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Nuvantim Project",
-		Prefork:       false,
+		Prefork:       true,
 		Views:         engine,
 	}
 }
@@ -82,7 +82,7 @@ func MiddlewareConfig(app *fiber.App) {
 
 	//Helmet
 	app.Use(helmet.New(helmet.Config{
-		ContentSecurityPolicy: fmt.Sprintf("default-src 'self'; frame-ancestors 'none'; http://%s, https://%s", url, url),
+		ContentSecurityPolicy: fmt.Sprintf("dafault-src 'self'; frame-ancestors 'none'; http://%s, https://%s", url, url),
 		HSTSMaxAge:            31536000,
 		XFrameOptions:         "DENY",
 		HSTSPreloadEnabled:    true,
