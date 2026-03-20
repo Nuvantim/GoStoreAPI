@@ -14,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/idempotency"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/storage/memory/v2"
 	"github.com/gofiber/template/html/v2"
 	// "github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
@@ -46,7 +47,7 @@ func FiberConfig() fiber.Config {
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Nuvantim Project",
-		Prefork:       true,
+		Prefork:       false,
 		Views:         engine,
 	}
 }
@@ -90,7 +91,17 @@ func MiddlewareConfig(app *fiber.App) {
 	}))
 
 	//Idempotency
-	app.Use(idempotency.New())
+	store := memory.New(memory.Config{
+		GCInterval: 10 * time.Minute,
+	})
+
+	app.Use(idempotency.New(idempotency.Config{
+		Storage:    store,
+		Lifetime: 30 * time.Minute,
+		Next: func(c *fiber.Ctx) bool {
+			return c.Method() != fiber.MethodPost && c.Method() != fiber.MethodPatch
+		},
+	}))
 
 	// CSRF Protection
 	// app.Use(csrf.New())

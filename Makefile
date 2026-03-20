@@ -9,7 +9,7 @@ YELLOW := \033[1;33m
 BLUE   := \033[1;34m
 RESET  := \033[0m
 
-.PHONY: build
+.PHONY: build run fmt clean
 
 build:
 	@echo -e "$(BLUE)🔍 Checking if 'go' command is available...$(RESET)"
@@ -21,12 +21,26 @@ build:
 	END=$$(date +%s); \
 	DURATION=$$((END - START)); \
 	if [ -f "$(BINARY_NAME)" ]; then \
-		SIZE_MB=$$(echo "scale=2; $$(stat -c%s $(BINARY_NAME)) / 1024 / 1024" | bc); \
+		SIZE_MB=$$(awk "BEGIN {printf \"%.2f\", $$(stat -c%s $(BINARY_NAME)) / 1024 / 1024}"); \
 		echo -e "$(GREEN)✅ Build completed successfully!$(RESET)"; \
-		echo -e "$(BLUE)📦 Output file:$(RESET)   $(BINARY_NAME)"; \
-		echo -e "$(BLUE)📏 File size:$(RESET)     $${SIZE_MB} MB"; \
-		echo -e "$(BLUE)⏱️  Build time:$(RESET)     $${DURATION} seconds"; \
+		echo -e "$(BLUE)📦 Output file:$(RESET)    $(BINARY_NAME)"; \
+		echo -e "$(BLUE)📏 File size:$(RESET)      $${SIZE_MB} MB"; \
+		echo -e "$(BLUE)⏱️  Build time:$(RESET)      $${DURATION} seconds"; \
 	else \
 		echo -e "$(RED)❌ Build failed. Output file not found.$(RESET)"; \
 		exit 1; \
 	fi
+
+run:
+	@echo -e "$(BLUE)⚡ Running application...$(RESET)"
+	@go run $(MAIN_FILE)
+
+fmt:
+	@echo -e "$(BLUE)✨ Formatting code...$(RESET)"
+	@go fmt ./...
+	@echo -e "$(GREEN)✅ Code formatting complete!$(RESET)"
+
+clean:
+	@echo -e "$(YELLOW)🧹 Cleaning up...$(RESET)"
+	@rm -f $(BINARY_NAME)
+	@echo -e "$(GREEN)✅ Cleaned!$(RESET)"
