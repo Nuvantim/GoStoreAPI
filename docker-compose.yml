@@ -3,36 +3,47 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: my-app
+    image: api_store_app
     pull_policy: never
-    container_name: myapp
+    container_name: api_store
     restart: always
+    environment:
+      - TZ=Asia/Jakarta
     ports:
       - "7373:7373"
     volumes:
       - ./logs:/app/logs
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
-      - kalveir-network
+      - nuvantim-network
+
   db:
-    image: postgres:16-alpine3.20
-    container_name: mydb
+    image: postgres:16-alpine
+    container_name: store_db
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: SuperPassword123
+      POSTGRES_PASSWORD: admin123
       POSTGRES_DB: api_store
+      TZ: Asia/Jakarta
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d api_store"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
-      - kalveir-network
+      - nuvantim-network
 
   redis:
-    image: redis:8.2.3
+    image: redis:7.2-alpine
     container_name: redis_server
     restart: always
     ports:
@@ -41,10 +52,12 @@ services:
       - redis_data:/data
     command: ["redis-server", "--appendonly", "yes"]
     networks:
-      - kalveir-network
+      - nuvantim-network
 
 volumes:
   postgres-data:
+  redis_data:
+
 networks:
-  kalveir-network:
+  nuvantim-network:
     driver: bridge

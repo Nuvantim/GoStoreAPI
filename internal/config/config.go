@@ -54,7 +54,7 @@ func FiberConfig() fiber.Config {
 
 func MiddlewareConfig(app *fiber.App) {
 
-	var url string = os.Getenv("URL")
+	var url string = os.Getenv("APP_URL")
 	var port string = os.Getenv("PORT")
 
 	// Rate Limiting

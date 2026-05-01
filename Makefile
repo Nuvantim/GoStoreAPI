@@ -35,6 +35,20 @@ run:
 	@echo -e "$(BLUE)⚡ Running application...$(RESET)"
 	@go run $(MAIN_FILE)
 
+tidy:
+	@echo -e "$(BLUE)📀 Installing Go modules...$(RESET)"
+	@go mod tidy
+	@echo -e "$(GREEN)✅ Go Modules installed !$(RESET)"
+
+exec:
+	@if [ -f "$(BINARY_NAME)" ]; then \
+		echo -e "$(BLUE)🎯 Running existing binary: $(BINARY_NAME)$(RESET)"; \
+		./$(BINARY_NAME); \
+	else \
+		echo -e "$(RED)❌ Binary not found! Run 'make build' first.$(RESET)"; \
+		exit 1; \
+	fi
+
 fmt:
 	@echo -e "$(BLUE)✨ Formatting code...$(RESET)"
 	@go fmt ./...
