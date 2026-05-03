@@ -96,7 +96,7 @@ func MiddlewareConfig(app *fiber.App) {
 	})
 
 	app.Use(idempotency.New(idempotency.Config{
-		Storage:    store,
+		Storage:  store,
 		Lifetime: 30 * time.Minute,
 		Next: func(c *fiber.Ctx) bool {
 			return c.Method() != fiber.MethodPost && c.Method() != fiber.MethodPatch
