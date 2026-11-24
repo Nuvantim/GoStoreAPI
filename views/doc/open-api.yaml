@@ -1,0 +1,676 @@
+openapi: 3.0.0
+info:
+  title: API-DOG
+  version: 1.0.0
+servers:
+  - url: http://{{url}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Access
+  - name: Access > Client
+  - name: Access > Role
+  - name: Access > Permission
+  - name: User
+  - name: Category
+  - name: Product
+  - name: Cart
+  - name: Order
+  - name: Review
+paths:
+  /:
+    get:
+      tags:
+        - Auth
+      summary: Home
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /send/otp:
+    post:
+      tags:
+        - Auth
+      summary: SendOTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: dimas@gmail.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /account/register:
+    post:
+      tags:
+        - Auth
+      summary: Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: dimas
+                email: dimas@gmail.com
+                password: '12345679'
+                otp: 6VH5950
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: dimas@gmail.com
+                password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: Log Out
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /update/password:
+    post:
+      tags:
+        - Auth
+      summary: UpdatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                otp: 4X5PNOE
+                password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /client:
+    get:
+      tags:
+        - Access > Client
+      summary: GetClient
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /client/1:
+    get:
+      tags:
+        - Access > Client
+      summary: FindClient
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /client/2:
+    put:
+      tags:
+        - Access > Client
+      summary: UpdateClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                role_id:
+                  - 3
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /role:
+    get:
+      tags:
+        - Access > Role
+      summary: GetRole
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /role/1:
+    get:
+      tags:
+        - Access > Role
+      summary: FindRole
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /role/store:
+    post:
+      tags:
+        - Access > Role
+      summary: CreateRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: role 2
+                permission_id:
+                  - 1
+                  - 2
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /role/3:
+    put:
+      tags:
+        - Access > Role
+      summary: UpdateRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: new role
+                permission_id:
+                  - 1
+                  - 2
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /role/5:
+    delete:
+      tags:
+        - Access > Role
+      summary: DeleteRole
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission:
+    get:
+      tags:
+        - Access > Permission
+      summary: GetPermission
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/1:
+    get:
+      tags:
+        - Access > Permission
+      summary: FindPermission
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/store:
+    post:
+      tags:
+        - Access > Permission
+      summary: CratePermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: manage product
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /permission/3:
+    put:
+      tags:
+        - Access > Permission
+      summary: UpdatePermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: manage product 1
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Access > Permission
+      summary: DeletePermission
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /account/profile:
+    get:
+      tags:
+        - User
+      summary: Account Profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /account/update:
+    put:
+      tags:
+        - User
+      summary: Update Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Firman
+                email: firman@gmail.com
+                password: '123'
+                age: 32
+                phone: 8937839
+                district: Nguling
+                city: Pasuruan
+                state: Jawa Timur
+                country: indonesia
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /account/delete:
+    delete:
+      tags:
+        - User
+      summary: Delete Account
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /category:
+    get:
+      tags:
+        - Category
+      summary: Category
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /category/store:
+    post:
+      tags:
+        - Category
+      summary: Create Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Kategori 1
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /category/1:
+    put:
+      tags:
+        - Category
+      summary: Update Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Kategori 1,5
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /category/4:
+    delete:
+      tags:
+        - Category
+      summary: Delete Category
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /product:
+    get:
+      tags:
+        - Product
+      summary: Get Product
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /product/store:
+    post:
+      tags:
+        - Product
+      summary: Create Product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Product 3
+                description: Cool Product
+                price: 300000
+                stock: 4
+                category_id: 2
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /product/1:
+    get:
+      tags:
+        - Product
+      summary: Find Product
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Product
+      summary: Update Product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Product 3,5
+                description: Cool Product
+                price: 200000
+                stock: 4
+                category_id: 2
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /product/3:
+    delete:
+      tags:
+        - Product
+      summary: Delete Product
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /cart:
+    get:
+      tags:
+        - Cart
+      summary: Get Cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /cart/store:
+    post:
+      tags:
+        - Cart
+      summary: CreateCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                product_id: 1
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /cart/1:
+    get:
+      tags:
+        - Cart
+      summary: Find Cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Cart
+      summary: Update Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 1
+                quantity: 2
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /cart/2:
+    delete:
+      tags:
+        - Cart
+      summary: Delete Cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /order:
+    get:
+      tags:
+        - Order
+      summary: Get Order
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /order/1:
+    get:
+      tags:
+        - Order
+      summary: Find Order
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Order
+      summary: Delete Order
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /order/store:
+    post:
+      tags:
+        - Order
+      summary: Create Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                cart_id:
+                  - 1
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /review:
+    post:
+      tags:
+        - Review
+      summary: Create Review
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                product_id: 1
+                rating: 5
+                comment: Product is the best
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /review/1:
+    delete:
+      tags:
+        - Review
+      summary: Delete Review
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

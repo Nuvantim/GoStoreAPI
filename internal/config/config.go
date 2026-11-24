@@ -41,7 +41,7 @@ func GracefulShutdown(app *fiber.App, done chan struct{}) {
 }
 
 func FiberConfig() fiber.Config {
-	engine := html.New("views", ".html")
+	engine := html.New("./views", ".html")
 	return fiber.Config{
 		AppName:       "GoStoreAPI",
 		CaseSensitive: true,

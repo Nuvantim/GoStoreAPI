@@ -9,13 +9,6 @@ import (
 )
 
 /*
-Home Handler
-*/
-func Home(c *fiber.Ctx) error {
-	return c.Render("home", fiber.Map{})
-}
-
-/*
 LOGIN HANDLER
 */
 func Login(c *fiber.Ctx) error {
