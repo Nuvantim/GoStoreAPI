@@ -9,7 +9,7 @@ import (
 func Setup(apps *fiber.App) {
 	apps.Get("/", handler.Home)
 	apps.Static("/public", "./views")
-	apps.Get("/doc", handler.Swagger)
+	apps.Get("/docs", handler.Swagger)
 	app := apps.Group("/api")
 
 	//auth Route
