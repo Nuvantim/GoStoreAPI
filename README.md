@@ -49,15 +49,6 @@ PORT=8080
 go mod tidy
 
 ```
-### 5. Create an RSA key
-```bash
-# Generate a 4096-bit RSA private key
-openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:4096
-
-# Generate a public key from the private key
-openssl rsa -in private.pem -pubout -out public.pem
-
-```
 
 ## Running the Application ⚙️
 
