@@ -54,12 +54,18 @@ func FiberConfig() fiber.Config {
 
 func MiddlewareConfig(app *fiber.App) {
 
-	var url string = os.Getenv("APP_URL")
-	var port string = os.Getenv("PORT")
+	var url, port string
+
+	url = os.Getenv("APP_URL")
+	if url == "" {
+		url = "example.com"
+	}
+
+	port = os.Getenv("PORT")
 
 	// Rate Limiting
 	app.Use(limiter.New(limiter.Config{
-		Max:        20,
+		Max:        15,
 		Expiration: 30 * time.Second,
 	}))
 
