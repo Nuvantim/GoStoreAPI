@@ -20,7 +20,7 @@ func GetCart(id uint64) []Cart {
 	return cart
 }
 
-func FindCart(id interface{}) (Cart, []Cart) {
+func FindCart(id any) (Cart, []Cart) {
 	var ( // declare variabel Cart
 		cart  Cart
 		carts []Cart
@@ -71,7 +71,7 @@ func UpdateCart(cart_update Cart, cost uint64) Cart {
 	return carts
 }
 
-func DeleteCart(input interface{}) error {
+func DeleteCart(input any) error {
 	var cart Cart // declare variabel Cart
 	switch v := input.(type) {
 	case uint64:

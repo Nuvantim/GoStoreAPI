@@ -60,7 +60,7 @@ func generateRSAKeyPair(bits int) (*rsa.PrivateKey, *rsa.PublicKey, error) {
 
 // savePEMKey writes a private RSA key to a PEM file safely.
 func savePEMKey(root *os.Root, filename string, key *rsa.PrivateKey) error {
-	file, err := root.Create(filepath.Base(filename)) // 👈 Secure, scoped
+	file, err := root.Create(filepath.Base(filename))
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func savePEMKey(root *os.Root, filename string, key *rsa.PrivateKey) error {
 
 // savePublicPEMKey writes a public RSA key to a PEM file safely.
 func savePublicPEMKey(root *os.Root, filename string, pub *rsa.PublicKey) error {
-	file, err := root.Create(filepath.Base(filename)) // 👈 Secure, scoped
+	file, err := root.Create(filepath.Base(filename))
 	if err != nil {
 		return err
 	}

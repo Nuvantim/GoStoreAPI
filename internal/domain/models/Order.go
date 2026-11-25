@@ -20,7 +20,7 @@ type OrderItem struct {
 	ID        uint64    `json:"-" gorm:"primaryKey;autoIncrement"`
 	OrderID   uuid.UUID `json:"order_id" gorm:"not null;type:char(36);references:ID"`
 	ProductID uint64    `json:"product_id" gorm:"not null"`
-	Product   Product   `json:"product,omitempty"`
+	Product   Product   `json:"product"`
 	Quantity  uint64    `json:"quantity" gorm:"not null"`
 	TotalCost uint64    `json:"total_cost" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`

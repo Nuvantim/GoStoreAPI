@@ -18,7 +18,7 @@ var ctx = context.Background()
 
 type noopLogger struct{}
 
-func (noopLogger) Printf(_ context.Context, _ string, _ ...interface{}) {}
+func (noopLogger) Printf(_ context.Context, _ string, _ ...any) {}
 
 var once sync.Once
 
