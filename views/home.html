@@ -1,144 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoStoreAPI 🛒</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      padding: 20px;
-      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoStoreAPI 🛒</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"
+    />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
 
-    /* 🔹 Card animasi seperti tombol pulse */
-    .card {
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border-radius: 12px;
-      overflow: hidden;
-      max-width: 600px;
-      width: 100%;
-      animation: card-pulse 1.5s ease-in-out infinite;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      will-change: transform, box-shadow;
-    }
+      /* 🔹 Card animasi seperti tombol pulse */
+      .card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 600px;
+        width: 100%;
+        animation: card-pulse 1.5s ease-in-out infinite;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        will-change: transform, box-shadow;
+      }
 
-    @keyframes card-pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
+      @keyframes card-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.02);
+        }
+      }
 
-    .card:hover {
-      transform: translateY(-10px) scale(1.05);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-      animation: none; /* Stop animasi saat hover */
-    }
+      .card:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        animation: none; /* Stop animasi saat hover */
+      }
 
-    .card-header {
-      background: linear-gradient(90deg, #00d1b2 0%, #3273dc 100%);
-      padding: 20px;
-    }
+      .card-header {
+        background: linear-gradient(90deg, #00d1b2 0%, #3273dc 100%);
+        padding: 20px;
+      }
 
-    .card-header-title {
-      color: white;
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-align: center;
-      width: 100%;
-    }
+      .card-header-title {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+      }
 
-    .card-content {
-      padding: 30px;
-    }
+      .card-content {
+        padding: 30px;
+      }
 
-    .api-icon {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      color: #3273dc;
-      text-align: center;
-      display: block;
-      animation: icon-shake 1.2s ease-in-out infinite;
-    }
+      .api-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #3273dc;
+        text-align: center;
+        display: block;
+        animation: icon-shake 1.2s ease-in-out infinite;
+      }
 
-    @keyframes icon-shake {
-      0%, 100% { transform: translateX(0) rotate(0); }
-      25% { transform: translateX(-2px) rotate(-2deg); }
-      50% { transform: translateX(2px) rotate(2deg); }
-      75% { transform: translateX(-1px) rotate(-1deg); }
-    }
+      @keyframes icon-shake {
+        0%,
+        100% {
+          transform: translateX(0) rotate(0);
+        }
+        25% {
+          transform: translateX(-2px) rotate(-2deg);
+        }
+        50% {
+          transform: translateX(2px) rotate(2deg);
+        }
+        75% {
+          transform: translateX(-1px) rotate(-1deg);
+        }
+      }
 
-    .title {
-      text-align: center;
-      font-weight: 600;
-    }
+      .title {
+        text-align: center;
+        font-weight: 600;
+      }
 
-    .subtitle {
-      text-align: center;
-    }
+      .subtitle {
+        text-align: center;
+      }
 
-    .description {
-      text-align: justify;
-      line-height: 1.6;
-      font-size: 1rem;
-      color: #333;
-    }
+      .description {
+        text-align: justify;
+        line-height: 1.6;
+        font-size: 1rem;
+        color: #333;
+      }
 
-    /* 🔹 Tombol tidak animasi, hanya warna berubah */
-    .button {
-      margin-top: 20px;
-      font-weight: 600;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+      /* 🔹 Tombol tidak animasi, hanya warna berubah */
+      .button {
+        margin-top: 20px;
+        font-weight: 600;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
 
-    .button:hover {
-      background-color: #00b89c; /* warna lebih gelap */
-      color: #fff;
-    }
+      .button:hover {
+        background-color: #00b89c; /* warna lebih gelap */
+        color: #fff;
+      }
 
-    .button:active {
-      background-color: #00947e;
-      color: #fff;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <header class="card-header">
-      <p class="card-header-title">
-        GoStoreAPI
-      </p>
-    </header>
-    <div class="card-content">
-      <div class="content">
-        <div class="has-text-centered">
-          <i class="fas fa-shopping-cart api-icon"></i>
+      .button:active {
+        background-color: #00947e;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <header class="card-header">
+        <p class="card-header-title">GoStoreAPI</p>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <div class="has-text-centered">
+            <i class="fas fa-shopping-cart api-icon"></i>
+          </div>
+          <h2 class="title is-3">GoStoreAPI</h2>
+          <p class="description">
+            GoStoreAPI is a RESTful API designed to power e-commerce platforms
+            or store management systems. It provides structured endpoints to
+            handle core operations such as product management, categories,
+            transactions, user authentication, and other essential features for
+            online stores or inventory-based applications.
+          </p>
+          <a class="button is-primary is-medium" href="/docs">
+            <span class="icon">
+              <i class="fas fa-book"></i>
+            </span>
+            <span>API Documentation</span>
+          </a>
         </div>
-        <h2 class="title is-3">GoStoreAPI</h2>
-        <p class="description">
-          GoStoreAPI is a RESTful API designed to power e-commerce platforms or store management systems. It provides structured endpoints to handle core operations such as product management, categories, transactions, user authentication, and other essential features for online stores or inventory-based applications.
-        </p>
-        <a class="button is-primary is-medium" href="/docs">
-          <span class="icon">
-            <i class="fas fa-book"></i>
-          </span>
-          <span>API Documentation</span>
-        </a>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

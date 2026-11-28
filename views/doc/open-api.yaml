@@ -30,7 +30,7 @@ paths:
         - Auth
       summary: Home
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -47,7 +47,7 @@ paths:
               example:
                 email: dimas@gmail.com
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -64,10 +64,10 @@ paths:
               example:
                 name: dimas
                 email: dimas@gmail.com
-                password: '12345679'
+                password: "12345679"
                 otp: 6VH5950
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -83,9 +83,9 @@ paths:
               type: object
               example:
                 email: yoga@gmail.com
-                password: '12345678'
+                password: "12345678"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -99,7 +99,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -115,9 +115,9 @@ paths:
               type: object
               example:
                 otp: 4X5PNOE
-                password: '12345678'
+                password: "12345678"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -129,7 +129,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -141,7 +141,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -161,7 +161,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -173,7 +173,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -185,7 +185,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -207,7 +207,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -229,7 +229,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -241,7 +241,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -253,7 +253,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -265,7 +265,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -284,7 +284,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -303,7 +303,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -314,7 +314,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -326,7 +326,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -343,7 +343,7 @@ paths:
               example:
                 name: Firman
                 email: firman@gmail.com
-                password: '123'
+                password: "123"
                 age: 32
                 phone: 8937839
                 district: Nguling
@@ -353,7 +353,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -365,7 +365,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -377,7 +377,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -396,7 +396,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -415,7 +415,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -427,7 +427,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -439,7 +439,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -462,7 +462,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -474,7 +474,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -496,7 +496,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -508,7 +508,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -520,7 +520,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -539,7 +539,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -551,7 +551,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -570,7 +570,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -582,7 +582,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -594,7 +594,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -606,7 +606,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -617,7 +617,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -637,7 +637,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -658,7 +658,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -670,7 +670,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
